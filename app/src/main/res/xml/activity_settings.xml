@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="General">
+
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="pref_reconnect"
+            android:summary="Attempt to reconnect to the last connected device when the application starts"
+            android:title="Reconnect at startup" />
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_log_pids"
+            android:summary="Saving data to file allows for analyzing later"
+            android:title="Log PID data to file" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="View">
+
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_show_pid_stream_values"
+            android:summary="Show the ELM327 encoding under each PID in the Data window"
+            android:title="Show PID stream values" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Advanced">
+
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_simulate_data"
+            android:summary="Use simulated data instead of connecting to an actual device. Use this for debugging purposes only"
+            android:title="Simulate ELM327 data" />
+    </PreferenceCategory>
+</PreferenceScreen>

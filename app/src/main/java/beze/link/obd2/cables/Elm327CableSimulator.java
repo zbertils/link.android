@@ -1,0 +1,151 @@
+package beze.link.obd2.cables;
+
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import beze.link.Globals;
+import beze.link.obd2.DiagnosticTroubleCode;
+import beze.link.obd2.ParameterIdentification;
+import beze.link.obd2.Protocols;
+
+public class Elm327CableSimulator extends Elm327Cable
+{
+    private static final String TAG = Globals.TAG + "Elm327CableSimulator";
+
+    /// <summary>
+    /// True if the simulator should return trouble codes and false otherwise. The default is true.
+    /// </summary>
+    public boolean SimulateTroubleCodes = true;
+
+    /// <summary>
+    /// Creates a new instance of CustomCable.
+    /// </summary>
+    /// <param name="port"> The port the cable is connected to. </param>
+    /// <param name="timeoutMilliseconds"> The timeout to use for communication with the cable. </param>
+    public Elm327CableSimulator()//, Elm327Cable.ConnectionCallback callback)
+    {
+        CableType = Type.Simulated;
+        mInitialized = false; // default to false
+
+        // default cable info
+        info = new Elm327Cable.CableInfo();
+
+        Log.i(TAG, "Elm327Cable: discovering ELM version");
+
+        // detect what type of cable is connected
+        String response = "ELM327 v1.5 Simulated";
+        if (response.contains(Protocols.Elm327.Header))
+        {
+            Log.i(TAG, "Elm327Cable: cable is ELM327 type");
+
+            String version = "NA";
+
+            // get the version number for posterity
+            if (response.contains("v"))
+            {
+                int indexOfVersion = response.indexOf("v");
+                version = response.substring(indexOfVersion);
+                Log.i(TAG, "Elm327Cable: discovered ELM version: " + version);
+
+                info.Version = version;
+            }
+
+            // turn echo off
+            Log.i(TAG, "Elm327Cable: turning echo off");
+
+            response = "OK";
+            if (!response.contains(Protocols.Elm327.Responses.OK))
+            {
+                Log.e(TAG, "Elm327Cable: could not turn echo off");
+                return;
+            }
+
+            info.EchoOff = true;
+
+            Log.i(TAG, "Elm327Cable: turning auto protocol on");
+            response = "OK";
+            if (!response.contains(Protocols.Elm327.Responses.OK))
+            {
+                Log.e(TAG, "Elm327Cable: could not set protocol to Auto");
+                return;
+            }
+
+            Log.i(TAG, "Elm327Cable: forcing a search for existing protocols");
+            response = "SEARCHING...";
+            if (response == null || response.isEmpty())
+            {
+                Log.e(TAG, "Elm327Cable: could not force an auto protocol search");
+                return;
+            }
+
+            response = "AUTO,ISO 15765-4 CAN (11/500)";
+            String chosenProtocol = response.replace(Protocols.Elm327.Responses.Auto, "").replace(",", "").trim();
+            Log.i(TAG, "Elm327Cable: protocol chosen: " + chosenProtocol);
+            if (!response.contains(Protocols.Elm327.Responses.Auto))
+            {
+                Log.e(TAG, "Elm327Cable: displayed protocol did not mention auto");
+                return;
+            }
+
+            Protocol = Protocols.NameToProtocol(chosenProtocol);
+            info.Protocol = Protocol;
+            info.AutoProtocolSet = true;
+
+            // everything is good to go
+            mInitialized = true;
+            mOpen = true;
+
+            // fully initialized, the fourth step is the final step
+            info.Description = "Connected!";
+            Log.i(TAG, "Elm327Cable: connected!");
+        }
+    }
+
+    @Override
+    protected String SendCommand(String data, int sleepMilliseconds)
+    {
+        return Protocols.Elm327.Responses.OK;
+    }
+
+    @Override
+    public String Communicate(ParameterIdentification pid)
+    {
+        // check if the header needs to be set
+        if (pid.Header != null && !pid.Header.isEmpty())
+        {
+            String response = SendCommand(Protocols.Elm327.SetFrameHeader(pid.Header), 750);
+            if (!response.contains(Protocols.Elm327.Responses.OK))
+            {
+                Log.w(TAG, "Communicate: could not set frame header for PID\r\n" + pid.toString());
+                return null;
+            }
+        }
+        else if (!lastFrameHeader.equals(Protocols.J1850.Headers.Default))
+        {
+            String response = SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.Default), 750);
+            if (!response.contains(Protocols.Elm327.Responses.OK))
+            {
+                Log.w(TAG, "Communicate: could not set default frame header for PID\r\n" + pid.toString());
+                return null;
+            }
+        }
+
+        return pid.SimulatedResponse(this.Protocol);
+    }
+
+    @Override
+    public List<DiagnosticTroubleCode> RequestTroubleCodes()
+    {
+        if (SimulateTroubleCodes)
+        {
+            return super.RequestTroubleCodes();
+        }
+        else
+        {
+            return new ArrayList<DiagnosticTroubleCode>();
+        }
+    }
+
+}
