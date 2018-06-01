@@ -3,6 +3,7 @@ package beze.link.obd2.cables;
 import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,7 @@ public class Elm327Cable extends Cable
     protected ModeA modeA = new ModeA();
     protected Mode19 mode19 = new Mode19();
 
-
-
+    protected boolean needsReconnect = false;
 
     /// <summary>
     /// Constructor for simulated cables.
@@ -233,6 +233,7 @@ public class Elm327Cable extends Cable
                 // if the end was reached then break before incrementing the count,
                 // this keeps the logic in place to determine if a timeout was reached or not
                 if (endReached) {
+                    Log.v(TAG, "readUntil reached expected end \"" + end + "\"");
                     break;
                 }
 
@@ -243,6 +244,7 @@ public class Elm327Cable extends Cable
             } while (checkCount < totalChecks);
         }
         catch (Exception ex) {
+            Log.w(TAG, "Timeout occurred during readUntil for \"" + end + "\"", ex);
             return null;
         }
 
@@ -269,7 +271,7 @@ public class Elm327Cable extends Cable
         }
         catch (Exception ex)
         {
-            Log.w(TAG, "SendElmInitString: could not send Elm init string: " + data);
+            Log.w(TAG, "SendElmInitString: could not send Elm init string: " + data, ex);
             return "";
         }
     }
@@ -322,6 +324,7 @@ public class Elm327Cable extends Cable
         }
 
         // sending did not work, return false
+        Log.w(TAG, "Communicate() did not send properly, returning null");
         return null;
     }
 
@@ -343,8 +346,13 @@ public class Elm327Cable extends Cable
                 BytesSent += data.length();
                 return true;
             }
+            catch (IOException ex)
+            {
+                Log.e(TAG, "Send: error sending data \"" + data + "\"", ex);
+                needsReconnect = true;
+            }
             catch (Exception ex) {
-                Log.e(TAG, "Send: error sending data \"" + data + "\"");
+                Log.e(TAG, "Send: error sending data \"" + data + "\"", ex);
             }
         }
 
@@ -375,7 +383,7 @@ public class Elm327Cable extends Cable
         catch (Exception ex)
         {
             // do nothing, timeout occurred and null should be returned
-            Log.w(TAG, "Receive: timeout attempting read of PID");
+            Log.w(TAG, "Receive: timeout attempting read of PID", ex);
         }
 
         return null;

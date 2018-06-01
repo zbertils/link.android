@@ -82,6 +82,7 @@ public abstract class Cable
     protected BluetoothDevice btDevice;
     protected BluetoothSocket cableConnection;
     public CableInfo info = null;
+    protected boolean needsReconnect;
 
     /// <summary>
     /// Creates a new instance of Cable.
@@ -93,6 +94,7 @@ public abstract class Cable
         this.btDevice = btDevice;
         BytesSent = 0;
         BytesReceived = 0;
+        needsReconnect = false;
     }
 
     /// <summary>
@@ -102,6 +104,12 @@ public abstract class Cable
     {
         CableType = Type.PassThrough; // default to being a pass-through cable
         TroubleCodeDescriptions = new ArrayList<Pair>();
+    }
+
+    /// <returns> True if the cable needs to be reconnected, and false otherwise. </returns>
+    public boolean NeedsReconnect()
+    {
+        return needsReconnect;
     }
 
     /// <summary>

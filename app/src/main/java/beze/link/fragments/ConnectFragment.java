@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,9 +54,13 @@ public class ConnectFragment extends Fragment implements AdapterView.OnItemSelec
             @Override
             public void run()
             {
-                TextView status = (TextView) getActivity().findViewById(R.id.textViewConnectStatus);
-                status.setText(description);
-                status.invalidate();
+                FragmentActivity act = getActivity();
+                if (act != null)
+                {
+                    TextView status = (TextView) act.findViewById(R.id.textViewConnectStatus);
+                    status.setText(description);
+                    status.invalidate();
+                }
             }
         });
     }
@@ -188,9 +193,8 @@ public class ConnectFragment extends Fragment implements AdapterView.OnItemSelec
                             setConnectedState();
                         }
                     });
-
-
-                } else if (Globals.cable.IsOpen())
+                }
+                else if (Globals.cable.IsOpen())
                 {
                     Globals.mainActivity.runOnUiThread(new Runnable()
                     {
@@ -201,7 +205,8 @@ public class ConnectFragment extends Fragment implements AdapterView.OnItemSelec
                             Toast.makeText(Globals.appContext, "WARNING: Connected but not initialized!", Toast.LENGTH_LONG).show();
                         }
                     });
-                } else
+                }
+                else
                 {
                     Globals.mainActivity.runOnUiThread(new Runnable()
                     {
@@ -224,7 +229,14 @@ public class ConnectFragment extends Fragment implements AdapterView.OnItemSelec
                 Globals.cable = null;
             }
 
-            setDisconnectedState();
+            Globals.mainActivity.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    setDisconnectedState();
+                }
+            });
         }
     }
 

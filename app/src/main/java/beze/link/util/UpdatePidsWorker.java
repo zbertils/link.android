@@ -4,6 +4,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import beze.link.Globals;
 import beze.link.R;
 import beze.link.obd2.ParameterIdentification;
 import beze.link.obd2.cables.Cable;
+import beze.link.obd2.cables.Elm327Cable;
 
 import static beze.link.Globals.dataFragmentAdapter;
 
@@ -59,23 +61,37 @@ public class UpdatePidsWorker extends WorkerThread
 //                                    Log.i(TAG, "doWork: trying to save a decoded value onto list that is null!");
 //                                }
 //                            }
+                        }
+                        else
+                        {
+                            Log.w(TAG, "Could not update PID " + pid.getShortName());
+                            pid.setLastDecodedValue(Double.NaN);
+                        }
 
-                            // if this is not null then tell the screen to update,
-                            // this should be set around the time the thread starts
-                            if (Globals.dataFragmentAdapter != null) {
-                                Globals.mainActivity.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Globals.dataFragmentAdapter.notifyDataSetChanged();
-                                    }
-                                });
-                            }
+                        // if this is not null then tell the screen to update,
+                        // this should be set around the time the thread starts
+                        if (Globals.dataFragmentAdapter != null) {
+                            Globals.mainActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Globals.dataFragmentAdapter.notifyDataSetChanged();
+                                }
+                            });
                         }
 
                         if (stopWork)
                         {
                             break;
                         }
+                    }
+
+                    // check if the cable connection is still good
+                    if (Globals.cable.NeedsReconnect())
+                    {
+                        Globals.cable.Close();
+                        Globals.cable = null;
+                        Toast.makeText(Globals.appContext, "ELM327 device stopped responding", Toast.LENGTH_LONG).show();
+                        stopWork = true;
                     }
                 }
             }

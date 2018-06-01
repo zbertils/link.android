@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.support.v4.app.Fragment;
 
 import java.lang.reflect.Parameter;
@@ -200,7 +201,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragment = null;
-        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager(); // For AppCompat use getSupportFragmentManager
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+
+        // reset so screen can fall asleep again if not the data fragment
+        WindowManager windowManager = getWindowManager();
+        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         switch (id) {
             case R.id.nav_home:
@@ -211,6 +216,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 setTitle("Data");
                 fragment = new DataFragment();
                 ((DataFragment)fragment).setData(Globals.shownPids);
+
+                // prevent the screen from falling asleep on the data fragment
+                this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
                 break;
             case R.id.nav_trouble_codes:
                 setTitle("Trouble Codes");

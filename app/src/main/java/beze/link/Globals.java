@@ -222,8 +222,9 @@ public class Globals {
         if (Globals.updateWorker != null && Globals.updateWorker.isAlive()) {
             Globals.updateWorker.stop();
             Globals.updateWorker.join();
-            Globals.updateWorker = null;
         }
+
+        Globals.updateWorker = null;
     }
 
     /**
