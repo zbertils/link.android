@@ -81,7 +81,7 @@ public class Globals {
             jsonStr = new String(buffer, "UTF-8");
         }
         catch (Exception ex) {
-            Log.e(TAG_BASE, "loadPids: could not read pids.json");
+            Log.e(TAG, "loadPids: could not read pids.json");
             ex.printStackTrace();
             return false;
         }
@@ -93,7 +93,7 @@ public class Globals {
 
             // TODO: check the version against the current and do something about it...
             if (version != pidsJsonFileVersion) {
-                Log.w(TAG_BASE, String.format("loadPids: version does not match expected version, found %f expected %f", version, pidsJsonFileVersion));
+                Log.w(TAG, String.format("loadPids: version does not match expected version, found %f expected %f", version, pidsJsonFileVersion));
             }
 
             // get the array of pids and parse them into ParameterIdentification objects
@@ -107,7 +107,7 @@ public class Globals {
 
         }
         catch (Exception ex) {
-            Log.e(TAG_BASE, "loadPids: could not parse pids.json");
+            Log.e(TAG, "loadPids: could not parse pids.json");
             ex.printStackTrace();
             return false;
         }
@@ -126,7 +126,7 @@ public class Globals {
             jsonStr = new String(buffer, "UTF-8");
         }
         catch (Exception ex) {
-            Log.e(TAG_BASE, "loadDtcDescriptions: could not read dtcs.json");
+            Log.e(TAG, "loadDtcDescriptions: could not read dtcs.json");
             ex.printStackTrace();
             return false;
         }
@@ -174,7 +174,7 @@ public class Globals {
 
         }
         catch (Exception ex) {
-            Log.e(TAG_BASE, "loadDtcDescriptions: could not parse dtcs.json");
+            Log.e(TAG, "loadDtcDescriptions: could not parse dtcs.json");
             ex.printStackTrace();
             return false;
         }
@@ -193,7 +193,7 @@ public class Globals {
             jsonStr = new String(buffer, "UTF-8");
         }
         catch (Exception ex) {
-            Log.e(TAG_BASE, "loadMakes: could not read makes.json");
+            Log.e(TAG, "loadMakes: could not read makes.json");
             ex.printStackTrace();
             return false;
         }
@@ -213,7 +213,7 @@ public class Globals {
             }
         }
         catch (Exception ex) {
-            Log.e(TAG_BASE, "loadMakes: could not parse makes.json");
+            Log.e(TAG, "loadMakes: could not parse makes.json");
             ex.printStackTrace();
             return false;
         }
@@ -297,7 +297,7 @@ public class Globals {
                 if (name.equals(deviceName))
                 {
                     selectedDevice = device;
-                    Log.d(TAG_BASE, "connectCable: selected device was " + device.getName());
+                    Log.d(TAG, "connectCable: selected device was " + device.getName());
                     break;
                 }
             }
@@ -326,7 +326,7 @@ public class Globals {
                     }
                     catch (Exception ex)
                     {
-                        Log.e(TAG_BASE, "connectCable: could not connect to remote device (attempt " + (attemptCount + 1), ex);
+                        Log.e(TAG, "connectCable: could not connect to remote device (attempt " + (attemptCount + 1), ex);
                         ex.printStackTrace();
 
                         if (Globals.cable != null)
