@@ -36,9 +36,8 @@ import beze.link.obd2.cables.IConnectionCallback;
 public class ConnectFragment extends Fragment implements AdapterView.OnItemSelectedListener, AdapterView.OnClickListener, IConnectionCallback, Runnable
 {
 
-    private static final String TAG = Globals.TAG + "ConnectFragment";
+    private static final String TAG = Globals.TAG_BASE + "ConnectFragment";
     private String selectedItemName = "";
-    private static final String SimulatedCableName = "SIMULATED CABLE";
 
 
     public ConnectFragment()
@@ -120,65 +119,7 @@ public class ConnectFragment extends Fragment implements AdapterView.OnItemSelec
         String buttonState = btnConnect.getText().toString().toUpperCase();
         if (buttonState.equals("CONNECT"))
         {
-            if (!simulateData)
-            {
-
-                BluetoothDevice selectedDevice = null;
-                Set<BluetoothDevice> pairedDevices = Globals.btAdapter.getBondedDevices();
-                for (BluetoothDevice device : pairedDevices)
-                {
-                    String name = device.getName();
-                    if (name.equals(selectedItemName))
-                    {
-                        selectedDevice = device;
-                        Log.d(TAG, "onClick: selected device was " + device.getName());
-                        break;
-                    }
-                }
-
-                if (selectedDevice != null)
-                {
-                    int attemptCount = 0;
-
-                    do
-                    {
-                        try
-                        {
-                            // close any previously existing connection
-                            if (Globals.cable != null)
-                            {
-                                Globals.cable.Close();
-                                Globals.cable = null;
-                            }
-
-                            Globals.cable = new Elm327Cable(selectedDevice, this);
-                            if (Globals.cable.IsInitialized())
-                            {
-                                Globals.appState.LastConnectedDeviceName = selectedDevice.getName();
-                                break;
-                            }
-                        } catch (Exception ex)
-                        {
-                            Log.e(TAG, "onClick: could not connect to remote device");
-                            ex.printStackTrace();
-
-                            if (Globals.cable != null)
-                            {
-                                Globals.cable.Close();
-                                Globals.cable = null;
-                            }
-                        }
-                        attemptCount++;
-                    } while (!Globals.cable.IsInitialized() && attemptCount < 3);
-                }
-            }
-
-            // simulated data, create and "connect" the device
-            else
-            {
-                Globals.appState.LastConnectedDeviceName = SimulatedCableName;
-                Globals.connectSimulatedCable();
-            }
+            Globals.connectCable(selectedItemName, this);
 
             if (Globals.cable != null)
             {
@@ -223,11 +164,7 @@ public class ConnectFragment extends Fragment implements AdapterView.OnItemSelec
         // disconnecting the device
         else
         {
-            if (Globals.cable != null)
-            {
-                Globals.cable.Close();
-                Globals.cable = null;
-            }
+            Globals.disconnectCable();
 
             Globals.mainActivity.runOnUiThread(new Runnable()
             {
@@ -275,7 +212,8 @@ public class ConnectFragment extends Fragment implements AdapterView.OnItemSelec
                 connectSpinner.setSelection(lastSelectedIndex);
                 lastConnectedDeviceStillExists = true;
             }
-        } else
+        }
+        else
         {
             Log.w(TAG, "onStart: no paired devices found");
         }
@@ -287,11 +225,13 @@ public class ConnectFragment extends Fragment implements AdapterView.OnItemSelec
             if (Globals.cable.IsInitialized())
             {
                 setConnectedState();
-            } else if (Globals.cable.IsOpen())
+            }
+            else if (Globals.cable.IsOpen())
             {
                 status.setText("Uninitialized");
                 Toast.makeText(Globals.appContext, "WARNING: Connected but not initialized!", Toast.LENGTH_LONG).show();
-            } else
+            }
+            else
             {
                 Toast.makeText(Globals.appContext, "ERROR: Could not connect to remote device!", Toast.LENGTH_LONG).show();
             }
@@ -307,7 +247,7 @@ public class ConnectFragment extends Fragment implements AdapterView.OnItemSelec
             if (reconnect)
             {
                 // reconnect if the device still exists (still paired), or the last device was a simulated cable
-                if (lastConnectedDeviceStillExists || Globals.appState.LastConnectedDeviceName.equals(SimulatedCableName))
+                if (lastConnectedDeviceStillExists || Globals.appState.LastConnectedDeviceName.equals(Globals.SimulatedCableName))
                 {
 
                     Toast.makeText(Globals.appContext, "Reconnecting to " + Globals.appState.LastConnectedDeviceName, Toast.LENGTH_SHORT).show();

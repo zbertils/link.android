@@ -1,24 +1,17 @@
 package beze.link.obd2;
 
-import android.app.Application;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.NotificationCompatSideChannelService;
 import android.util.Log;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import beze.link.Globals;
-import beze.link.R;
 import beze.link.obd2.cables.Cable;
 
 public class DtcParameterIdentification extends ParameterIdentification
 {
-    private static final String TAG = Globals.TAG + "DtcPid";
+    private static final String TAG = Globals.TAG_BASE + "DtcPid";
 
     public final DiagnosticTroubleCode.CodeType CodeType;
 

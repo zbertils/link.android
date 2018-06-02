@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,7 +28,7 @@ import beze.link.ui.DtcRecyclerViewAdapter;
  */
 public class TroubleCodesFragment extends Fragment implements View.OnClickListener{
 
-    private static final String TAG = Globals.TAG + "TroubleCodesFragment";
+    private static final String TAG = Globals.TAG_BASE + "TroubleCodesFragment";
 
     private RecyclerView mCurrentDtcRecyclerView;
     private RecyclerView.Adapter mCurrentDtcAdapter;

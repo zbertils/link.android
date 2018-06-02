@@ -15,7 +15,7 @@ import beze.link.util.LinkMapEntry;
 
 public class Mode19 extends ParameterIdentification
 {
-    private static final String TAG = Globals.TAG + "Mode19";
+    private static final String TAG = Globals.TAG_BASE + "Mode19";
 
     public static class RequestType
     {

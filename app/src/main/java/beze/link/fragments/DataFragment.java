@@ -1,30 +1,22 @@
 package beze.link.fragments;
 
 
-import android.bluetooth.BluetoothAdapter;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import beze.link.Globals;
 import beze.link.R;
 import beze.link.obd2.ParameterIdentification;
 import beze.link.ui.DataRecyclerViewAdapter;
-import beze.link.ui.PidsRecyclerViewAdapter;
-import beze.link.util.UpdatePidsWorker;
 
 
 /**
@@ -32,7 +24,7 @@ import beze.link.util.UpdatePidsWorker;
  */
 public class DataFragment extends Fragment {
 
-    private static final String TAG = Globals.TAG + "DataFragment";
+    private static final String TAG = Globals.TAG_BASE + "DataFragment";
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;

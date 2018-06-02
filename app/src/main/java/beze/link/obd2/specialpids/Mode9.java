@@ -9,7 +9,7 @@ import beze.link.obd2.cables.Cable;
 
 public class Mode9 extends ParameterIdentification
 {
-    private static final String TAG = Globals.TAG + "Mode9";
+    private static final String TAG = Globals.TAG_BASE + "Mode9";
 
     /// <summary>
 /// Instantiates a new instance of the Elm327 Mode9 class. This class should not be used on its own.

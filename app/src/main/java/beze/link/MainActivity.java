@@ -20,8 +20,6 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.support.v4.app.Fragment;
 
-import java.lang.reflect.Parameter;
-
 import beze.link.fragments.AdvancedFragment;
 import beze.link.fragments.ConnectFragment;
 import beze.link.fragments.DataFragment;
@@ -32,7 +30,7 @@ import beze.link.obd2.ParameterIdentification;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private final String TAG = Globals.TAG + "MainActivity";
+    private final String TAG = Globals.TAG_BASE + "MainActivity";
     private static final int REQUEST_ENABLE_BT = 1;
 
     @Override

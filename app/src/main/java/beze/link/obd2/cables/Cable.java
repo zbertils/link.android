@@ -1,14 +1,10 @@
 package beze.link.obd2.cables;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 import android.util.Pair;
-import android.view.View;
 
-import java.net.Socket;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +17,7 @@ import beze.link.obd2.Protocols;
 
 public abstract class Cable
 {
-    private static final String TAG = Globals.TAG + "Cable";
+    private static final String TAG = Globals.TAG_BASE + "Cable";
 
     public class CableInfo
     {

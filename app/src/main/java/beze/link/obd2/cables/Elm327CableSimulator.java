@@ -12,7 +12,7 @@ import beze.link.obd2.Protocols;
 
 public class Elm327CableSimulator extends Elm327Cable
 {
-    private static final String TAG = Globals.TAG + "Elm327CableSimulator";
+    private static final String TAG = Globals.TAG_BASE + "Elm327CableSimulator";
 
     /// <summary>
     /// True if the simulator should return trouble codes and false otherwise. The default is true.

@@ -1,27 +1,19 @@
 package beze.link.obd2;
 
-import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.widget.Toast;
 
-import org.json.JSONObject;
-
-import java.lang.reflect.Parameter;
 import java.nio.ByteBuffer;
-import java.text.MessageFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
 import beze.link.Globals;
-import beze.link.R;
 import beze.link.util.MathStringEngine;
 
 public class ParameterIdentification {
 
-    private static final String TAG = Globals.TAG + "ParameterIdentification";
+    private static final String TAG = Globals.TAG_BASE + "ParameterIdentification";
 
     public static class ResponseByteOffsets
     {

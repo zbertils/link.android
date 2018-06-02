@@ -1,7 +1,7 @@
 package beze.link.util;
 
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
@@ -12,13 +12,10 @@ import beze.link.Globals;
 import beze.link.R;
 import beze.link.obd2.ParameterIdentification;
 import beze.link.obd2.cables.Cable;
-import beze.link.obd2.cables.Elm327Cable;
-
-import static beze.link.Globals.dataFragmentAdapter;
 
 public class UpdatePidsWorker extends WorkerThread
 {
-    private final static String TAG = Globals.TAG + "UpdatePidsWorker";
+    private final static String TAG = Globals.TAG_BASE + "UpdatePidsWorker";
 
     public UpdatePidsWorker(Cable obdCable, List<ParameterIdentification> pids, List<Pair<Double, ParameterIdentification>> decodedValues)
     {
@@ -45,22 +42,6 @@ public class UpdatePidsWorker extends WorkerThread
                         {
                             double value = pid.Unpack(data);
                             pid.setLastDecodedValue(value);
-
-//                            // if trying to log to file and the concurrent queue is available then do so
-//                            // TODO
-//                            if (Properties.Settings.Default.LogToFile)
-//                            {
-//                                if (decodedValues != null)
-//                                {
-//                                    //        decodedValues.Add(new Tuple<double, ParameterIdentification>(value, pid));
-//                                    // FIXME
-//                                }
-//                                else if (decodedValues == null)
-//                                {
-//                                    //        Diagnostics.DiagnosticLogger.Log("Trying to save a decoded value onto concurrent queue that is null!");
-//                                    Log.i(TAG, "doWork: trying to save a decoded value onto list that is null!");
-//                                }
-//                            }
                         }
                         else
                         {
@@ -88,10 +69,16 @@ public class UpdatePidsWorker extends WorkerThread
                     // check if the cable connection is still good
                     if (Globals.cable.NeedsReconnect())
                     {
-                        Globals.cable.Close();
-                        Globals.cable = null;
-                        Toast.makeText(Globals.appContext, "ELM327 device stopped responding", Toast.LENGTH_LONG).show();
-                        stopWork = true;
+                        Toast.makeText(Globals.appContext, "ELM327 device not responding\nAttempting reconnect", Toast.LENGTH_LONG).show();
+                        Globals.disconnectCable();
+                        Globals.connectCable(Globals.appState.LastConnectedDeviceName, null);
+
+                        if (!Globals.cable.IsInitialized() || !Globals.cable.IsOpen())
+                        {
+                            Log.e(TAG, "Could not reconnect to device " + Globals.appState.LastConnectedDeviceName);
+                            stop();
+                            Toast.makeText(Globals.appContext, "Could not auto reconnect device\nTry unplugging the device", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
             }

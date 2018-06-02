@@ -2,11 +2,12 @@ package beze.link;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.support.design.widget.Snackbar;
+import android.content.SharedPreferences;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -20,17 +21,22 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import beze.link.obd2.ParameterIdentification;
 import beze.link.obd2.cables.Cable;
+import beze.link.obd2.cables.Elm327Cable;
 import beze.link.obd2.cables.Elm327CableSimulator;
+import beze.link.obd2.cables.IConnectionCallback;
 import beze.link.ui.DataRecyclerViewAdapter;
 import beze.link.util.UpdatePidsWorker;
 
 public class Globals {
 
-    public static final String TAG = "link.dev.";
+    public static final String TAG_BASE = "link.";
+    public static final String TAG = TAG_BASE + "Globals";
     private static final Double pidsJsonFileVersion = 1.0;
+    public static final String SimulatedCableName = "SIMULATED CABLE";
 
     public static Context appContext;
     public static Cable cable;
@@ -75,7 +81,7 @@ public class Globals {
             jsonStr = new String(buffer, "UTF-8");
         }
         catch (Exception ex) {
-            Log.e(TAG, "loadPids: could not read pids.json");
+            Log.e(TAG_BASE, "loadPids: could not read pids.json");
             ex.printStackTrace();
             return false;
         }
@@ -87,7 +93,7 @@ public class Globals {
 
             // TODO: check the version against the current and do something about it...
             if (version != pidsJsonFileVersion) {
-                Log.w(TAG, String.format("loadPids: version does not match expected version, found %f expected %f", version, pidsJsonFileVersion));
+                Log.w(TAG_BASE, String.format("loadPids: version does not match expected version, found %f expected %f", version, pidsJsonFileVersion));
             }
 
             // get the array of pids and parse them into ParameterIdentification objects
@@ -101,7 +107,7 @@ public class Globals {
 
         }
         catch (Exception ex) {
-            Log.e(TAG, "loadPids: could not parse pids.json");
+            Log.e(TAG_BASE, "loadPids: could not parse pids.json");
             ex.printStackTrace();
             return false;
         }
@@ -120,7 +126,7 @@ public class Globals {
             jsonStr = new String(buffer, "UTF-8");
         }
         catch (Exception ex) {
-            Log.e(TAG, "loadDtcDescriptions: could not read dtcs.json");
+            Log.e(TAG_BASE, "loadDtcDescriptions: could not read dtcs.json");
             ex.printStackTrace();
             return false;
         }
@@ -168,7 +174,7 @@ public class Globals {
 
         }
         catch (Exception ex) {
-            Log.e(TAG, "loadDtcDescriptions: could not parse dtcs.json");
+            Log.e(TAG_BASE, "loadDtcDescriptions: could not parse dtcs.json");
             ex.printStackTrace();
             return false;
         }
@@ -187,7 +193,7 @@ public class Globals {
             jsonStr = new String(buffer, "UTF-8");
         }
         catch (Exception ex) {
-            Log.e(TAG, "loadMakes: could not read makes.json");
+            Log.e(TAG_BASE, "loadMakes: could not read makes.json");
             ex.printStackTrace();
             return false;
         }
@@ -207,7 +213,7 @@ public class Globals {
             }
         }
         catch (Exception ex) {
-            Log.e(TAG, "loadMakes: could not parse makes.json");
+            Log.e(TAG_BASE, "loadMakes: could not parse makes.json");
             ex.printStackTrace();
             return false;
         }
@@ -262,5 +268,84 @@ public class Globals {
                 Toast.makeText(Globals.appContext, string, length).show();
             }
         });
+    }
+
+    public static void disconnectCable()
+    {
+        Log.d(TAG, "disconnectCable()");
+
+        if (Globals.cable != null)
+        {
+            Globals.cable.Close();
+            Globals.cable = null;
+        }
+    }
+
+    public static void connectCable(String deviceName, IConnectionCallback callback)
+    {
+        Log.d(TAG, "connectCable(" + deviceName + ", " + callback.toString() + ")");
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mainActivity.getApplicationContext());
+        boolean simulateData = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SIMULATE_DATA, true);
+        if (!simulateData)
+        {
+            // find the BluetoothDevice object associated with the last connect
+            BluetoothDevice selectedDevice = null;
+            Set<BluetoothDevice> pairedDevices = Globals.btAdapter.getBondedDevices();
+            for (BluetoothDevice device : pairedDevices)
+            {
+                String name = device.getName();
+                if (name.equals(deviceName))
+                {
+                    selectedDevice = device;
+                    Log.d(TAG_BASE, "connectCable: selected device was " + device.getName());
+                    break;
+                }
+            }
+
+            if (selectedDevice != null)
+            {
+                int attemptCount = 0;
+
+                do
+                {
+                    try
+                    {
+                        // close any previously existing connection
+                        if (Globals.cable != null)
+                        {
+                            Globals.cable.Close();
+                            Globals.cable = null;
+                        }
+
+                        Globals.cable = new Elm327Cable(selectedDevice, callback);
+                        if (Globals.cable.IsInitialized())
+                        {
+                            Globals.appState.LastConnectedDeviceName = selectedDevice.getName();
+                            break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.e(TAG_BASE, "connectCable: could not connect to remote device (attempt " + (attemptCount + 1), ex);
+                        ex.printStackTrace();
+
+                        if (Globals.cable != null)
+                        {
+                            Globals.cable.Close();
+                            Globals.cable = null;
+                        }
+                    }
+                    attemptCount++;
+                } while (!Globals.cable.IsInitialized() && attemptCount < 3);
+            }
+        }
+
+        // simulated data, create and "connect" the device
+        else
+        {
+            Globals.appState.LastConnectedDeviceName = SimulatedCableName;
+            Globals.connectSimulatedCable();
+        }
+
     }
 }

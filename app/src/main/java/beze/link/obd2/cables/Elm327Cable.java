@@ -24,7 +24,7 @@ import beze.link.obd2.specialpids.ModeA;
 
 public class Elm327Cable extends Cable
 {
-    private static final String TAG = Globals.TAG + "Elm327Cable";
+    private static final String TAG = Globals.TAG_BASE + "Elm327Cable";
 
     protected Mode3 mode3 = new Mode3();
     protected Mode4 mode4 = new Mode4();

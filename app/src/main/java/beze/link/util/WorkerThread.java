@@ -6,7 +6,7 @@ import beze.link.Globals;
 
 public abstract class WorkerThread implements Runnable
 {
-    private static final String TAG = Globals.TAG + "WorkerThread";
+    private static final String TAG = Globals.TAG_BASE + "WorkerThread";
     private Thread workerThread;
     protected boolean stopWork;
 

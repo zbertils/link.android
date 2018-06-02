@@ -6,13 +6,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
-import junit.runner.Version;
-
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -21,7 +15,7 @@ import java.util.List;
 
 public class AppState {
 
-    private static final String TAG = Globals.TAG + "AppState";
+    private static final String TAG = Globals.TAG_BASE + "AppState";
     private static final String appStateFileName = "appstate.json";
 
     public String Version = "1.0";
