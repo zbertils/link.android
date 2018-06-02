@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // reset so screen can fall asleep again if not the data fragment
         WindowManager windowManager = getWindowManager();
-        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         switch (id) {
             case R.id.nav_home:
