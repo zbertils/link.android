@@ -31,7 +31,8 @@ import beze.link.obd2.cables.IConnectionCallback;
 import beze.link.ui.DataRecyclerViewAdapter;
 import beze.link.util.UpdatePidsWorker;
 
-public class Globals {
+public class Globals
+{
 
     public static final String TAG_BASE = "link.";
     public static final String TAG = TAG_BASE + "Globals";
@@ -47,12 +48,13 @@ public class Globals {
     public static RecyclerView.Adapter<DataRecyclerViewAdapter.ViewHolder> dataFragmentAdapter = null;
     public static UpdatePidsWorker updateWorker = new UpdatePidsWorker(Globals.cable, Globals.shownPids, null);
     public static MainActivity mainActivity;
-//    public static boolean restartWorker = false;
+    //    public static boolean restartWorker = false;
     public static BluetoothAdapter btAdapter;
     public static AppState appState;
 
 
-    public static class Preferences {
+    public static class Preferences
+    {
         public static final String KEY_PREF_RECONNECT_AT_START = "pref_reconnect";
         public static final String KEY_PREF_SIMULATE_DATA = "pref_simulate_data";
         public static final String KEY_PREF_LOG_PIDS = "pref_log_pids";
@@ -61,7 +63,8 @@ public class Globals {
     }
 
 
-    public static String getStackTraceAndMessage(Exception ex) {
+    public static String getStackTraceAndMessage(Exception ex)
+    {
         StringWriter exWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(exWriter);
         ex.printStackTrace(printWriter);
@@ -70,9 +73,11 @@ public class Globals {
     }
 
 
-    public static boolean loadPids(Activity main) {
+    public static boolean loadPids(Activity main)
+    {
         String jsonStr = "";
-        try {
+        try
+        {
             InputStream stream = main.getAssets().open("pids.json");
             int size = stream.available();
             byte[] buffer = new byte[size];
@@ -80,19 +85,22 @@ public class Globals {
             stream.close();
             jsonStr = new String(buffer, "UTF-8");
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             Log.e(TAG, "loadPids: could not read pids.json");
             ex.printStackTrace();
             return false;
         }
 
-        try {
+        try
+        {
             Globals.allPids = new ArrayList<ParameterIdentification>();
             JSONObject json = new JSONObject(jsonStr);
             Double version = json.getDouble("version");
 
             // TODO: check the version against the current and do something about it...
-            if (version != pidsJsonFileVersion) {
+            if (version != pidsJsonFileVersion)
+            {
                 Log.w(TAG, String.format("loadPids: version does not match expected version, found %f expected %f", version, pidsJsonFileVersion));
             }
 
@@ -106,7 +114,8 @@ public class Globals {
             }
 
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             Log.e(TAG, "loadPids: could not parse pids.json");
             ex.printStackTrace();
             return false;
@@ -115,9 +124,11 @@ public class Globals {
         return true;
     }
 
-    public static boolean loadDtcDescriptions(Activity main) {
+    public static boolean loadDtcDescriptions(Activity main)
+    {
         String jsonStr = "";
-        try {
+        try
+        {
             InputStream stream = main.getAssets().open("dtcs.json");
             int size = stream.available();
             byte[] buffer = new byte[size];
@@ -125,13 +136,15 @@ public class Globals {
             stream.close();
             jsonStr = new String(buffer, "UTF-8");
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             Log.e(TAG, "loadDtcDescriptions: could not read dtcs.json");
             ex.printStackTrace();
             return false;
         }
 
-        try {
+        try
+        {
             Globals.dtcDescriptions = new HashMap<String, String>();
             JSONObject json = new JSONObject(jsonStr);
             JSONObject pCodes = json.getJSONObject("P Codes");
@@ -173,7 +186,8 @@ public class Globals {
             }
 
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             Log.e(TAG, "loadDtcDescriptions: could not parse dtcs.json");
             ex.printStackTrace();
             return false;
@@ -182,9 +196,11 @@ public class Globals {
         return true;
     }
 
-    public static boolean loadMakes(Activity main) {
+    public static boolean loadMakes(Activity main)
+    {
         String jsonStr = "";
-        try {
+        try
+        {
             InputStream stream = main.getAssets().open("makes.json");
             int size = stream.available();
             byte[] buffer = new byte[size];
@@ -192,13 +208,15 @@ public class Globals {
             stream.close();
             jsonStr = new String(buffer, "UTF-8");
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             Log.e(TAG, "loadMakes: could not read makes.json");
             ex.printStackTrace();
             return false;
         }
 
-        try {
+        try
+        {
             Globals.makes = new HashMap<String, String>();
             JSONObject json = new JSONObject(jsonStr);
             JSONObject wmis = json.getJSONObject("WMI");
@@ -212,7 +230,8 @@ public class Globals {
                 Globals.makes.put(key, make);
             }
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             Log.e(TAG, "loadMakes: could not parse makes.json");
             ex.printStackTrace();
             return false;
@@ -224,8 +243,10 @@ public class Globals {
     /**
      * Stops the PID update worker safely and gracefully
      */
-    public static void stopPidUpdateWorker() {
-        if (Globals.updateWorker != null && Globals.updateWorker.isAlive()) {
+    public static void stopPidUpdateWorker()
+    {
+        if (Globals.updateWorker != null && Globals.updateWorker.isAlive())
+        {
             Globals.updateWorker.stop();
             Globals.updateWorker.join();
         }
@@ -236,8 +257,10 @@ public class Globals {
     /**
      * Starts the PID update worker if the cable allows for it
      */
-    public static void startPidUpdateWorker() {
-        if (Globals.cable != null && Globals.cable.IsOpen()) {
+    public static void startPidUpdateWorker()
+    {
+        if (Globals.cable != null && Globals.cable.IsOpen())
+        {
             Globals.updateWorker = new UpdatePidsWorker(Globals.cable, Globals.shownPids, null);
             Globals.updateWorker.start();
         }
@@ -246,14 +269,17 @@ public class Globals {
     /**
      * Stops and starts the PID update worker safely and gracefully, if possible
      */
-    public static void restartPidUpdateWorker() {
+    public static void restartPidUpdateWorker()
+    {
         stopPidUpdateWorker();
         startPidUpdateWorker();
     }
 
-    public static void connectSimulatedCable() {
+    public static void connectSimulatedCable()
+    {
         Globals.cable = new Elm327CableSimulator();
-        if (Globals.cable.IsInitialized()) {
+        if (Globals.cable.IsInitialized())
+        {
             Globals.updateWorker.SetCable(Globals.cable);
         }
     }

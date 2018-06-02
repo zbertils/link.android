@@ -51,10 +51,13 @@ public class UpdatePidsWorker extends WorkerThread
 
                         // if this is not null then tell the screen to update,
                         // this should be set around the time the thread starts
-                        if (Globals.dataFragmentAdapter != null) {
-                            Globals.mainActivity.runOnUiThread(new Runnable() {
+                        if (Globals.dataFragmentAdapter != null)
+                        {
+                            Globals.mainActivity.runOnUiThread(new Runnable()
+                            {
                                 @Override
-                                public void run() {
+                                public void run()
+                                {
                                     Globals.dataFragmentAdapter.notifyDataSetChanged();
                                 }
                             });
