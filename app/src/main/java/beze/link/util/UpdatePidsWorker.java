@@ -72,7 +72,12 @@ public class UpdatePidsWorker extends WorkerThread
                     // check if the cable connection is still good
                     if (Globals.cable.NeedsReconnect())
                     {
-                        Toast.makeText(Globals.appContext, "ELM327 device not responding\nAttempting reconnect", Toast.LENGTH_LONG).show();
+                        Toast.makeText(Globals.appContext, "", Toast.LENGTH_LONG).show();
+                        Snackbar.make(Globals.mainActivity.findViewById(R.id.nav_view),
+                                "ELM327 device not responding\nAttempting reconnect",
+                                Snackbar.LENGTH_LONG).setAction("Action", null)
+                                .show();
+
                         Globals.disconnectCable();
                         Globals.connectCable(Globals.appState.LastConnectedDeviceName, null);
 
@@ -80,7 +85,10 @@ public class UpdatePidsWorker extends WorkerThread
                         {
                             Log.e(TAG, "Could not reconnect to device " + Globals.appState.LastConnectedDeviceName);
                             stop();
-                            Toast.makeText(Globals.appContext, "Could not auto reconnect device\nTry unplugging the device", Toast.LENGTH_LONG).show();
+                            Snackbar.make(Globals.mainActivity.findViewById(R.id.nav_view),
+                                    "Could not auto reconnect device\nTry unplugging the device",
+                                    Snackbar.LENGTH_LONG).setAction("Action", null)
+                                    .show();
                         }
                     }
                 }
