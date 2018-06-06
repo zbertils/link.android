@@ -2,14 +2,15 @@
 An application for reading, logging, and visualizing OBD data using bluetooth ELM327 based protocols.
 
 # Prerequisites
-Link has only been tested on Android 6.0 and newer. Support for older android versions is limited, and anything older than 4.1 should be considered unsupported.
+Link has only been tested on Android 6.0 and newer. Support for older android versions is limited, and anything older than 4.1 should be considered unsupported. The minimum supported version in the Play Store version is 5.0.
 
 If developing, you will need Android Studio with the ability to simulate an android device, or have a real android phone to do live testing with.
 
 # Using Link
 
 ## Getting Started
-Currently Link android is not on the Play Store. The easiest way to install it is with Android Studio after building for your phone. Future releases may come packaged with the apk to install directly to your phone, but currently there is no support for it.
+The easiest way to install it is from the Play Store. https://play.google.com/store/apps/details?id=beze.link
+Future releases may come packaged with the apk to install directly to your phone, but currently there is no support for it. If you want to build the APK manually, you can, and install it that way. This would be useful mostly for developers.
 
 ## Viewing Data
 Link will remember last connected devices, and automatically connect to them. When the app starts, it will be on the connect page and attempt connecting. If it is your first time connecting to an ELM327 device, you should select your previously paired device and tap Connect. When successfully connected, the Connect button will turn green and say "Disconnect".
