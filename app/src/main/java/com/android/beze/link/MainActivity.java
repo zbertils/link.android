@@ -1,4 +1,4 @@
-package beze.link;
+package com.android.beze.link;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -27,6 +27,9 @@ import beze.link.fragments.HomeFragment;
 import beze.link.fragments.PidsFragment;
 import beze.link.fragments.TroubleCodesFragment;
 import beze.link.obd2.ParameterIdentification;
+import beze.link.Globals;
+import beze.link.AppState;
+import beze.link.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -215,8 +218,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragment = new DataFragment();
                 ((DataFragment)fragment).setData(Globals.shownPids);
 
-                // prevent the screen from falling asleep on the data fragment
-                this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                // prevent the screen from falling asleep on the data fragment if the user specified to
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                boolean keepScreenAwake = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_PREVENT_SCREEN_SLEEP, true);
+                if (keepScreenAwake)
+                {
+                    this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                }
 
                 break;
             case R.id.nav_trouble_codes:

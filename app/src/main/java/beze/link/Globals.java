@@ -30,6 +30,7 @@ import beze.link.obd2.cables.Elm327CableSimulator;
 import beze.link.obd2.cables.IConnectionCallback;
 import beze.link.ui.DataRecyclerViewAdapter;
 import beze.link.util.UpdatePidsWorker;
+import com.android.beze.link.*;
 
 public class Globals
 {
@@ -59,6 +60,7 @@ public class Globals
         public static final String KEY_PREF_SIMULATE_DATA = "pref_simulate_data";
         public static final String KEY_PREF_LOG_PIDS = "pref_log_pids";
         public static final String KEY_PREF_SHOW_PID_STREAM_VALUES = "pref_show_pid_stream_values";
+        public static final String KEY_PREF_PREVENT_SCREEN_SLEEP = "pref_prevent_screen_sleep";
 
     }
 

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import beze.link.Globals;
-import beze.link.R;
+import com.android.beze.link.R;
 import beze.link.obd2.ParameterIdentification;
 
 public class PidsRecyclerViewAdapter extends RecyclerView.Adapter<PidsRecyclerViewAdapter.ViewHolder> implements View.OnClickListener {

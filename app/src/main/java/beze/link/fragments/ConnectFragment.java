@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import beze.link.Globals;
-import beze.link.R;
+import com.android.beze.link.R;
 import beze.link.obd2.Protocols;
 import beze.link.obd2.cables.Elm327Cable;
 import beze.link.obd2.cables.IConnectionCallback;

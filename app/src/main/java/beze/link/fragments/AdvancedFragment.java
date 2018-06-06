@@ -15,7 +15,7 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 import beze.link.Globals;
-import beze.link.R;
+import com.android.beze.link.R;
 import beze.link.obd2.Protocols;
 
 

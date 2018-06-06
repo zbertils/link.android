@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import beze.link.Globals;
-import beze.link.R;
+import com.android.beze.link.R;
 import beze.link.obd2.ParameterIdentification;
 import beze.link.ui.DataRecyclerViewAdapter;
 

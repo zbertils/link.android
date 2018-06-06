@@ -21,6 +21,12 @@
             android:key="pref_show_pid_stream_values"
             android:summary="Show the ELM327 encoding under each PID in the Data window"
             android:title="Show PID stream values" />
+
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="pref_prevent_screen_sleep"
+            android:summary="Prevent the screen from sleeping when viewing live data, does not apply to other views"
+            android:title="Keep screen awake" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Advanced">
 
