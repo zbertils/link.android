@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ConnectBluetooth">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:text="Select available bluetooth device"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small" />
+
+        <Spinner
+            android:id="@+id/spinnerBtDevices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:layout_weight="1"
+            android:entries="@android:string/httpErrorUnsupportedScheme" />
+
+        <Button
+            android:id="@+id/btnConnect"
+            android:layout_width="match_parent"
+            android:layout_height="86dp"
+            android:layout_margin="15dp"
+            android:layout_weight="1"
+            android:onClick="onClick"
+            android:text="Connect" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:layout_weight="1"
+                android:text="Device Version: "
+                android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small" />
+
+            <TextView
+                android:id="@+id/textViewConnectDeviceVersion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:layout_weight="1"
+                android:text="NA"
+                android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:layout_weight="1"
+                android:text="Protocol: "
+                android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small" />
+
+            <TextView
+                android:id="@+id/textViewConnectProtocol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:layout_weight="1"
+                android:text="NA"
+                android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:layout_weight="1"
+                android:text="Status:"
+                android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small" />
+
+            <TextView
+                android:id="@+id/textViewConnectStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:layout_weight="1"
+                android:text="Disconnected"
+                android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textViewConnectDebug"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:layout_weight="1"
+            android:text="DEBUG OUTPUT"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small"
+            android:visibility="invisible" />
+
+    </LinearLayout>
+
+</FrameLayout>
