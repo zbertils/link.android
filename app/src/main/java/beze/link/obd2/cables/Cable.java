@@ -13,6 +13,7 @@ import beze.link.Globals;
 import beze.link.obd2.DiagnosticTroubleCode;
 import beze.link.obd2.ParameterIdentification;
 import beze.link.obd2.Protocols;
+import beze.link.obd2.cables.connections.CableConnection;
 
 
 public abstract class Cable
@@ -76,7 +77,7 @@ public abstract class Cable
 
     protected String lastFrameHeader = "";
     protected BluetoothDevice btDevice;
-    protected BluetoothSocket cableConnection;
+    protected CableConnection cableConnection;
     public CableInfo info = null;
     protected boolean needsReconnect;
 
@@ -84,20 +85,13 @@ public abstract class Cable
     /// Creates a new instance of Cable.
     /// </summary>
     /// <param name="timeoutMilliseconds"> The timeout to give </param>
-    protected Cable(BluetoothDevice btDevice)
+    protected Cable()
     {
         this.cableConnection = null;
-        this.btDevice = btDevice;
+        this.btDevice = null;
         BytesSent = 0;
         BytesReceived = 0;
         needsReconnect = false;
-    }
-
-    /// <summary>
-    /// The constructor used by simulated cables and setting defaults for the base class.
-    /// </summary>
-    protected Cable()
-    {
         CableType = Type.PassThrough; // default to being a pass-through cable
         TroubleCodeDescriptions = new ArrayList<Pair>();
     }

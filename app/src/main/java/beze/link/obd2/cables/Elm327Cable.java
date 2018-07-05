@@ -35,6 +35,8 @@ public class Elm327Cable extends Cable
 
     protected boolean needsReconnect = false;
 
+    protected IConnectionCallback callback;
+
     /// <summary>
     /// Constructor for simulated cables.
     /// </summary>
@@ -49,35 +51,18 @@ public class Elm327Cable extends Cable
     /// </summary>
     /// <param name="deviceName"> The port the cable is connected to. </param>
     /// <param name="timeoutMilliseconds"> The timeout to use for communication with the cable. </param>
-    public Elm327Cable(BluetoothDevice btDevice, IConnectionCallback callback)
+    public Elm327Cable(IConnectionCallback callback)
     {
-        super(btDevice);
-
+        super();
+        this.callback = callback;
         mOpen = false;
         mInitialized = false;
+    }
 
+    protected boolean initialize()
+    {
         // default cable info
         info = new CableInfo();
-
-        try
-        {
-            UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-            callback.ConnectionCallbackAction("Creating RF socket");
-            cableConnection = btDevice.createRfcommSocketToServiceRecord(uuid);
-            callback.ConnectionCallbackAction("Connecting socket");
-            cableConnection.connect();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-            callback.ConnectionCallbackAction("Could not connect to " + btDevice.getName());
-            info.Description = "Could not connect to " + btDevice.getName();
-            info.Version = "Unknown";
-            return; // stop here, there was an issue
-        }
-
-        CableType = Type.Elm327;
-        mOpen = true;
 
         Log.i(TAG, "Elm327Cable: discovering ELM version");
         callback.ConnectionCallbackAction("Discovering ELM version");
@@ -108,7 +93,7 @@ public class Elm327Cable extends Cable
             {
                 info.Description = "Could not turn echo off...";
                 Log.e(TAG, "Elm327Cable: could not turn echo off");
-                return;
+                return false;
             }
 
             info.EchoOff = true;
@@ -119,8 +104,8 @@ public class Elm327Cable extends Cable
             if (!response.contains(Protocols.Elm327.Responses.OK))
             {
                 info.Description = "Could not set maximum timeout";
-                Log.e(TAG, "Elm327Cable: could not set maximum timeout");
-                return;
+                Log.w(TAG, "Elm327Cable: could not set maximum timeout");
+                //return false;
             }
 
             callback.ConnectionCallbackAction("Setting headers to off");
@@ -129,8 +114,8 @@ public class Elm327Cable extends Cable
             if (!response.contains(Protocols.Elm327.Responses.OK))
             {
                 info.Description = "Could not turn headers off";
-                Log.e(TAG, "Elm327Cable: could not turn headers off");
-                return;
+                Log.w(TAG, "Elm327Cable: could not turn headers off");
+                //return false;
             }
 
             callback.ConnectionCallbackAction("Turning auto protocol on");
@@ -140,16 +125,19 @@ public class Elm327Cable extends Cable
             {
                 info.Description = "Could not set auto protocol";
                 Log.e(TAG, "Elm327Cable: could not set protocol to Auto");
-                return;
+                return false;
             }
 
             callback.ConnectionCallbackAction("Forcing search for existing protocols");
             Log.i(TAG, "Elm327Cable: forcing a search for existing protocols");
+
+            // purposely do it twice, some times the first one needs a little time to find the protocol
+            SendCommand(Protocols.Elm327.ForceProtocolSearch, 3000);
             response = SendCommand(Protocols.Elm327.ForceProtocolSearch, 3000);
             if (response == null || response.isEmpty())
             {
                 Log.e(TAG, "Elm327Cable: could not force an auto protocol search");
-                return;
+                return false;
             }
 
             response = SendCommand(Protocols.Elm327.DisplayProtocol, 1500);
@@ -162,8 +150,8 @@ public class Elm327Cable extends Cable
             if (!response.contains(Protocols.Elm327.Responses.Auto))
             {
                 info.Description = "Displayed protocol did not mention auto";
-                Log.e(TAG, "Elm327Cable: displayed protocol did not mention auto");
-                return;
+                Log.w(TAG, "Elm327Cable: displayed protocol did not mention auto");
+                //return false;
             }
 
             Protocol = Protocols.NameToProtocol(chosenProtocol);
@@ -180,6 +168,8 @@ public class Elm327Cable extends Cable
         else {
             callback.ConnectionCallbackAction("Could not reset ELM device, received:\r\n" + response.replace(Protocols.Elm327.EndOfLine, "\r\n"));
         }
+
+        return true;
     }
 
     protected String readline() throws TimeoutException {
@@ -204,15 +194,14 @@ public class Elm327Cable extends Cable
 
         try
         {
-            InputStream input = cableConnection.getInputStream();
             boolean endReached = false;
 
             do {
                 // check if there is anything to read in the first place
-                while (input.available() > 0) {
+                while (cableConnection.available() > 0) {
 
                     // read the next amount of data and make it a string
-                    int length = input.read(buffer, 0, 256);
+                    int length = cableConnection.read(buffer);
                     if (length > 0) {
                         String current = new String(buffer, 0, length);
 
@@ -342,17 +331,14 @@ public class Elm327Cable extends Cable
             Log.i(TAG, "Send: sending data " + data);
             try {
                 data += Protocols.Elm327.EndOfLine;
-                cableConnection.getOutputStream().write(data.getBytes());
+                cableConnection.write(data.getBytes());
                 BytesSent += data.length();
                 return true;
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
                 Log.e(TAG, "Send: error sending data \"" + data + "\"", ex);
                 needsReconnect = true;
-            }
-            catch (Exception ex) {
-                Log.e(TAG, "Send: error sending data \"" + data + "\"", ex);
             }
         }
 

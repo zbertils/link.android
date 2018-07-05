@@ -264,7 +264,7 @@ public class ParameterIdentification {
                     responseValueStrings[i] = Integer.toString(values[startIndex + i]);
                 }
 
-                String responseExpression = String.format(this.FormulaString, responseValueStrings);
+                String responseExpression = String.format(this.FormulaString, (Object[])responseValueStrings);
                 return MathStringEngine.eval(responseExpression);
             }
         }

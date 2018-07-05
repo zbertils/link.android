@@ -6,9 +6,19 @@
     tools:context=".ConnectWifi">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Connect WiFi Tab" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Coming Soon!"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+    </LinearLayout>
 
 </FrameLayout>

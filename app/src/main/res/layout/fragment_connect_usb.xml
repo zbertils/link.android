@@ -6,9 +6,17 @@
     tools:context=".ConnectUSB">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Connect USB Tab" />
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Coming Soon!"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+    </LinearLayout>
 
 </FrameLayout>

@@ -25,6 +25,7 @@ import java.util.Set;
 
 import beze.link.obd2.ParameterIdentification;
 import beze.link.obd2.cables.Cable;
+import beze.link.obd2.cables.Elm327BluetoothCable;
 import beze.link.obd2.cables.Elm327Cable;
 import beze.link.obd2.cables.Elm327CableSimulator;
 import beze.link.obd2.cables.IConnectionCallback;
@@ -35,7 +36,7 @@ import com.android.beze.link.*;
 public class Globals
 {
 
-    public static final String TAG_BASE = "link.";
+    public static final String TAG_BASE = "";//"beze.";
     public static final String TAG = TAG_BASE + "Globals";
     private static final Double pidsJsonFileVersion = 1.0;
     public static final String SimulatedCableName = "SIMULATED CABLE";
@@ -345,7 +346,7 @@ public class Globals
                             Globals.cable = null;
                         }
 
-                        Globals.cable = new Elm327Cable(selectedDevice, callback);
+                        Globals.cable = new Elm327BluetoothCable(selectedDevice, callback);
                         if (Globals.cable.IsInitialized())
                         {
                             Globals.appState.LastConnectedDeviceName = selectedDevice.getName();
