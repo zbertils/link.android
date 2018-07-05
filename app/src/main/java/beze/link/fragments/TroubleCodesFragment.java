@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import beze.link.ui.DtcRecyclerViewAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TroubleCodesFragment extends Fragment implements View.OnClickListener{
+public class TroubleCodesFragment extends Fragment implements View.OnClickListener, Runnable{
 
     private static final String TAG = Globals.TAG_BASE + "TroubleCodesFragment";
 
@@ -66,24 +67,63 @@ public class TroubleCodesFragment extends Fragment implements View.OnClickListen
         // Required empty public constructor
     }
 
+    @Override
+    public void run()
+    {
+        if (Globals.cable != null && Globals.cable.IsInitialized())
+        {
+            final ProgressBar progressBar = (ProgressBar) Globals.mainActivity.findViewById(R.id.progressBar);
+            Globals.mainActivity.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+            });
+
+            try
+            {
+                Thread.sleep(5000);
+            }
+            catch (Exception e)
+            {
+            }
+
+
+            currentCodes.addAll(Globals.cable.RequestTroubleCodes());
+            if (currentCodes.size() == 0)
+            {
+                Toast.makeText(Globals.appContext, "No trouble codes present!", Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                Globals.mainActivity.runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        mCurrentDtcAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+
+            Globals.mainActivity.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        }
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_trouble_codes, container, false);
-
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-                if (Globals.cable != null && Globals.cable.IsInitialized()) {
-                    currentCodes.addAll(Globals.cable.RequestTroubleCodes());
-
-                    if (currentCodes.size() == 0) {
-                        Toast.makeText(Globals.appContext, "No trouble codes present!", Toast.LENGTH_LONG).show();
-                    }
-                }
-//            }
-//        }).start();
 
         // setup everything needed to display current trouble codes
         mCurrentDtcRecyclerView = view.findViewById(R.id.currentDtcRecyclerView);
@@ -96,6 +136,9 @@ public class TroubleCodesFragment extends Fragment implements View.OnClickListen
         // set managers for recycler view
         mCurrentDtcRecyclerView.setLayoutManager(mCurrentDtcLayoutManager);
         mCurrentDtcRecyclerView.setAdapter(mCurrentDtcAdapter);
+
+        Thread connect = new Thread(this);
+        connect.start();
 
         return view;
     }
