@@ -40,10 +40,7 @@ public class HomeFragment extends Fragment implements Runnable
             }
         });
 
-        try {Thread.sleep(5000);} catch (Exception e){}
-
-        if (Globals.cable != null &&
-                Globals.cable.IsInitialized())
+        if (Globals.cable != null && Globals.cable.IsInitialized())
         {
             String vin = Globals.cable.RequestVIN();
             final Vehicle vehicle = new Vehicle(vin, Globals.makes);
