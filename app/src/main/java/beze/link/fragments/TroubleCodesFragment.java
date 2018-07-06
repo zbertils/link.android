@@ -83,27 +83,28 @@ public class TroubleCodesFragment extends Fragment implements View.OnClickListen
             });
 
             currentCodes.addAll(Globals.cable.RequestTroubleCodes());
-            if (currentCodes.size() == 0)
-            {
-                Toast.makeText(Globals.appContext, "No trouble codes present!", Toast.LENGTH_LONG).show();
-            }
-            else
-            {
-                Globals.mainActivity.runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        mCurrentDtcAdapter.notifyDataSetChanged();
-                    }
-                });
-            }
 
             Globals.mainActivity.runOnUiThread(new Runnable()
             {
                 @Override
                 public void run()
                 {
+                    if (currentCodes.size() == 0)
+                    {
+                        Toast.makeText(Globals.appContext, "No trouble codes present!", Toast.LENGTH_LONG).show();
+                    }
+                    else
+                    {
+                        Globals.mainActivity.runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                mCurrentDtcAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+
                     progressBar.setVisibility(View.GONE);
                 }
             });
@@ -128,8 +129,8 @@ public class TroubleCodesFragment extends Fragment implements View.OnClickListen
         mCurrentDtcRecyclerView.setLayoutManager(mCurrentDtcLayoutManager);
         mCurrentDtcRecyclerView.setAdapter(mCurrentDtcAdapter);
 
-        Thread connect = new Thread(this);
-        connect.start();
+        Thread thread = new Thread(this);
+        thread.start();
 
         return view;
     }
