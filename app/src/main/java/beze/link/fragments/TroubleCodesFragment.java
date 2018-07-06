@@ -72,7 +72,7 @@ public class TroubleCodesFragment extends Fragment implements View.OnClickListen
     {
         if (Globals.cable != null && Globals.cable.IsInitialized())
         {
-            final ProgressBar progressBar = (ProgressBar) Globals.mainActivity.findViewById(R.id.progressBar);
+            final ProgressBar progressBar = (ProgressBar) Globals.mainActivity.findViewById(R.id.dtcProgressBar);
             Globals.mainActivity.runOnUiThread(new Runnable()
             {
                 @Override
@@ -81,15 +81,6 @@ public class TroubleCodesFragment extends Fragment implements View.OnClickListen
                     progressBar.setVisibility(View.VISIBLE);
                 }
             });
-
-            try
-            {
-                Thread.sleep(5000);
-            }
-            catch (Exception e)
-            {
-            }
-
 
             currentCodes.addAll(Globals.cable.RequestTroubleCodes());
             if (currentCodes.size() == 0)
