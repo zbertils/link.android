@@ -55,9 +55,9 @@ public class AdvancedFragment extends Fragment implements View.OnClickListener {
         if (Globals.cable != null && Globals.cable.IsOpen()) {
 
             Globals.cable.Send(data);
-            String response = Globals.cable.Receive(2500);
+            String response = Globals.cable.Receive(10000);
 
-            if (response != null) {
+            if (response != null && !response.isEmpty()) {
                 response = response.replace(Protocols.Elm327.EndOfLine, "\r\n");
 
                 responseText.setText(response);

@@ -3,6 +3,7 @@ package beze.link.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,7 @@ import beze.link.obd2.Vehicle;
  */
 public class HomeFragment extends Fragment implements Runnable
 {
-
+    static final String TAG = Globals.TAG_BASE + "HomeFragment";
 
     public HomeFragment()
     {
@@ -42,27 +43,34 @@ public class HomeFragment extends Fragment implements Runnable
 
         if (Globals.cable != null && Globals.cable.IsInitialized())
         {
-            String vin = Globals.cable.RequestVIN();
-            final Vehicle vehicle = new Vehicle(vin, Globals.makes);
-
-            Globals.mainActivity.runOnUiThread(new Runnable()
+            try
             {
-                @Override
-                public void run()
+                String vin = Globals.cable.RequestVIN();
+                final Vehicle vehicle = new Vehicle(vin, Globals.makes);
+
+                Globals.mainActivity.runOnUiThread(new Runnable()
                 {
-                    progressBar.setVisibility(View.GONE);
+                    @Override
+                    public void run()
+                    {
+                        progressBar.setVisibility(View.GONE);
 
-                    TextView textViewVIN = (TextView) getActivity().findViewById(R.id.textViewVIN);
-                    TextView textViewYear = (TextView) getActivity().findViewById(R.id.textViewYear);
-                    TextView textViewManufacturer = (TextView) getActivity().findViewById(R.id.textViewManufacturer);
-                    TextView textViewModel = (TextView) getActivity().findViewById(R.id.textViewModel);
+                        TextView textViewVIN = (TextView) getActivity().findViewById(R.id.textViewVIN);
+                        TextView textViewYear = (TextView) getActivity().findViewById(R.id.textViewYear);
+                        TextView textViewManufacturer = (TextView) getActivity().findViewById(R.id.textViewManufacturer);
+                        TextView textViewModel = (TextView) getActivity().findViewById(R.id.textViewModel);
 
-                    textViewVIN.setText(vehicle.VIN);
-                    textViewYear.setText(Integer.toString(vehicle.Year));
-                    textViewManufacturer.setText(vehicle.Manufacturer);
-                    textViewModel.setText(vehicle.Model);
-                }
-            });
+                        textViewVIN.setText(vehicle.VIN);
+                        textViewYear.setText(Integer.toString(vehicle.Year));
+                        textViewManufacturer.setText(vehicle.Manufacturer);
+                        textViewModel.setText(vehicle.Model);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.e(TAG, "Could not get vehicle VIN info", ex);
+            }
         }
 
         Globals.mainActivity.runOnUiThread(new Runnable()

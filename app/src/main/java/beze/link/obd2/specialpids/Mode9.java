@@ -38,7 +38,7 @@ public class Mode9 extends ParameterIdentification
     @Override
     public String Pack()
     {
-        return String.format("%02X %02X", Mode, PID);
+        return String.format("%02X%02X", Mode, PID);
     }
 
     public String RequestVIN(Cable cable)

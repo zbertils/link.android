@@ -306,8 +306,9 @@ public class Globals
         if (Globals.cable != null)
         {
             Globals.cable.Close();
-            Globals.cable = null;
         }
+
+        Globals.cable = null;
     }
 
     public static void connectCable(String deviceName, IConnectionCallback callback)

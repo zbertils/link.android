@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.beze.link.BuildConfig;
 import com.android.beze.link.R;
 
 import java.util.ArrayList;
@@ -128,6 +129,12 @@ public class ConnectBluetoothFragment extends Fragment implements AdapterView.On
                         public void run()
                         {
                             Toast.makeText(Globals.appContext, "Connected to \"" + Globals.appState.LastConnectedDeviceName + "\" successfully!", Toast.LENGTH_LONG).show();
+
+                            if (Globals.cable.info != null)
+                            {
+                                TextView debugText = (TextView) getActivity().findViewById(R.id.textViewConnectDebug);
+                                debugText.setText(Globals.cable.info.Description);
+                            }
                             setConnectedState();
                         }
                     });
@@ -178,6 +185,17 @@ public class ConnectBluetoothFragment extends Fragment implements AdapterView.On
     public void onStart()
     {
         super.onStart();
+
+        // the debug text should be displayed if in debug build, and invisible otherwise
+        TextView debugText = (TextView) getActivity().findViewById(R.id.textViewConnectDebug);
+        if (BuildConfig.DEBUG)
+        {
+            debugText.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            debugText.setVisibility(View.INVISIBLE);
+        }
 
         // set the onClick listener programmatically, if it is in the xml it needs to be in the activity source,
         // it is easier and better maintained to stay in the fragment the button belongs to

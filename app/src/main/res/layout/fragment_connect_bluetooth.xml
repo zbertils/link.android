@@ -118,7 +118,7 @@
             android:layout_weight="1"
             android:text="DEBUG OUTPUT"
             android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small"
-            android:visibility="invisible" />
+            android:visibility="visible" />
 
     </LinearLayout>
 

@@ -145,13 +145,13 @@ public class Protocols
         /// </summary>
         public static String SetFrameHeader(String header)
         {
-            return "ATSH " + header;
+            return "ATSH" + header;
         }
 
         /// <summary>
         /// Forces a protocol search after SetAutoProtocol has been set.
         /// </summary>
-        public static final String ForceProtocolSearch = "01 05";
+        public static final String ForceProtocolSearch = "0105";
 
         public static final String EndOfLine = "\r";
         public static final char EndOfLineChar = '\r';

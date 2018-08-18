@@ -68,7 +68,7 @@ public class Elm327Cable extends Cable
         callback.ConnectionCallbackAction("Discovering ELM version");
 
         // detect what type of cable is connected
-        String response = SendCommand(Protocols.Elm327.Reset, 1000, Protocols.Elm327.Header);
+        String response = SendCommand(Protocols.Elm327.Reset, 10000, Protocols.Elm327.Header);
         if (response != null && response.contains(Protocols.Elm327.Header))
         {
             Log.i(TAG, "Elm327Cable: cable is ELM327 type");
@@ -88,10 +88,10 @@ public class Elm327Cable extends Cable
             Log.i(TAG, "Elm327Cable: turning echo off");
             callback.ConnectionCallbackAction("Turning echo off");
 
-            response = SendCommand(Protocols.Elm327.EchoOff, 1000);
+            response = SendCommand(Protocols.Elm327.EchoOff, 10000);
             if (!response.contains(Protocols.Elm327.Responses.OK))
             {
-                info.Description = "Could not turn echo off...";
+                info.Description += "Could not turn echo off...\r\n";
                 Log.e(TAG, "Elm327Cable: could not turn echo off");
                 return false;
             }
@@ -100,30 +100,30 @@ public class Elm327Cable extends Cable
 
             callback.ConnectionCallbackAction("Setting timeout to maximum (1 second)");
             Log.i(TAG, "Elm327Cable: setting timeout to maximum (1 second)");
-            response = SendCommand(Protocols.Elm327.SetTimeoutMaximum, 1000);
+            response = SendCommand(Protocols.Elm327.SetTimeoutMaximum, 10000);
             if (!response.contains(Protocols.Elm327.Responses.OK))
             {
-                info.Description = "Could not set maximum timeout";
+                info.Description += "Could not set maximum timeout\r\n";
                 Log.w(TAG, "Elm327Cable: could not set maximum timeout");
                 //return false;
             }
 
             callback.ConnectionCallbackAction("Setting headers to off");
             Log.i(TAG, "Elm327Cable: setting headers to off");
-            response = SendCommand(Protocols.Elm327.SetHeadersOff, 1000);
+            response = SendCommand(Protocols.Elm327.SetHeadersOff, 10000);
             if (!response.contains(Protocols.Elm327.Responses.OK))
             {
-                info.Description = "Could not turn headers off";
+                info.Description += "Could not turn headers off\r\n";
                 Log.w(TAG, "Elm327Cable: could not turn headers off");
                 //return false;
             }
 
             callback.ConnectionCallbackAction("Turning auto protocol on");
             Log.i(TAG, "Elm327Cable: turning auto protocol on");
-            response = SendCommand(Protocols.Elm327.SetAutoProtocol, 1500);
+            response = SendCommand(Protocols.Elm327.SetAutoProtocol, 10000);
             if (!response.contains(Protocols.Elm327.Responses.OK))
             {
-                info.Description = "Could not set auto protocol";
+                info.Description += "Could not set auto protocol\r\n";
                 Log.e(TAG, "Elm327Cable: could not set protocol to Auto");
                 return false;
             }
@@ -131,16 +131,15 @@ public class Elm327Cable extends Cable
             callback.ConnectionCallbackAction("Forcing search for existing protocols");
             Log.i(TAG, "Elm327Cable: forcing a search for existing protocols");
 
-            // purposely do it twice, some times the first one needs a little time to find the protocol
-            SendCommand(Protocols.Elm327.ForceProtocolSearch, 3000);
-            response = SendCommand(Protocols.Elm327.ForceProtocolSearch, 3000);
+            // send a single pid, wait for a long time since some cars take a while
+            response = SendCommand(Protocols.Elm327.ForceProtocolSearch, 10000);
             if (response == null || response.isEmpty())
             {
                 Log.e(TAG, "Elm327Cable: could not force an auto protocol search");
                 return false;
             }
 
-            response = SendCommand(Protocols.Elm327.DisplayProtocol, 1500);
+            response = SendCommand(Protocols.Elm327.DisplayProtocol, 10000);
             String chosenProtocol = response
                     .replace(Protocols.Elm327.Responses.Auto, "")
                     .replace(",", "").trim();
@@ -149,7 +148,7 @@ public class Elm327Cable extends Cable
             Log.i(TAG, "Elm327Cable: protocol chosen: " + chosenProtocol);
             if (!response.contains(Protocols.Elm327.Responses.Auto))
             {
-                info.Description = "Displayed protocol did not mention auto";
+                info.Description += "Displayed protocol did not mention auto\r\n";
                 Log.w(TAG, "Elm327Cable: displayed protocol did not mention auto");
                 //return false;
             }
@@ -162,7 +161,7 @@ public class Elm327Cable extends Cable
             mInitialized = true;
 
             // fully initialized, the fourth step is the final step
-            info.Description = "Connected";
+            info.Description += "Connected\r\n";
             Log.i(TAG, "Elm327Cable: connected!");
         }
         else {
@@ -233,14 +232,14 @@ public class Elm327Cable extends Cable
             } while (checkCount < totalChecks);
         }
         catch (Exception ex) {
-            Log.w(TAG, "Timeout occurred during readUntil for \"" + end + "\"", ex);
+            Log.w(TAG, "Exception occurred during readUntil for \"" + end + "\"", ex);
             return null;
         }
 
         // if we could not read all of the data then something went wrong,
         // such as reaching the timeout when expecting a definite end to the packet
         if (checkCount >= totalChecks && end != null && !end.isEmpty()) {
-            throw new TimeoutException("Timeout occurred during read");
+            throw new TimeoutException("Timeout occurred during read (checks/total = " + checkCount + "/" + totalChecks + "), partial read: " + ((response != null) ? response : ""));
         }
 
         return response.toString();
@@ -369,7 +368,7 @@ public class Elm327Cable extends Cable
         catch (Exception ex)
         {
             // do nothing, timeout occurred and null should be returned
-            Log.w(TAG, "Receive: timeout attempting read of PID", ex);
+            Log.w(TAG, "Receive: exception attempting read of PID", ex);
         }
 
         return null;
