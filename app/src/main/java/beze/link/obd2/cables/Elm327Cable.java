@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -272,6 +273,12 @@ public class Elm327Cable extends Cable
     @Override
     public String Communicate(ParameterIdentification pid)
     {
+        return Communicate(pid, 1500);
+    }
+
+    @Override
+    public String Communicate(ParameterIdentification pid, int timeout)
+    {
         // only the J1850 protocol needs to set the header,
         // CAN and others do not have the same set-header commands
         if (Protocol == Protocols.Protocol.J1850)
@@ -308,7 +315,7 @@ public class Elm327Cable extends Cable
         if (Send(pid))
         {
             // if sending was successful then try to receive
-            return Receive();
+            return Receive(timeout);
         }
 
         // sending did not work, return false

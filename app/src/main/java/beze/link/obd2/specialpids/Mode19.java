@@ -72,7 +72,7 @@ public class Mode19 extends ParameterIdentification
     {
         List<Map.Entry<DiagnosticTroubleCode, String>> statuses = new ArrayList<Map.Entry<DiagnosticTroubleCode, String>>();
 
-        String response = cable.Communicate(this);
+        String response = cable.Communicate(this, 5000);
         String[] responses = ParameterIdentification.PrepareResponseString(response);
         if (responses != null)
         {

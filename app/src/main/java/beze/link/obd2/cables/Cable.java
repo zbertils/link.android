@@ -133,6 +133,14 @@ public abstract class Cable
     public abstract String Communicate(ParameterIdentification pid);
 
     /// <summary>
+    /// Communicates a parameter identification to the cable.
+    /// </summary>
+    /// <param name="pid"> The ParameterIdentification object to communicate to the cable. </param>
+    /// <param name="timeout"> The timeout, in milliseconds, to wait until force returning. </param>
+    /// <returns> The response if one is expected, and null otherwise. </returns>
+    public abstract String Communicate(ParameterIdentification pid, int timeout);
+
+    /// <summary>
     /// Sends the given data bytes through the cable.
     /// </summary>
     /// <param name="pid"> The ParameterIdentification object to send. </param>
