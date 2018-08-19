@@ -5,7 +5,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,143 +23,59 @@ import java.util.List;
 import beze.link.Globals;
 import com.android.beze.link.R;
 import beze.link.obd2.DiagnosticTroubleCode;
+import beze.link.ui.TroubleCodePagerAdapter;
 import beze.link.ui.DtcRecyclerViewAdapter;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TroubleCodesFragment extends Fragment implements View.OnClickListener, Runnable{
+public class TroubleCodesFragment extends Fragment implements TabLayout.OnTabSelectedListener
+{
 
     private static final String TAG = Globals.TAG_BASE + "TroubleCodesFragment";
+    private ViewPager viewPager = null;
 
-    private RecyclerView mCurrentDtcRecyclerView;
-    private RecyclerView.Adapter mCurrentDtcAdapter;
-    private RecyclerView.LayoutManager mCurrentDtcLayoutManager;
-    private List<DiagnosticTroubleCode> currentCodes = new ArrayList<>(); // default to an empty list in case the cable is not open
-
-    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which){
-                case DialogInterface.BUTTON_POSITIVE:
-
-                    if (Globals.cable != null && Globals.cable.IsInitialized()) {
-                        Globals.cable.ClearTroubleCodes();
-                        Toast.makeText(Globals.appContext, "Trouble codes cleared!", Toast.LENGTH_LONG).show();
-
-                        // update the view to reflect no more trouble codes
-                        currentCodes.clear();
-                        mCurrentDtcAdapter.notifyDataSetChanged();
-                    }
-                    else {
-                        Toast.makeText(Globals.appContext, "Cable is not initialized!", Toast.LENGTH_LONG).show();
-                    }
-
-                    break;
-
-                case DialogInterface.BUTTON_NEGATIVE:
-                    // do nothing, use declined
-                    break;
-            }
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        if (viewPager != null)
+        {
+            viewPager.setCurrentItem(tab.getPosition());
         }
-    };
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab)
+    {
+        // do nothing for now
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab)
+    {
+        // do nothing for now
+    }
 
     public TroubleCodesFragment() {
         // Required empty public constructor
     }
 
+
     @Override
-    public void run()
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        if (Globals.cable != null && Globals.cable.IsInitialized())
-        {
-            final ProgressBar progressBar = (ProgressBar) Globals.mainActivity.findViewById(R.id.dtcProgressBar);
-            Globals.mainActivity.runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    progressBar.setVisibility(View.VISIBLE);
-                }
-            });
-
-            currentCodes.addAll(Globals.cable.RequestTroubleCodes());
-
-            Globals.mainActivity.runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    if (currentCodes.size() == 0)
-                    {
-                        Toast.makeText(Globals.appContext, "No trouble codes present!", Toast.LENGTH_LONG).show();
-                    }
-                    else
-                    {
-                        Globals.mainActivity.runOnUiThread(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                mCurrentDtcAdapter.notifyDataSetChanged();
-                            }
-                        });
-                    }
-
-                    progressBar.setVisibility(View.GONE);
-                }
-            });
-        }
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_trouble_codes, container, false);
 
-        // setup everything needed to display current trouble codes
-        mCurrentDtcRecyclerView = view.findViewById(R.id.currentDtcRecyclerView);
-        mCurrentDtcRecyclerView.setHasFixedSize(true);
+        final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.troubleCodeTabLayout);
+        viewPager = (ViewPager) view.findViewById(R.id.troubleCodeViewPager);
+        final TroubleCodePagerAdapter pagerAdapter = new TroubleCodePagerAdapter(getActivity().getSupportFragmentManager(), tabLayout.getTabCount());
 
-        // create the recycler view managers
-        mCurrentDtcLayoutManager = new LinearLayoutManager(getContext());
-        mCurrentDtcAdapter = new DtcRecyclerViewAdapter(currentCodes);
-
-        // set managers for recycler view
-        mCurrentDtcRecyclerView.setLayoutManager(mCurrentDtcLayoutManager);
-        mCurrentDtcRecyclerView.setAdapter(mCurrentDtcAdapter);
-
-        Thread thread = new Thread(this);
-        thread.start();
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(this);
 
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        FloatingActionButton fab = getActivity().findViewById(R.id.fabClearDtc);
-        fab.setOnClickListener(this);
-
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.fabClearDtc :
-                AlertDialog.Builder builder = new AlertDialog.Builder(getView().getContext());
-                builder.setMessage("Clearing trouble codes will reset the ECU, and should be done with the engine OFF and the key in the ON position\r\n\r\nContinue?")
-                        .setPositiveButton("Yes", dialogClickListener)
-                        .setNegativeButton("No", dialogClickListener)
-                        .show();
-                break;
-            default:
-                Log.w(TAG, String.format("onClick: received a click for an unknown view, id: %d", view.getId()));
-                break;
-        }
     }
 
 }

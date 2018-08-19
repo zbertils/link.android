@@ -85,8 +85,8 @@ public class Mode19 extends ParameterIdentification
                     {
                         if (responseBytes[0] - 0x40 == this.Mode)
                         {
-                            String firstByte = Integer.toHexString(responseBytes[1]);
-                            String secondByte = Integer.toHexString(responseBytes[2]);
+                            String firstByte = String.format("%02X", responseBytes[1]);
+                            String secondByte = String.format("%02X", responseBytes[2]);
 
                             // the code is still in elm327 encoded format, e.g. "4670" which would be DTC B0670
                             String elm327code = firstByte + secondByte;
@@ -111,14 +111,14 @@ public class Mode19 extends ParameterIdentification
                 else
                 {
 //                    link.DiagnosticLogger.Write("ParseStringValues() returned null for response \"" + individualResponse ?? String.Empty + "\"");
-                    Log.e(TAG, "RequestAllDtcStatuses: ParseStringValues() returned null for response \"" + individualResponse != null ? individualResponse : "" + "\"");
+                    Log.e(TAG, "RequestAllDtcStatuses: ParseStringValues() returned null for response \"" + (individualResponse != null ? individualResponse : "") + "\"");
                 }
             }
         }
         else
         {
 //            link.DiagnosticLogger.Write("PrepareResponseString() returned null for \"" + response ?? String.Empty + "\"");
-            Log.e(TAG, "RequestAllDtcStatuses: PrepareResponseString() returned null for \"" + response != null ? response : "" + "\"");
+            Log.e(TAG, "RequestAllDtcStatuses: PrepareResponseString() returned null for \"" + (response != null ? response : "") + "\"");
         }
 
         return statuses;
@@ -162,29 +162,31 @@ public class Mode19 extends ParameterIdentification
         {
             return
                     "59 A9 57 01" + Protocols.Elm327.EndOfLine +
-                            "59 A9 58 01" + Protocols.Elm327.EndOfLine +
-                            "59 B8 02 01" + Protocols.Elm327.EndOfLine +
-                            "59 D0 16 11" + Protocols.Elm327.EndOfLine +
-                            "59 A9 57 3F" + Protocols.Elm327.EndOfLine +
-                            "59 A9 57 25" + Protocols.Elm327.EndOfLine +
-                            "59 06 70 7F" + Protocols.Elm327.EndOfLine +
-                            "59 04 01 3F" + Protocols.Elm327.EndOfLine +
-                            "59 27 71 21" + Protocols.Elm327.EndOfLine +
-                            "59 00 00 13" + Protocols.Elm327.EndOfLine + Protocols.Elm327.Prompt;
+                    "59 A9 58 01" + Protocols.Elm327.EndOfLine +
+                    "59 B8 02 01" + Protocols.Elm327.EndOfLine +
+                    "59 D0 16 11" + Protocols.Elm327.EndOfLine +
+                    "59 A9 57 3F" + Protocols.Elm327.EndOfLine +
+                    "59 A9 57 25" + Protocols.Elm327.EndOfLine +
+                    "59 06 70 7F" + Protocols.Elm327.EndOfLine +
+                    "59 04 01 3F" + Protocols.Elm327.EndOfLine +
+                    "59 27 71 21" + Protocols.Elm327.EndOfLine +
+                    "59 00 00 13" + Protocols.Elm327.EndOfLine + Protocols.Elm327.Prompt;
         }
-        else
-        {
-            return
-                    "0: 59 A9 57 01" + Protocols.Elm327.EndOfLine +
-                            "1:A9 58 01" + Protocols.Elm327.EndOfLine +
-                            "2: B8 02 01" + Protocols.Elm327.EndOfLine +
-                            "3: D0 16 11" + Protocols.Elm327.EndOfLine +
-                            "4: A9 57 3F" + Protocols.Elm327.EndOfLine +
-                            "5: A9 57 25" + Protocols.Elm327.EndOfLine +
-                            "6: 06 70 7F" + Protocols.Elm327.EndOfLine +
-                            "7:04 01 3F" + Protocols.Elm327.EndOfLine +
-                            "8: 27 71 21" + Protocols.Elm327.EndOfLine +
-                            "9: 00 00 13" + Protocols.Elm327.EndOfLine + Protocols.Elm327.Prompt;
-        }
+
+        return "";
+//        else
+//        {
+//            return
+//                    "0: 59 A9 57 01" + Protocols.Elm327.EndOfLine +
+//                            "1:A9 58 01" + Protocols.Elm327.EndOfLine +
+//                            "2: B8 02 01" + Protocols.Elm327.EndOfLine +
+//                            "3: D0 16 11" + Protocols.Elm327.EndOfLine +
+//                            "4: A9 57 3F" + Protocols.Elm327.EndOfLine +
+//                            "5: A9 57 25" + Protocols.Elm327.EndOfLine +
+//                            "6: 06 70 7F" + Protocols.Elm327.EndOfLine +
+//                            "7:04 01 3F" + Protocols.Elm327.EndOfLine +
+//                            "8: 27 71 21" + Protocols.Elm327.EndOfLine +
+//                            "9: 00 00 13" + Protocols.Elm327.EndOfLine + Protocols.Elm327.Prompt;
+//        }
     }
 }

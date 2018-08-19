@@ -4,11 +4,13 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import beze.link.Globals;
 import beze.link.obd2.DiagnosticTroubleCode;
 import beze.link.obd2.ParameterIdentification;
 import beze.link.obd2.Protocols;
+import beze.link.obd2.cables.connections.SimulatedConnection;
 
 public class Elm327CableSimulator extends Elm327Cable
 {
@@ -80,7 +82,7 @@ public class Elm327CableSimulator extends Elm327Cable
                 return;
             }
 
-            response = "AUTO,ISO 15765-4 CAN (11/500)";
+            response = "AUTO,J1850";
             String chosenProtocol = response.replace(Protocols.Elm327.Responses.Auto, "").replace(",", "").trim();
             Log.i(TAG, "Elm327Cable: protocol chosen: " + chosenProtocol);
             if (!response.contains(Protocols.Elm327.Responses.Auto))
@@ -92,6 +94,8 @@ public class Elm327CableSimulator extends Elm327Cable
             Protocol = Protocols.NameToProtocol(chosenProtocol);
             info.Protocol = Protocol;
             info.AutoProtocolSet = true;
+
+            cableConnection = new SimulatedConnection();
 
             // everything is good to go
             mInitialized = true;
@@ -111,6 +115,12 @@ public class Elm327CableSimulator extends Elm327Cable
 
     @Override
     public String Communicate(ParameterIdentification pid)
+    {
+        return Communicate(pid, 1500);
+    }
+
+    @Override
+    public String Communicate(ParameterIdentification pid, int timeout)
     {
         // check if the header needs to be set
         if (pid.Header != null && !pid.Header.isEmpty())
@@ -145,6 +155,19 @@ public class Elm327CableSimulator extends Elm327Cable
         else
         {
             return new ArrayList<DiagnosticTroubleCode>();
+        }
+    }
+
+    @Override
+    public List<Map.Entry<DiagnosticTroubleCode, String>> RequestAllDtcStatuses()
+    {
+        if (SimulateTroubleCodes)
+        {
+            return super.RequestAllDtcStatuses();
+        }
+        else
+        {
+            return new ArrayList<>();
         }
     }
 

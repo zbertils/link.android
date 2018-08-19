@@ -40,7 +40,6 @@ public class ConnectFragment extends Fragment implements TabLayout.OnTabSelected
 {
 
     private static final String TAG = Globals.TAG_BASE + "ConnectFragment";
-    private String selectedItemName = "";
     private ViewPager viewPager = null;
 
     @Override

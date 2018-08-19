@@ -108,7 +108,7 @@ public class DiagnosticTroubleCode
     /// <returns> The leading DTC letter and number, e.g. "P1", if the code letter is understood and null otherwise. </returns>
     public String DecodeFullDtcFromElm327Code(String elm327code)
     {
-        char codeLetter = elm327code.charAt(0);
+        char codeLetter = elm327code.toUpperCase().charAt(0);
         String prependedCode = "";
         switch (codeLetter)
         {

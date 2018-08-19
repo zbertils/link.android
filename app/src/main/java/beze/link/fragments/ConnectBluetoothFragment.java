@@ -188,13 +188,16 @@ public class ConnectBluetoothFragment extends Fragment implements AdapterView.On
 
         // the debug text should be displayed if in debug build, and invisible otherwise
         TextView debugText = (TextView) getActivity().findViewById(R.id.textViewConnectDebug);
-        if (BuildConfig.DEBUG)
+        if (debugText != null)
         {
-            debugText.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            debugText.setVisibility(View.INVISIBLE);
+            if (BuildConfig.DEBUG)
+            {
+                debugText.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                debugText.setVisibility(View.INVISIBLE);
+            }
         }
 
         // set the onClick listener programmatically, if it is in the xml it needs to be in the activity source,
@@ -266,8 +269,7 @@ public class ConnectBluetoothFragment extends Fragment implements AdapterView.On
                 {
 
                     Toast.makeText(Globals.appContext, "Reconnecting to " + Globals.appState.LastConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                    Button btnConnect = (Button) getActivity().findViewById(R.id.btnConnect);
-                    btnConnect.performClick();
+                    connectButton.performClick();
                 }
             }
             else if (!Globals.appState.LastConnectedDeviceName.isEmpty())
