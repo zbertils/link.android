@@ -23,6 +23,7 @@ import java.util.List;
 import beze.link.Globals;
 import com.android.beze.link.R;
 import beze.link.obd2.DiagnosticTroubleCode;
+import beze.link.obd2.Protocols;
 import beze.link.ui.TroubleCodePagerAdapter;
 import beze.link.ui.DtcRecyclerViewAdapter;
 

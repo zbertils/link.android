@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.beze.link.R;
@@ -30,7 +31,7 @@ import beze.link.ui.DtcRecyclerViewAdapter;
  */
 public class TroubleCodesCurrentFragment extends Fragment implements View.OnClickListener, Runnable{
 
-    private static final String TAG = Globals.TAG_BASE + "TroubleCodesFragment";
+    private static final String TAG = Globals.TAG_BASE + "CodesCurrentFragment";
 
     private RecyclerView mCurrentDtcRecyclerView;
     private RecyclerView.Adapter mCurrentDtcAdapter;
@@ -71,9 +72,13 @@ public class TroubleCodesCurrentFragment extends Fragment implements View.OnClic
     @Override
     public void run()
     {
+
         if (Globals.cable != null && Globals.cable.IsInitialized())
         {
-            final ProgressBar progressBar = (ProgressBar) Globals.mainActivity.findViewById(R.id.dtcProgressBar);
+            // show the progress bar and then get all trouble codes and statuses
+            final ProgressBar progressBar = (ProgressBar) Globals.mainActivity.findViewById(R.id.dtcCurrentProgressBar);
+            final TextView noCodesTextView = (TextView) Globals.mainActivity.findViewById(R.id.noCodesTextView);
+
             Globals.mainActivity.runOnUiThread(new Runnable()
             {
                 @Override
@@ -83,6 +88,7 @@ public class TroubleCodesCurrentFragment extends Fragment implements View.OnClic
                 }
             });
 
+            // actually get the trouble codes
             currentCodes.addAll(Globals.cable.RequestTroubleCodes());
 
             Globals.mainActivity.runOnUiThread(new Runnable()
@@ -93,28 +99,27 @@ public class TroubleCodesCurrentFragment extends Fragment implements View.OnClic
                     if (currentCodes.size() == 0)
                     {
                         Toast.makeText(Globals.appContext, "No trouble codes present!", Toast.LENGTH_LONG).show();
+                        noCodesTextView.setVisibility(View.VISIBLE);
                     }
                     else
                     {
-                        Globals.mainActivity.runOnUiThread(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                mCurrentDtcAdapter.notifyDataSetChanged();
-                            }
-                        });
+                        mCurrentDtcAdapter.notifyDataSetChanged();
+                        noCodesTextView.setVisibility(View.GONE);
                     }
 
                     progressBar.setVisibility(View.GONE);
                 }
             });
+
         }
+
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setUserVisibleHint(false);
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_trouble_codes_current, container, false);
 
@@ -142,7 +147,6 @@ public class TroubleCodesCurrentFragment extends Fragment implements View.OnClic
 
         FloatingActionButton fab = getActivity().findViewById(R.id.fabClearDtc);
         fab.setOnClickListener(this);
-
     }
 
     @Override
