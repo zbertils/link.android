@@ -152,7 +152,7 @@ public class Mode19 extends ParameterIdentification
     @Override
     public String Pack()
     {
-        return String.format("%02X %02X FF 00", Mode, PID);
+        return String.format("%02X %02X 00", Mode, PID);
     }
 
     @Override
