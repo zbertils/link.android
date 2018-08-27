@@ -271,12 +271,14 @@ public class Elm327Cable extends Cable
     }
 
     @Override
+    synchronized
     public String Communicate(ParameterIdentification pid)
     {
         return Communicate(pid, 1500);
     }
 
     @Override
+    synchronized
     public String Communicate(ParameterIdentification pid, int timeout)
     {
         // only the J1850 protocol needs to set the header,
@@ -324,12 +326,14 @@ public class Elm327Cable extends Cable
     }
 
     @Override
+    synchronized
     public boolean Send(ParameterIdentification pid)
     {
         return Send(pid.Pack());
     }
 
     @Override
+    synchronized
     public boolean Send(String data)
     {
         if (cableConnection != null && cableConnection.isConnected())
@@ -352,6 +356,7 @@ public class Elm327Cable extends Cable
     }
 
     @Override
+    synchronized
     public String Receive(int timeoutMilliseconds)
     {
         try
@@ -382,36 +387,40 @@ public class Elm327Cable extends Cable
     }
 
     @Override
+    synchronized
     public String RequestVIN()
     {
         return mode9.RequestVIN(this);
     }
 
     @Override
+    synchronized
     public void ClearTroubleCodes()
     {
         Communicate(mode4);
     }
 
     @Override
+    synchronized
     public List<DiagnosticTroubleCode> RequestTroubleCodes()
     {
         List<DiagnosticTroubleCode> codes = new ArrayList<DiagnosticTroubleCode>();
 
         // turn adaptive timing off so we can get all of the codes without missing them on slow responses
-        SendCommand(Protocols.Elm327.AdaptiveTimingOff, 1000);
+        //SendCommand(Protocols.Elm327.AdaptiveTimingOff, 1000);
 
         codes.addAll(mode3.RequestTroubleCodes(this));
         codes.addAll(mode7.RequestTroubleCodes(this));
         codes.addAll(modeA.RequestTroubleCodes(this));
 
         // turn adaptive timing back on for pids
-        SendCommand(Protocols.Elm327.AdaptiveTimingOn,1000);
+        //SendCommand(Protocols.Elm327.AdaptiveTimingOn,1000);
 
         return codes;
     }
 
     @Override
+    synchronized
     public List<Map.Entry<DiagnosticTroubleCode, String>> RequestAllDtcStatuses()
     {
         List<Map.Entry<DiagnosticTroubleCode, String>> statuses = new ArrayList<Map.Entry<DiagnosticTroubleCode, String>>();

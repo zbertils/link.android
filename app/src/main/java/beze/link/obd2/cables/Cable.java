@@ -97,6 +97,7 @@ public abstract class Cable
     }
 
     /// <returns> True if the cable needs to be reconnected, and false otherwise. </returns>
+    synchronized
     public boolean NeedsReconnect()
     {
         return needsReconnect;
@@ -108,6 +109,7 @@ public abstract class Cable
     /// <remarks>
     /// Once this function is called the cable instance can no longer be used.
     /// </remarks>
+    synchronized
     public void Close()
     {
         if (cableConnection != null)
@@ -161,6 +163,7 @@ public abstract class Cable
     /// <returns> The response if one is expected, and null otherwise. </returns>
     public abstract String Receive(int timeoutMilliseconds);
 
+    synchronized
     public String Receive() { return this.Receive(1500); }
 
     /// <summary>
@@ -181,9 +184,9 @@ public abstract class Cable
     public abstract List<Map.Entry<DiagnosticTroubleCode, String>> RequestAllDtcStatuses();
 
     /// <summary>
-/// Requests the VIN from the ECU.
-/// </summary>
-/// <returns> The VIN as a String. </returns>
+    /// Requests the VIN from the ECU.
+    /// </summary>
+    /// <returns> The VIN as a String. </returns>
     public abstract String RequestVIN();
 
 
