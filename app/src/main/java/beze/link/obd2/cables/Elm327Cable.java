@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -421,15 +422,17 @@ public class Elm327Cable extends Cable
 
     @Override
     synchronized
-    public List<Map.Entry<DiagnosticTroubleCode, String>> RequestAllDtcStatuses()
+    public HashMap<String, DiagnosticTroubleCode> RequestAllDtcStatuses()
     {
-        List<Map.Entry<DiagnosticTroubleCode, String>> statuses = new ArrayList<Map.Entry<DiagnosticTroubleCode, String>>();
+        HashMap<String, DiagnosticTroubleCode> statuses = new HashMap<>();
 
-        SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.Default), 1000);   statuses.addAll(mode19.RequestAllDtcStatuses(this));
-        SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.BCM), 1000);       statuses.addAll(mode19.RequestAllDtcStatuses(this));
-        SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.PCM), 1000);       statuses.addAll(mode19.RequestAllDtcStatuses(this));
-        SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.TCM), 1000);       statuses.addAll(mode19.RequestAllDtcStatuses(this));
-        SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.AirBag), 1000);    statuses.addAll(mode19.RequestAllDtcStatuses(this));
+        SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.Default), 1000);   statuses.putAll(mode19.RequestAllDtcStatuses(this));
+        SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.BCM), 1000);       statuses.putAll(mode19.RequestAllDtcStatuses(this));
+        SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.PCM), 1000);       statuses.putAll(mode19.RequestAllDtcStatuses(this));
+        SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.TCM), 1000);       statuses.putAll(mode19.RequestAllDtcStatuses(this));
+        SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.AirBag), 1000);    statuses.putAll(mode19.RequestAllDtcStatuses(this));
+
+        // remove all duplicate entries
 
         return statuses;
     }

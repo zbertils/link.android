@@ -6,6 +6,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -181,7 +182,7 @@ public abstract class Cable
     /// Requests diagnostic trouble code statuses from the vehicle.
     /// </summary>
     /// <returns> The list of diagnostic trouble code and their associated statuses. </returns>
-    public abstract List<Map.Entry<DiagnosticTroubleCode, String>> RequestAllDtcStatuses();
+    public abstract HashMap<String, DiagnosticTroubleCode> RequestAllDtcStatuses();
 
     /// <summary>
     /// Requests the VIN from the ECU.

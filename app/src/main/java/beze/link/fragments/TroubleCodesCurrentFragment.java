@@ -72,13 +72,12 @@ public class TroubleCodesCurrentFragment extends Fragment implements View.OnClic
     @Override
     public void run()
     {
+        // show the progress bar and then get all trouble codes and statuses
+        final ProgressBar progressBar = (ProgressBar) Globals.mainActivity.findViewById(R.id.dtcCurrentProgressBar);
+        final TextView noCodesTextView = (TextView) Globals.mainActivity.findViewById(R.id.noCodesTextView);
 
         if (Globals.cable != null && Globals.cable.IsInitialized())
         {
-            // show the progress bar and then get all trouble codes and statuses
-            final ProgressBar progressBar = (ProgressBar) Globals.mainActivity.findViewById(R.id.dtcCurrentProgressBar);
-            final TextView noCodesTextView = (TextView) Globals.mainActivity.findViewById(R.id.noCodesTextView);
-
             Globals.mainActivity.runOnUiThread(new Runnable()
             {
                 @Override
@@ -111,6 +110,17 @@ public class TroubleCodesCurrentFragment extends Fragment implements View.OnClic
                 }
             });
 
+        }
+        else
+        {
+            Globals.mainActivity.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
         }
 
     }

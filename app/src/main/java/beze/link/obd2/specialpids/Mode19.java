@@ -3,6 +3,7 @@ package beze.link.obd2.specialpids;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,9 +69,9 @@ public class Mode19 extends ParameterIdentification
     @Override
     public byte PacketSize() { return 0x01; }
 
-    public List<Map.Entry<DiagnosticTroubleCode, String>> RequestAllDtcStatuses(Cable cable)
+    public HashMap<String, DiagnosticTroubleCode> RequestAllDtcStatuses(Cable cable)
     {
-        List<Map.Entry<DiagnosticTroubleCode, String>> statuses = new ArrayList<Map.Entry<DiagnosticTroubleCode, String>>();
+        HashMap<String, DiagnosticTroubleCode> statuses = new HashMap<>();
 
         String response = cable.Communicate(this, 5000);
         String[] responses = ParameterIdentification.PrepareResponseString(response);
@@ -93,8 +94,25 @@ public class Mode19 extends ParameterIdentification
                             DiagnosticTroubleCode code = new DiagnosticTroubleCode(elm327code, DiagnosticTroubleCode.CodeType.StatusCheck);
 
                             String codeStatusDescription = GetStatusDescription(responseBytes[3]);
+                            code.Status = codeStatusDescription;
 
-                            statuses.add(new LinkMapEntry<DiagnosticTroubleCode, String>(code, codeStatusDescription));
+                            // see if the code exists in the list of known codes to get the description
+                            if (Globals.dtcDescriptions != null &&
+                                Globals.dtcDescriptions.containsKey(code.Code))
+                            {
+                                String description = Globals.dtcDescriptions.get(code.Code);
+                                code.Description = description;
+                            }
+                            else
+                            {
+                                code.Description = "Unknown Code";
+                            }
+
+                            // the P0000 code does not actually exist, remove it from the final list
+                            if (!code.Code.equalsIgnoreCase("P0000"))
+                            {
+                                statuses.put(code.Code, code);
+                            }
                         }
                         else
                         {

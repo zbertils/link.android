@@ -132,7 +132,7 @@ public class DtcParameterIdentification extends ParameterIdentification
                                         {
                                             // it is possible to have zero values padded out in the packet, check if this is the case
                                             if (!(dtcNumbers[index] == 0 && dtcNumbers[index + 1] == 0) &&
-                                                    !(dtcNumbers[index] == 0xAA && dtcNumbers[index + 1] == 0xAA))
+                                                !(dtcNumbers[index] == 0xAA && dtcNumbers[index + 1] == 0xAA))
                                             {
                                                 String firstByte = String.format("%02X", dtcNumbers[index]);
                                                 String secondByte = String.format("%02X", dtcNumbers[index + 1]);
@@ -142,10 +142,15 @@ public class DtcParameterIdentification extends ParameterIdentification
                                                 DiagnosticTroubleCode code = new DiagnosticTroubleCode(elm327code, codeType);
 
                                                 // see if the code exists in the list of known codes to get the description
-                                                if (Globals.dtcDescriptions.containsKey(code.Code))
+                                                if (Globals.dtcDescriptions != null &&
+                                                    Globals.dtcDescriptions.containsKey(code.Code))
                                                 {
                                                     String description = Globals.dtcDescriptions.get(code.Code);
                                                     code.Description = description;
+                                                }
+                                                else
+                                                {
+                                                    code.Description = "Unknown Code";
                                                 }
 
                                                 // finally add the code to the list after the description was checked

@@ -3,6 +3,7 @@ package beze.link.obd2.cables;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -159,7 +160,7 @@ public class Elm327CableSimulator extends Elm327Cable
     }
 
     @Override
-    public List<Map.Entry<DiagnosticTroubleCode, String>> RequestAllDtcStatuses()
+    public HashMap<String, DiagnosticTroubleCode> RequestAllDtcStatuses()
     {
         if (SimulateTroubleCodes)
         {
@@ -167,7 +168,7 @@ public class Elm327CableSimulator extends Elm327Cable
         }
         else
         {
-            return new ArrayList<>();
+            return new HashMap<String, DiagnosticTroubleCode>();
         }
     }
 

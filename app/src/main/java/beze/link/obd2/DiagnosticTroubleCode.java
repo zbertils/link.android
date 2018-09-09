@@ -46,6 +46,11 @@ public class DiagnosticTroubleCode
     /// </summary>
     public final VehicleComputer Computer;
 
+    /// <summary>
+    /// The status of the trouble code, if available.
+    /// </summary>
+    public String Status;
+
 
     /// <summary>
     /// Creates a new DiagnosticTroubleCode object.
@@ -59,6 +64,7 @@ public class DiagnosticTroubleCode
         this.Type = type;
         this.Description = description;
         this.Computer = GetControllerFromCodeLetter(this.Code);
+        Status = "";
     }
 
     /// <summary>
@@ -72,6 +78,7 @@ public class DiagnosticTroubleCode
         this.Type = type;
         this.Description = "";
         this.Computer = GetControllerFromCodeLetter(this.Code);
+        Status = "";
     }
 
     /// <summary>

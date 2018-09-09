@@ -35,7 +35,7 @@ public class TroubleCodesStatusFragment extends Fragment implements Runnable{
     private RecyclerView mStatusDtcRecyclerView;
     private RecyclerView.Adapter mCurrentDtcAdapter;
     private RecyclerView.LayoutManager mStatusDtcLayoutManager;
-    private List<Map.Entry<DiagnosticTroubleCode, String>> currentCodes = new ArrayList<>(); // default to an empty list in case the cable is not open
+    private List<DiagnosticTroubleCode> currentCodes = new ArrayList<>(); // default to an empty list in case the cable is not open
 
     public TroubleCodesStatusFragment() {
         // Required empty public constructor
@@ -44,13 +44,13 @@ public class TroubleCodesStatusFragment extends Fragment implements Runnable{
     @Override
     public void run()
     {
+        final ProgressBar progressBar = (ProgressBar) Globals.mainActivity.findViewById(R.id.dtcStatusProgressBar);
+        final TextView noStatusesTextView = (TextView) Globals.mainActivity.findViewById(R.id.noStatusesTextView);
+
         if (Globals.cable != null &&
             Globals.cable.IsInitialized() &&
             Globals.cable.Protocol == Protocols.Protocol.J1850)
         {
-            final ProgressBar progressBar = (ProgressBar) Globals.mainActivity.findViewById(R.id.dtcStatusProgressBar);
-            final TextView noStatusesTextView = (TextView) Globals.mainActivity.findViewById(R.id.noStatusesTextView);
-
             Globals.mainActivity.runOnUiThread(new Runnable()
             {
                 @Override
@@ -61,7 +61,7 @@ public class TroubleCodesStatusFragment extends Fragment implements Runnable{
             });
 
             // actually get the trouble code statuses
-            currentCodes.addAll(Globals.cable.RequestAllDtcStatuses());
+            currentCodes.addAll(Globals.cable.RequestAllDtcStatuses().values());
 
             Globals.mainActivity.runOnUiThread(new Runnable()
             {
@@ -83,6 +83,17 @@ public class TroubleCodesStatusFragment extends Fragment implements Runnable{
                 }
             });
 
+        }
+        else
+        {
+            Globals.mainActivity.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
         }
     }
 
