@@ -75,27 +75,27 @@
     },
     {
       "DataByteCount": "1",
-      "Description": "The fuel pressure in KPa.",
-      "FormulaString": "%1$s*3",
+      "Description": "The fuel pressure in PSI.",
+      "FormulaString": "%1$s*3*0.145038",
       "Group": "Engine",
       "LogThisPID": "false",
       "Mode": "1",
       "Name": "Fuel Pressure",
       "PID": "10",
       "PidType": "Generic",
-      "Units": "kPa"
+      "Units": "PSI"
     },
     {
       "DataByteCount": "1",
-      "Description": "The intake manifold pressure in kPa.",
-      "FormulaString": "%1$s",
+      "Description": "The intake manifold pressure in PSI.",
+      "FormulaString": "%1$s0.145038",
       "Group": "Engine",
       "LogThisPID": "false",
       "Mode": "1",
       "Name": "Intake Manifold Pressure",
       "PID": "11",
       "PidType": "Generic",
-      "Units": "kPa"
+      "Units": "PSI"
     },
     {
       "DataByteCount": "2",
@@ -387,7 +387,7 @@
     },
     {
       "DataByteCount": "2",
-      "Description": "The distance traveled with the malfunction indicator lamp (MIL) on, in Kilometers.",
+      "Description": "The distance traveled with the malfunction indicator lamp (MIL) on.",
       "FormulaString": "((%1$s*256)+%2$s)*0.621371",
       "Group": "Engine",
       "LogThisPID": "false",
@@ -399,27 +399,27 @@
     },
     {
       "DataByteCount": "2",
-      "Description": "Fuel rail pressure relative to the manifest vacuum, in Kilopascals.",
-      "FormulaString": "((%1$s*256)+%2$s)*0.079",
+      "Description": "Fuel rail pressure relative to the manifest vacuum, in PSI.",
+      "FormulaString": "((%1$s*256)+%2$s)*0.079*0.145038",
       "Group": "Engine",
       "LogThisPID": "false",
       "Mode": "1",
       "Name": "Fuel Rail Pressure, Manifold",
       "PID": "34",
       "PidType": "Generic",
-      "Units": "kPa"
+      "Units": "PSI"
     },
     {
       "DataByteCount": "2",
       "Description": "Fuel rail pressure.",
-      "FormulaString": "((%1$s*256)+%2$s)*10",
+      "FormulaString": "((%1$s*256)+%2$s)*10*0.145038",
       "Group": "Engine",
       "LogThisPID": "false",
       "Mode": "1",
       "Name": "Fuel Rail pressure",
       "PID": "35",
       "PidType": "Generic",
-      "Units": "kPa"
+      "Units": "PSI"
     },
     {
       "DataByteCount": "1",
@@ -640,7 +640,7 @@
       "DataByteCount": "2",
       "Description": "Desired fuel pressure in 1000's of PSI",
       "FormulaString": "((%1$s*256+%2$s)-32768)",
-      "Group": "Transmission",
+      "Group": "Engine",
       "Header": "6C18F1",
       "LogThisPID": "false",
       "Mode": "34",
@@ -653,7 +653,7 @@
       "DataByteCount": "2",
       "Description": "Actual fuel pressure in 1000's of PSI",
       "FormulaString": "((%1$s*256+%2$s)-32768)",
-      "Group": "Transmission",
+      "Group": "Engine",
       "Header": "6C18F1",
       "LogThisPID": "false",
       "Mode": "34",
