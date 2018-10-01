@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         PreferenceManager.setDefaultValues(this, R.xml.activity_settings, false);
 
         // load the allPids from the resource file
-        Globals.loadPids(this);
+        Globals.loadPids(this, Globals.Units.SAE);
         Globals.loadMakes(this);
         Globals.loadDtcDescriptions(this);
 

@@ -54,6 +54,12 @@ public class Globals
     public static BluetoothAdapter btAdapter;
     public static AppState appState;
 
+    public enum Units
+    {
+        Metric,
+        SAE
+    }
+
 
     public static class Preferences
     {
@@ -76,12 +82,12 @@ public class Globals
     }
 
 
-    public static boolean loadPids(Activity main)
+    public static boolean loadPids(Activity main, Units units)
     {
         String jsonStr = "";
         try
         {
-            InputStream stream = main.getAssets().open("pids.json");
+            InputStream stream = main.getAssets().open("pids-sae.json");
             int size = stream.available();
             byte[] buffer = new byte[size];
             stream.read(buffer);
