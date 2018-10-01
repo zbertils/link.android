@@ -181,7 +181,7 @@ public class Mode19 extends ParameterIdentification
             return
                     "59 A9 57 01" + Protocols.Elm327.EndOfLine +
                     "59 A9 58 01" + Protocols.Elm327.EndOfLine +
-                    "59 B8 02 01" + Protocols.Elm327.EndOfLine +
+                    "59 B8 02 FF" + Protocols.Elm327.EndOfLine +
                     "59 D0 16 11" + Protocols.Elm327.EndOfLine +
                     "59 A9 57 3F" + Protocols.Elm327.EndOfLine +
                     "59 A9 57 25" + Protocols.Elm327.EndOfLine +
