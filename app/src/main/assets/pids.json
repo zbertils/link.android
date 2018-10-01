@@ -419,7 +419,7 @@
       "Name": "Fuel Rail pressure",
       "PID": "35",
       "PidType": "Generic",
-      "Units": "???"
+      "Units": "kPa"
     },
     {
       "DataByteCount": "1",
