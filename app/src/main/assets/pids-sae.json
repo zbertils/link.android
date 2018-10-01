@@ -15,7 +15,7 @@
     },
     {
       "DataByteCount": "1",
-      "Description": "The engine coolant temperature in Celsius.",
+      "Description": "The engine coolant temperature.",
       "FormulaString": "(%1$s-40)*1.8+32",
       "Group": "Engine",
       "LogThisPID": "false",
@@ -23,7 +23,7 @@
       "Name": "Engine Coolant Temperature",
       "PID": "5",
       "PidType": "Generic",
-      "Units": "Fahrenheit"
+      "Units": "°F"
     },
     {
       "DataByteCount": "1",
@@ -135,7 +135,7 @@
     },
     {
       "DataByteCount": "1",
-      "Description": "Temperature of the air intake in Celsius.",
+      "Description": "Temperature of the air intake.",
       "FormulaString": "(%1$s-40)*1.8+32",
       "Group": "Engine",
       "LogThisPID": "false",
@@ -143,7 +143,7 @@
       "Name": "Intake Air Temperature",
       "PID": "15",
       "PidType": "Generic",
-      "Units": "Fahrenheit"
+      "Units": "°F"
     },
     {
       "DataByteCount": "2",
@@ -483,15 +483,15 @@
     },
     {
       "DataByteCount": "1",
-      "Description": "Oil temperature, in Celcius.",
-      "FormulaString": "%1$s-40",
+      "Description": "Oil temperature.",
+      "FormulaString": "(%1$s-40)*1.8+32",
       "Group": "Engine",
       "LogThisPID": "false",
       "Mode": "34",
       "Name": "Oil Temperature",
       "PID": "4436",
       "PidType": "GM Enhanced",
-      "Units": "°C"
+      "Units": "°F"
     },
     {
       "DataByteCount": "2",
@@ -625,7 +625,7 @@
     },
     {
       "DataByteCount": "1",
-      "Description": "Transmission temperature in Fahrenheit",
+      "Description": "Transmission temperature",
       "FormulaString": "9.0*%1$s/5.0-40",
       "Group": "Transmission",
       "Header": "6C18F1",
@@ -634,7 +634,7 @@
       "Name": "Transmission Temperature",
       "PID": "6464",
       "PidType": "GM Enhanced",
-      "Units": "Fahrenheit"
+      "Units": "°F"
     },
     {
       "DataByteCount": "2",

@@ -15,15 +15,15 @@
     },
     {
       "DataByteCount": "1",
-      "Description": "The engine coolant temperature in Celsius.",
-      "FormulaString": "(%1$s-40)*1.8+32",
+      "Description": "The engine coolant temperature.",
+      "FormulaString": "%1$s-40",
       "Group": "Engine",
       "LogThisPID": "false",
       "Mode": "1",
       "Name": "Engine Coolant Temperature",
       "PID": "5",
       "PidType": "Generic",
-      "Units": "Fahrenheit"
+      "Units": "°C"
     },
     {
       "DataByteCount": "1",
@@ -135,15 +135,15 @@
     },
     {
       "DataByteCount": "1",
-      "Description": "Temperature of the air intake in Celsius.",
-      "FormulaString": "(%1$s-40)*1.8+32",
+      "Description": "Temperature of the air intake.",
+      "FormulaString": "%1$s-40",
       "Group": "Engine",
       "LogThisPID": "false",
       "Mode": "1",
       "Name": "Intake Air Temperature",
       "PID": "15",
       "PidType": "Generic",
-      "Units": "Fahrenheit"
+      "Units": "°C"
     },
     {
       "DataByteCount": "2",
@@ -483,7 +483,7 @@
     },
     {
       "DataByteCount": "1",
-      "Description": "Oil temperature, in Celcius.",
+      "Description": "Oil temperature.",
       "FormulaString": "%1$s-40",
       "Group": "Engine",
       "LogThisPID": "false",
