@@ -85,9 +85,31 @@ public class Globals
     public static boolean loadPids(Activity main, Units units)
     {
         String jsonStr = "";
+        String fileName = "";
         try
         {
-            InputStream stream = main.getAssets().open("pids-sae.json");
+            switch (units)
+            {
+                case Metric:
+                {
+                    fileName = "pids.json";
+                }
+                break;
+
+                case SAE:
+                {
+                    fileName = "pids-sae.json";
+                }
+                break;
+
+                default:
+                {
+                    fileName = "pids.json";
+                }
+                break;
+            }
+
+            InputStream stream = main.getAssets().open(fileName);
             int size = stream.available();
             byte[] buffer = new byte[size];
             stream.read(buffer);
@@ -96,7 +118,7 @@ public class Globals
         }
         catch (Exception ex)
         {
-            Log.e(TAG, "loadPids: could not read pids.json");
+            Log.e(TAG, "loadPids: could not read " + fileName);
             ex.printStackTrace();
             return false;
         }
