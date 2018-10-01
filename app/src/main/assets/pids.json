@@ -387,7 +387,7 @@
     },
     {
       "DataByteCount": "2",
-      "Description": "The distance traveled with the malfunction indicator lamp (MIL) on, in Kilometers.",
+      "Description": "The distance traveled with the malfunction indicator lamp (MIL) on.",
       "FormulaString": "((%1$s*256)+%2$s)*0.621371",
       "Group": "Engine",
       "LogThisPID": "false",
@@ -395,7 +395,7 @@
       "Name": "Distance Traveled With MIL On",
       "PID": "33",
       "PidType": "Generic",
-      "Units": "miles"
+      "Units": "kilometers"
     },
     {
       "DataByteCount": "2",
@@ -640,7 +640,7 @@
       "DataByteCount": "2",
       "Description": "Desired fuel pressure in 1000's of PSI",
       "FormulaString": "((%1$s*256+%2$s)-32768)",
-      "Group": "Transmission",
+      "Group": "Engine",
       "Header": "6C18F1",
       "LogThisPID": "false",
       "Mode": "34",
@@ -653,7 +653,7 @@
       "DataByteCount": "2",
       "Description": "Actual fuel pressure in 1000's of PSI",
       "FormulaString": "((%1$s*256+%2$s)-32768)",
-      "Group": "Transmission",
+      "Group": "Engine",
       "Header": "6C18F1",
       "LogThisPID": "false",
       "Mode": "34",
