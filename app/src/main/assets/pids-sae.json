@@ -88,7 +88,7 @@
     {
       "DataByteCount": "1",
       "Description": "The intake manifold pressure in PSI.",
-      "FormulaString": "%1$s0.145038",
+      "FormulaString": "%1$s*0.145038",
       "Group": "Engine",
       "LogThisPID": "false",
       "Mode": "1",
