@@ -162,7 +162,10 @@ public class TroubleCodesCurrentFragment extends Fragment implements View.OnClic
         super.onStart();
 
         FloatingActionButton fab = getActivity().findViewById(R.id.fabClearDtc);
-        fab.setOnClickListener(this);
+        if (fab != null)
+        {
+            fab.setOnClickListener(this);
+        }
     }
 
     @Override

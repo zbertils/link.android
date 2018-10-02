@@ -43,7 +43,10 @@ public class AdvancedFragment extends Fragment implements View.OnClickListener {
     public void onStart() {
         super.onStart();
         Button send = getActivity().findViewById(R.id.buttonSend);
-        send.setOnClickListener(this);
+        if (send != null)
+        {
+            send.setOnClickListener(this);
+        }
     }
 
     @Override
