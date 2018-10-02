@@ -294,7 +294,7 @@ public class Elm327Cable extends Cable
                     String response = SendCommand(Protocols.Elm327.SetFrameHeader(pid.Header), 750);
                     if (!response.contains(Protocols.Elm327.Responses.OK))
                     {
-                        Log.w(TAG, "Communicate: could not set frame header for PID\r\n" + pid.toString());
+                        Log.w(TAG, "Communicate: [J1850] could not set frame header for PID\r\n" + pid.toString());
                         return null;
                     }
 
@@ -306,7 +306,7 @@ public class Elm327Cable extends Cable
                 String response = SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.Default), 750);
                 if (!response.contains(Protocols.Elm327.Responses.OK))
                 {
-                    Log.w(TAG, "Communicate: could not set default frame header for PID\r\n" + pid.toString());
+                    Log.w(TAG, "Communicate: [J1850] could not set default frame header for PID\r\n" + pid.toString());
                     return null;
                 }
 
@@ -314,11 +314,19 @@ public class Elm327Cable extends Cable
             }
         }
         else if (Protocol == Protocols.Protocol.HighSpeedCAN11 ||
-                Protocol == Protocols.Protocol.HighSpeedCAN29 ||
-                Protocol == Protocols.Protocol.LowSpeedCAN11 ||
-                Protocol == Protocols.Protocol.LowSpeedCAN29)
+                Protocol == Protocols.Protocol.LowSpeedCAN11)
         {
-            String response = SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.CAN.Headers.Default), 750);
+            if (!lastFrameHeader.equals(Protocols.CAN.Headers.Default))
+            {
+                String response = SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.CAN.Headers.Default), 750);
+                if (!response.contains(Protocols.Elm327.Responses.OK))
+                {
+                    Log.w(TAG, "Communicate: [CAN] could not set default frame header for PID\r\n" + pid.toString());
+                    return null;
+                }
+
+                lastFrameHeader = Protocols.CAN.Headers.Default;
+            }
         }
 
         // send the pid value first
