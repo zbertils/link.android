@@ -188,24 +188,29 @@ public class ConnectBluetoothFragment extends Fragment implements AdapterView.On
 
         // the debug text should be displayed if in debug build, and invisible otherwise
         TextView debugText = (TextView) getActivity().findViewById(R.id.textViewConnectDebug);
-        if (debugText != null)
+        Button connectButton = getActivity().findViewById(R.id.btnConnect);
+        Spinner connectSpinner = (Spinner) getActivity().findViewById(R.id.spinnerBtDevices);
+
+        if (debugText == null || connectButton == null || connectSpinner == null)
         {
-            if (BuildConfig.DEBUG)
-            {
-                debugText.setVisibility(View.VISIBLE);
-            }
-            else
-            {
-                debugText.setVisibility(View.INVISIBLE);
-            }
+            Log.w(TAG, "Cannot start connect fragment, one of the GUI objects is null");
+            return;
+        }
+
+
+        if (BuildConfig.DEBUG)
+        {
+            debugText.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            debugText.setVisibility(View.INVISIBLE);
         }
 
         // set the onClick listener programmatically, if it is in the xml it needs to be in the activity source,
         // it is easier and better maintained to stay in the fragment the button belongs to
-        Button connectButton = getActivity().findViewById(R.id.btnConnect);
         connectButton.setOnClickListener(this);
 
-        Spinner connectSpinner = (Spinner) getActivity().findViewById(R.id.spinnerBtDevices);
         boolean lastConnectedDeviceStillExists = false;
 
         Set<BluetoothDevice> pairedDevices = Globals.btAdapter.getBondedDevices();
