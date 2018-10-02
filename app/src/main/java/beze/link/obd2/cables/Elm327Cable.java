@@ -313,6 +313,13 @@ public class Elm327Cable extends Cable
                 lastFrameHeader = Protocols.J1850.Headers.Default;
             }
         }
+        else if (Protocol == Protocols.Protocol.HighSpeedCAN11 ||
+                Protocol == Protocols.Protocol.HighSpeedCAN29 ||
+                Protocol == Protocols.Protocol.LowSpeedCAN11 ||
+                Protocol == Protocols.Protocol.LowSpeedCAN29)
+        {
+            String response = SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.CAN.Headers.Default), 750);
+        }
 
         // send the pid value first
         if (Send(pid))
