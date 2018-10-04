@@ -471,6 +471,18 @@
     },
     {
       "DataByteCount": "2",
+      "Description": "The absolute fuel rail pressure.",
+      "FormulaString": "10*(256*%1$s+%2$s)",
+      "Group": "Engine",
+      "LogThisPID": "false",
+      "Mode": "1",
+      "Name": "Absolute Fuel Rail Pressure",
+      "PID": "89",
+      "PidType": "Generic",
+      "Units": "kPa"
+    },
+    {
+      "DataByteCount": "2",
       "Description": "The fuel rate.",
       "FormulaString": "(256*%1$s+%2$s)/20",
       "Group": "Engine",
