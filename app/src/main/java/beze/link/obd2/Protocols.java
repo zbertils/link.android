@@ -18,6 +18,7 @@ public class Protocols
         LowSpeedCAN11,
         HighSpeedCAN29,
         LowSpeedCAN29,
+        ISO9141,
         ISO9142,
         Unknown
     }
@@ -54,6 +55,10 @@ public class Protocols
         else if (upperName.contains("AUTO"))
         {
             return Protocol.Auto;
+        }
+        else if (upperName.contains("9141"))
+        {
+            return Protocol.ISO9141;
         }
         else if (upperName.contains("9142"))
         {
