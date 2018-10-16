@@ -650,7 +650,7 @@
     },
     {
       "DataByteCount": "2",
-      "Description": "Desired fuel pressure in 1000's of PSI",
+      "Description": "Desired fuel pressure",
       "FormulaString": "((%1$s*256+%2$s)-32768)",
       "Group": "Engine",
       "Header": "6C18F1",
@@ -663,7 +663,7 @@
     },
     {
       "DataByteCount": "2",
-      "Description": "Actual fuel pressure in 1000's of PSI",
+      "Description": "Actual fuel pressure",
       "FormulaString": "((%1$s*256+%2$s)-32768)",
       "Group": "Engine",
       "Header": "6C18F1",
