@@ -655,7 +655,7 @@
       "Group": "Engine",
       "Header": "6C18F1",
       "LogThisPID": "false",
-      "Mode": "34",git add
+      "Mode": "34",
       "Name": "Desired Fuel Pressure",
       "PID": "5693",
       "PidType": "GM Enhanced",
