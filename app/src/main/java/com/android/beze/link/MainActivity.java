@@ -59,14 +59,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         PreferenceManager.setDefaultValues(this, R.xml.activity_settings, false);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        // determine if metric or SAE units should be used for the pids
+        Globals.Units units = Globals.Units.SAE;
+        boolean metricUnits = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SHOW_METRIC_UNITS, true);
+        if (metricUnits)
+        {
+            units = Globals.Units.Metric;
+        }
 
         // load the allPids from the resource file
-        Globals.loadPids(this, Globals.Units.SAE);
+        Globals.loadPids(this, units);
         Globals.loadMakes(this);
         Globals.loadDtcDescriptions(this);
 
         // get the activity_settings that apply at start up
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(Globals.appContext);
         boolean simulateData = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SIMULATE_DATA, false);
         boolean connectOnStart = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_RECONNECT_AT_START, false);
         if (connectOnStart) {

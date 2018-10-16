@@ -68,6 +68,7 @@ public class Globals
         public static final String KEY_PREF_LOG_PIDS = "pref_log_pids";
         public static final String KEY_PREF_SHOW_PID_STREAM_VALUES = "pref_show_pid_stream_values";
         public static final String KEY_PREF_PREVENT_SCREEN_SLEEP = "pref_prevent_screen_sleep";
+        public static final String KEY_PREF_SHOW_METRIC_UNITS = "pref_show_metric";
 
     }
 
