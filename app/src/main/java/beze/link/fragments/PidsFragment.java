@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import com.android.beze.link.R;
+
+import beze.link.Globals;
 import beze.link.obd2.ParameterIdentification;
 import beze.link.ui.PidsRecyclerViewAdapter;
 
@@ -44,7 +46,7 @@ public class PidsFragment extends Fragment {
 
         // create the recycler view managers
         mLayoutManager = new LinearLayoutManager(getContext());
-        mAdapter = new PidsRecyclerViewAdapter(data);
+        mAdapter = new PidsRecyclerViewAdapter(Globals.allPids);
 
         // set managers for recycler view
         mRecyclerView.setLayoutManager(mLayoutManager);

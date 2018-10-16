@@ -53,7 +53,7 @@ public class DataFragment extends Fragment {
 
         // create the recycler view managers
         mLayoutManager = new LinearLayoutManager(getContext());
-        mAdapter = new DataRecyclerViewAdapter(data, showPidStreamValue);
+        mAdapter = new DataRecyclerViewAdapter(Globals.shownPids, showPidStreamValue);
 
         // set managers for recycler view
         mRecyclerView.setLayoutManager(mLayoutManager);
