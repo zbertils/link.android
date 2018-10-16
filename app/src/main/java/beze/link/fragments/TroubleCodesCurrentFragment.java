@@ -124,7 +124,10 @@ public class TroubleCodesCurrentFragment extends Fragment implements View.OnClic
                 @Override
                 public void run()
                 {
-                    progressBar.setVisibility(View.GONE);
+                    if (progressBar != null)
+                    {
+                        progressBar.setVisibility(View.GONE);
+                    }
                 }
             });
         }

@@ -97,7 +97,10 @@ public class TroubleCodesStatusFragment extends Fragment implements Runnable{
                 @Override
                 public void run()
                 {
-                    progressBar.setVisibility(View.GONE);
+                    if (progressBar != null)
+                    {
+                        progressBar.setVisibility(View.GONE);
+                    }
                 }
             });
         }
