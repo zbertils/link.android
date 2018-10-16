@@ -638,7 +638,7 @@
     {
       "DataByteCount": "1",
       "Description": "Transmission temperature",
-      "FormulaString": "9.0*%1$s/5.0-40",
+      "FormulaString": "(%1$s-40)*1.8+32",
       "Group": "Transmission",
       "Header": "6C18F1",
       "LogThisPID": "false",
