@@ -73,6 +73,11 @@ public class DataRecyclerViewAdapter extends RecyclerView.Adapter<DataRecyclerVi
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        if (mDataset != null)
+        {
+            return mDataset.size();
+        }
+
+        return 0;
     }
 }

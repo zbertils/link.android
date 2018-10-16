@@ -15,18 +15,21 @@ import java.util.Map;
 
 import beze.link.obd2.DiagnosticTroubleCode;
 
-public class DtcStatusRecyclerViewAdapter extends RecyclerView.Adapter<DtcStatusRecyclerViewAdapter.ViewHolder> {
+public class DtcStatusRecyclerViewAdapter extends RecyclerView.Adapter<DtcStatusRecyclerViewAdapter.ViewHolder>
+{
 
     private List<DiagnosticTroubleCode> mDataset;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder
+    {
 
         public TextView dtcNumber;
         public TextView dtcDescription;
         public TextView dtcType;
         public TextView dtcStatus;
 
-        public ViewHolder(View v) {
+        public ViewHolder(View v)
+        {
             super(v);
 
             dtcNumber = (TextView) v.findViewById(R.id.textViewDtcNumber);
@@ -36,19 +39,22 @@ public class DtcStatusRecyclerViewAdapter extends RecyclerView.Adapter<DtcStatus
         }
     }
 
-    public DtcStatusRecyclerViewAdapter(List<DiagnosticTroubleCode> myDataset) {
+    public DtcStatusRecyclerViewAdapter(List<DiagnosticTroubleCode> myDataset)
+    {
         mDataset = myDataset;
     }
 
     @Override
-    public DtcStatusRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public DtcStatusRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    {
         View view = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.dtc_status_recycler_row, parent, false);
         return new ViewHolder(view);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position)
+    {
         DiagnosticTroubleCode dtc = mDataset.get(position);
         holder.dtcNumber.setText(dtc.Code);
         holder.dtcDescription.setText(dtc.Description);
@@ -83,7 +89,13 @@ public class DtcStatusRecyclerViewAdapter extends RecyclerView.Adapter<DtcStatus
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
-    public int getItemCount() {
-        return mDataset.size();
+    public int getItemCount()
+    {
+        if (mDataset != null)
+        {
+            return mDataset.size();
+        }
+
+        return 0;
     }
 }
