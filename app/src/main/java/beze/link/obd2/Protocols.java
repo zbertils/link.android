@@ -93,6 +93,7 @@ public class Protocols
                 public static final String RequestLegislatedDiagnostics = "6A";
                 public static final String Engine = "10";
                 public static final String Transmission = "18";
+                public static final String ABS = "28";
                 public static final String Body = "40";
                 public static final String AirBag = "58";
                 public static final String NULL = "FF";
@@ -112,6 +113,7 @@ public class Protocols
             public static final String TCM     = PriorityAndType.LowPriorityNodeToNode + Destinations.Transmission   + Sources.OffBoardCable;
             public static final String BCM     = PriorityAndType.LowPriorityNodeToNode + Destinations.Body           + Sources.OffBoardCable;
             public static final String AirBag  = PriorityAndType.LowPriorityNodeToNode + Destinations.AirBag         + Sources.OffBoardCable;
+            public static final String ABS     = PriorityAndType.LowPriorityNodeToNode + Destinations.ABS            + Sources.OffBoardCable;
 
             public static final String NULL    = PriorityAndType.LowPriorityNodeToNode + Destinations.NULL           + Sources.OffBoardCable;
         }
