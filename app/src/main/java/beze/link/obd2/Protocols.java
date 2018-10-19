@@ -1,5 +1,6 @@
 package beze.link.obd2;
 
+import android.net.wifi.WifiConfiguration;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -8,6 +9,14 @@ import java.util.List;
 public class Protocols
 {
     public static final String ToHexFormat = "X2";
+
+    public static boolean IsCan(Protocol protocol)
+    {
+        return protocol == Protocol.HighSpeedCAN11 ||
+                protocol == Protocol.HighSpeedCAN29 ||
+                protocol == Protocol.LowSpeedCAN11 ||
+                protocol == Protocol.LowSpeedCAN29;
+    }
 
     public enum Protocol
     {

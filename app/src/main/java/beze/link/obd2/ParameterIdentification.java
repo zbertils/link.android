@@ -188,9 +188,18 @@ public class ParameterIdentification {
     /// <summary>
     /// Packetizes the ParameterIdentification object.
     /// </summary>
-    /// <param name="pid"> The ParameterIdentification object to packetize. </param>
     /// <returns> The byte[] object representing the packet to send across the OBD2 connection. </returns>
     public String Pack()
+    {
+        return this.Pack(Protocols.Protocol.Unknown);
+    }
+
+    /// <summary>
+    /// Packetizes the ParameterIdentification object.
+    /// </summary>
+    /// <param name="protocol"> The protocol being used for communicating this PID. </param>
+    /// <returns> The byte[] object representing the packet to send across the OBD2 connection. </returns>
+    public String Pack(Protocols.Protocol protocol)
     {
         String dataStr = "";
 
@@ -201,8 +210,12 @@ public class ParameterIdentification {
         // a small optimization, if there are four or less data bytes being
         // returned then it can fit into one frame and the cable can return
         // immediately after receiving that one frame, otherwise just let
-        // the cable timeout on reads in case it is a special PID like mode 9
-        if (this.DataByteCount <= 4 && this.Mode == 0x22)
+        // the cable timeout on reads in case it is a special PID like mode 9,
+        // CAN protocols do not like having this extra 01 as its interpreted
+        // as another part of the PID itself and not an expected byte count
+        if (this.DataByteCount <= 4 &&
+                this.Mode == 0x22 &&
+                !Protocols.IsCan(protocol))
         {
             dataStr += "01";
         }
