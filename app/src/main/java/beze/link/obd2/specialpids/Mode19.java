@@ -168,7 +168,7 @@ public class Mode19 extends ParameterIdentification
     }
 
     @Override
-    public String Pack()
+    public String Pack(Protocols.Protocol protocol)
     {
         return String.format("%02X %02X 00", Mode, PID);
     }

@@ -313,8 +313,7 @@ public class Elm327Cable extends Cable
                 lastFrameHeader = Protocols.J1850.Headers.Default;
             }
         }
-        else if (Protocol == Protocols.Protocol.HighSpeedCAN11 ||
-                Protocol == Protocols.Protocol.LowSpeedCAN11)
+        else if (Protocols.IsCan(this.Protocol))
         {
             if (!lastFrameHeader.equals(Protocols.CAN.Headers.Default))
             {
@@ -345,7 +344,7 @@ public class Elm327Cable extends Cable
     synchronized
     public boolean Send(ParameterIdentification pid)
     {
-        return Send(pid.Pack());
+        return Send(pid.Pack(this.Protocol));
     }
 
     @Override

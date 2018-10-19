@@ -188,15 +188,6 @@ public class ParameterIdentification {
     /// <summary>
     /// Packetizes the ParameterIdentification object.
     /// </summary>
-    /// <returns> The byte[] object representing the packet to send across the OBD2 connection. </returns>
-    public String Pack()
-    {
-        return this.Pack(Protocols.Protocol.Unknown);
-    }
-
-    /// <summary>
-    /// Packetizes the ParameterIdentification object.
-    /// </summary>
     /// <param name="protocol"> The protocol being used for communicating this PID. </param>
     /// <returns> The byte[] object representing the packet to send across the OBD2 connection. </returns>
     public String Pack(Protocols.Protocol protocol)
@@ -240,13 +231,13 @@ public class ParameterIdentification {
 
             // convert back to a String so the ascii values can be parsed into their integer representations,
             // then parse into individual integers, for the basic pid values there will only be one line returned,
-            // for all other multi-line allPids they are expected to override the Unpack() function and handle the parsing individually
+            // for all other multi-line pids they are expected to override the Unpack() function and handle the parsing individually
             String[] dataStr = PrepareResponseString(data);
             if (dataStr.length > 0)
             {
                 int[] values = ParseStringValues(dataStr[0]);
 
-                // default the respond pid to be if not using extended allPids,
+                // default the respond pid to be if not using extended pids,
                 // then figure out if it should be adjusted if it is an extended pid
                 int responsePid = values[ResponseByteOffsets.PID];
                 if (this.PacketSize() == 3)

@@ -10,7 +10,10 @@ import android.widget.TextView;
 import java.util.List;
 
 import com.android.beze.link.R;
+
+import beze.link.Globals;
 import beze.link.obd2.ParameterIdentification;
+import beze.link.obd2.Protocols;
 
 public class DataRecyclerViewAdapter extends RecyclerView.Adapter<DataRecyclerViewAdapter.ViewHolder> {
 
@@ -66,7 +69,7 @@ public class DataRecyclerViewAdapter extends RecyclerView.Adapter<DataRecyclerVi
         }
         else {
             holder.pidValue.setVisibility(View.VISIBLE);
-            holder.pidValue.setText( ((pid.Header != null) ? pid.Header : "") + pid.Pack());
+            holder.pidValue.setText( ((pid.Header != null && !Protocols.IsCan(Globals.cable.Protocol)) ? pid.Header : "") + pid.Pack(Globals.cable.Protocol));
         }
     }
 
