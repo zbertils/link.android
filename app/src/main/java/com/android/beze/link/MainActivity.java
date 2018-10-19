@@ -224,7 +224,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_data:
                 setTitle("Data");
                 fragment = new DataFragment();
-                ((DataFragment)fragment).setData(Globals.shownPids);
 
                 // prevent the screen from falling asleep on the data fragment if the user specified to
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -250,7 +249,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_pids :
                 setTitle("Select PIDS");
                 fragment = new PidsFragment();
-                ((PidsFragment)fragment).setData(Globals.allPids);
                 break;
             default:
                 fragment = null;

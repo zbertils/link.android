@@ -24,17 +24,9 @@ public class PidsFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    protected List<ParameterIdentification> data; // this needs to be set after being constructed
-
     public PidsFragment() {
         // Required empty public constructor
     }
-
-    public void setData(List<ParameterIdentification> pids)
-    {
-        data = pids;
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
