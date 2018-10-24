@@ -1,16 +1,10 @@
 package beze.link.obd2.cables;
 
-import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 
 import beze.link.Globals;
@@ -282,50 +276,9 @@ public class Elm327Cable extends Cable
     synchronized
     public String Communicate(ParameterIdentification pid, int timeout)
     {
-        // only the J1850 protocol needs to set the header,
-        // CAN and others do not have the same set-header commands
-        if (Protocol == Protocols.Protocol.J1850)
+        if (!SetFrameHeader(pid))
         {
-            // check if the header needs to be set
-            if (pid.Header != null && !pid.Header.isEmpty())
-            {
-                if (!lastFrameHeader.equals(pid.Header))
-                {
-                    String response = SendCommand(Protocols.Elm327.SetFrameHeader(pid.Header), 750);
-                    if (!response.contains(Protocols.Elm327.Responses.OK))
-                    {
-                        Log.w(TAG, "Communicate: [J1850] could not set frame header for PID\r\n" + pid.toString());
-                        return null;
-                    }
-
-                    lastFrameHeader = pid.Header;
-                }
-            }
-            else if (!lastFrameHeader.equals(Protocols.J1850.Headers.Default))
-            {
-                String response = SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.Default), 750);
-                if (!response.contains(Protocols.Elm327.Responses.OK))
-                {
-                    Log.w(TAG, "Communicate: [J1850] could not set default frame header for PID\r\n" + pid.toString());
-                    return null;
-                }
-
-                lastFrameHeader = Protocols.J1850.Headers.Default;
-            }
-        }
-        else if (Protocols.IsCan(this.Protocol))
-        {
-            if (!lastFrameHeader.equals(Protocols.CAN.Headers.Default))
-            {
-                String response = SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.CAN.Headers.Default), 750);
-                if (!response.contains(Protocols.Elm327.Responses.OK))
-                {
-                    Log.w(TAG, "Communicate: [CAN] could not set default frame header for PID\r\n" + pid.toString());
-                    return null;
-                }
-
-                lastFrameHeader = Protocols.CAN.Headers.Default;
-            }
+            return null;
         }
 
         // send the pid value first
@@ -338,6 +291,46 @@ public class Elm327Cable extends Cable
         // sending did not work, return false
         Log.w(TAG, "Communicate() did not send properly, returning null");
         return null;
+    }
+
+    /**
+     * Sets the frame header for the given PID.
+     * @param pid The PID containing the header to set.
+     * @return True if setting the header was successful, and false otherwise.
+     */
+    protected synchronized boolean SetFrameHeader(ParameterIdentification pid)
+    {
+        String header = null;
+        if (this.Protocol == Protocols.Protocol.J1850)
+        {
+            header = pid.Header;
+            if (header == null || header.isEmpty())
+            {
+                header = Protocols.J1850.Headers.Default;
+            }
+        }
+        else if (Protocols.IsCan(this.Protocol))
+        {
+            header = pid.CANHeader;
+            if (header == null || header.isEmpty())
+            {
+                header = Protocols.CAN.ShortHeaders.Default;
+            }
+        }
+
+        // make sure the header was set, it is possible there is no header for this
+        // pid and protocol combination, in that case we just leave it alone
+        if (header != null && !header.isEmpty())
+        {
+            String response = SendCommand(Protocols.Elm327.SetFrameHeader(header), 1000);
+            if (!response.contains(Protocols.Elm327.Responses.OK))
+            {
+                Log.w(TAG, "Communicate: could not set frame header '" + header + "' for PID\r\n" + pid.toString());
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
@@ -440,11 +433,31 @@ public class Elm327Cable extends Cable
     {
         HashMap<String, DiagnosticTroubleCode> statuses = new HashMap<>();
 
-        SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.Default), 1000);   statuses.putAll(mode19.RequestAllDtcStatuses(this));
-        SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.BCM), 1000);       statuses.putAll(mode19.RequestAllDtcStatuses(this));
-        SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.PCM), 1000);       statuses.putAll(mode19.RequestAllDtcStatuses(this));
-        SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.TCM), 1000);       statuses.putAll(mode19.RequestAllDtcStatuses(this));
-        SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.AirBag), 1000);    statuses.putAll(mode19.RequestAllDtcStatuses(this));
+        if (!Protocols.IsCan(this.Protocol))
+        {
+            SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.Default), 1000);
+            statuses.putAll(mode19.RequestAllDtcStatuses(this));
+
+            SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.BCM), 1000);
+            statuses.putAll(mode19.RequestAllDtcStatuses(this));
+
+            SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.PCM), 1000);
+            statuses.putAll(mode19.RequestAllDtcStatuses(this));
+
+            SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.TCM), 1000);
+            statuses.putAll(mode19.RequestAllDtcStatuses(this));
+
+            SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.AirBag), 1000);
+            statuses.putAll(mode19.RequestAllDtcStatuses(this));
+
+            SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.ABS), 1000);
+            statuses.putAll(mode19.RequestAllDtcStatuses(this));
+        }
+        else
+        {
+            SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.CAN.ShortHeaders.Default), 1000);
+            statuses.putAll(mode19.RequestAllDtcStatuses(this));
+        }
 
         // remove all duplicate entries
 

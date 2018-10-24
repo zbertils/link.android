@@ -64,7 +64,7 @@ public class DtcParameterIdentification extends ParameterIdentification
         if (cable.Protocol == Protocols.Protocol.HighSpeedCAN11 ||
                 cable.Protocol == Protocols.Protocol.LowSpeedCAN11)
         {
-            Protocols.Elm327.SetFrameHeader(Protocols.CAN.Headers.Default);
+            Protocols.Elm327.SetFrameHeader(Protocols.CAN.ShortHeaders.Default);
         }
         else if (cable.Protocol == Protocols.Protocol.J1850)
         {

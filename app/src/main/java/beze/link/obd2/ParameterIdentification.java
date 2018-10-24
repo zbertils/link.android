@@ -53,6 +53,7 @@ public class ParameterIdentification {
     public short PID;
     public int DataByteCount;
     public String Header;
+    public String CANHeader;
 
     public String lastError = "";
 
@@ -85,8 +86,9 @@ public class ParameterIdentification {
             this.Description = jsonObj.getString("Description");
             this.LogThisPID = jsonObj.getBoolean("LogThisPID");
 
-            // the header is optional
+            // the headers are optional
             this.Header = jsonObj.has("Header") ? jsonObj.getString("Header") : null;
+            this.CANHeader = jsonObj.has("CANHeader") ? jsonObj.getString("CANHeader") : null;
 
             // other values to be initialized
             this.Timestamp = 0;

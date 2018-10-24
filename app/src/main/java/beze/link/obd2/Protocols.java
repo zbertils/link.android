@@ -130,18 +130,18 @@ public class Protocols
     }
 
     public static class CAN {
-        public static class Headers {
+        public static class ShortHeaders
+        {
+            public static final String Default = "7DF";
+            public static final String ECU0 = "7E0";
+            public static final String ECU1 = "7E1";
+            public static final String ECU2 = "7E2";
+            public static final String ECU3 = "7E3";
+            public static final String ECU4 = "7E4";
+            public static final String ECU5 = "7E5";
+            public static final String ECU6 = "7E6";
+            public static final String ECU7 = "7E7";
 
-            public static class Destinations {
-                public static final String OffBoardCable = "D";
-            }
-
-            public static class Sources {
-                public static final String PCM = "8";
-                public static final String All = "F";
-            }
-
-            public static final String Default = "7" + Destinations.OffBoardCable + Sources.All;
         }
     }
 
@@ -162,7 +162,7 @@ public class Protocols
         public static final String Prompt = ">";
 
         /// <summary>
-        /// The command for setting the frame header. This String needs to be given the 3-byte frame header value, e.g. "6C 10 F1" or a value from Protocols.J1850.Headers.
+        /// The command for setting the frame header. This String needs to be given the 3-byte frame header value, e.g. "6C 10 F1" or a value from Protocols.J1850.ShortHeaders.
         /// </summary>
         public static String SetFrameHeader(String header)
         {
