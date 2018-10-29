@@ -10,11 +10,6 @@
             android:title="Reconnect at startup" />
         <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="false"
-            android:key="pref_log_pids"
-            android:summary="Saving data to file allows for analyzing later"
-            android:title="Log PID data to file" />
-        <android.support.v7.preference.SwitchPreferenceCompat
-            android:defaultValue="false"
             android:key="pref_show_metric"
             android:summary="If selected Metric units are displayed, otherwise Imperial units are used"
             android:title="Display Metric units" />
