@@ -26,6 +26,7 @@ public abstract class Cable
         public String Version;
         public boolean AutoProtocolSet;
         public Protocols.Protocol Protocol;
+        public String ProtocolName;
         public boolean EchoOff;
         public String Description;
 
@@ -37,6 +38,7 @@ public abstract class Cable
             Version =  "";
             AutoProtocolSet = false;
             Protocol = Protocols.Protocol.None;
+            ProtocolName = "";
             EchoOff = false;
             Description = "";
         }

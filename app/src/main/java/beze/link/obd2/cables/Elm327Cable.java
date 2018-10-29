@@ -94,15 +94,15 @@ public class Elm327Cable extends Cable
 
             info.EchoOff = true;
 
-            callback.ConnectionCallbackAction("Setting timeout to maximum (1 second)");
-            Log.i(TAG, "Elm327Cable: setting timeout to maximum (1 second)");
-            response = SendCommand(Protocols.Elm327.SetTimeoutMaximum, 10000);
-            if (!response.contains(Protocols.Elm327.Responses.OK))
-            {
-                info.Description += "Could not set maximum timeout\r\n";
-                Log.w(TAG, "Elm327Cable: could not set maximum timeout");
-                //return false;
-            }
+//            callback.ConnectionCallbackAction("Setting timeout to maximum (1 second)");
+//            Log.i(TAG, "Elm327Cable: setting timeout to maximum (1 second)");
+//            response = SendCommand(Protocols.Elm327.SetTimeoutMaximum, 10000);
+//            if (!response.contains(Protocols.Elm327.Responses.OK))
+//            {
+//                info.Description += "Could not set maximum timeout\r\n";
+//                Log.w(TAG, "Elm327Cable: could not set maximum timeout");
+//                //return false;
+//            }
 
             callback.ConnectionCallbackAction("Setting headers to off");
             Log.i(TAG, "Elm327Cable: setting headers to off");
@@ -151,6 +151,7 @@ public class Elm327Cable extends Cable
 
             Protocol = Protocols.NameToProtocol(chosenProtocol);
             info.Protocol = Protocol;
+            info.ProtocolName = chosenProtocol;
             info.AutoProtocolSet = true;
 
             // everything is good to go
