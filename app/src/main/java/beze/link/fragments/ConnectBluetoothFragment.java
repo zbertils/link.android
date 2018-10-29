@@ -95,7 +95,7 @@ public class ConnectBluetoothFragment extends Fragment implements AdapterView.On
         Button btnConnect = (Button) getActivity().findViewById(R.id.btnConnect);
 
         version.setText(Globals.cable.info.Version);
-        protocol.setText(Globals.cable.info.Protocol.toString());
+        protocol.setText(Globals.cable.info.ProtocolName);
         status.setText(Globals.cable.info.Description.replace(Protocols.Elm327.EndOfLine, "\r\n"));
 
         btnConnect.setText("DISCONNECT");
