@@ -699,7 +699,19 @@
       "Name": "Transmission Gear",
       "PID": "6554",
       "PidType": "GM Enhanced",
-      "Units": "°F"
+      "Units": "No."
+    },
+    {
+      "DataByteCount": "1",
+      "Description": "Oil pressure",
+      "FormulaString": "(%1$s*0.065-17.5)*6894.7572931783",
+      "Group": "Engine",
+      "LogThisPID": "false",
+      "Mode": "34",
+      "Name": "Oil Pressure",
+      "PID": "4444",
+      "PidType": "GM Enhanced",
+      "Units": "kPa"
     }
   ]
 }

@@ -30,6 +30,7 @@ import beze.link.obd2.cables.Elm327Cable;
 import beze.link.obd2.cables.Elm327CableSimulator;
 import beze.link.obd2.cables.IConnectionCallback;
 import beze.link.ui.DataRecyclerViewAdapter;
+import beze.link.ui.PidsRecyclerViewAdapter;
 import beze.link.util.UpdatePidsWorker;
 import com.android.beze.link.*;
 
@@ -48,6 +49,7 @@ public class Globals
     public static Map<String, String> makes;
     public static Map<String, String> dtcDescriptions;
     public static RecyclerView.Adapter<DataRecyclerViewAdapter.ViewHolder> dataFragmentAdapter = null;
+    public static RecyclerView.Adapter<PidsRecyclerViewAdapter.ViewHolder> pidsFragmentAdapter = null;
     public static UpdatePidsWorker updateWorker = new UpdatePidsWorker(Globals.cable, Globals.shownPids, null);
     public static MainActivity mainActivity;
     //    public static boolean restartWorker = false;

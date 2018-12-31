@@ -44,6 +44,8 @@ public class PidsFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
+        Globals.pidsFragmentAdapter = mAdapter;
+
         return view;
     }
 
