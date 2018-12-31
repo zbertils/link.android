@@ -20,6 +20,11 @@ public class ValidatePidsWorker extends WorkerThread
             try
             {
                 Thread.sleep(1000);
+
+                if (stopWork)
+                {
+                    return;
+                }
             }
             catch (Exception e)
             {
@@ -28,28 +33,44 @@ public class ValidatePidsWorker extends WorkerThread
             }
         }
 
-        // make sure the cable is ready to use
-        if (Globals.cable != null && Globals.cable.IsInitialized())
+        try
         {
-            for (ParameterIdentification pid : Globals.allPids)
+            // make sure the cable is ready to use
+            if (Globals.cable != null && Globals.cable.IsInitialized())
             {
-                // determine if this pid is supported by communicating it
-                String ret = Globals.cable.Communicate(pid);
-                pid.Supported = ret != null && !ret.isEmpty();
-
-                // update the pids view adapter if it is available
-                if (Globals.pidsFragmentAdapter != null)
+                for (ParameterIdentification pid : Globals.allPids)
                 {
-                    Globals.mainActivity.runOnUiThread(new Runnable()
+                    if (stopWork)
                     {
-                        @Override
-                        public void run()
+                        return;
+                    }
+
+                    // only update ones that have not already been validated
+                    if (pid.Supported == null)
+                    {
+                        // determine if this pid is supported by communicating it
+                        String ret = Globals.cable.Communicate(pid);
+                        pid.Supported = ret != null && !ret.isEmpty();
+
+                        // update the pids view adapter if it is available
+                        if (Globals.pidsFragmentAdapter != null)
                         {
-                            Globals.pidsFragmentAdapter.notifyDataSetChanged();
+                            Globals.mainActivity.runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    Globals.pidsFragmentAdapter.notifyDataSetChanged();
+                                }
+                            });
                         }
-                    });
+                    }
                 }
             }
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, "Failed to update supported state for pids", e);
         }
     }
 }

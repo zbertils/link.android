@@ -260,10 +260,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             // stop the pids worker no matter what, if navigating back to the data fragment it will start again
             Globals.stopPidUpdateWorker();
+            Globals.stopPidValidationWorker();
 
             // if the user navigated to the data fragment then start a new thread to update data
             if (fragment instanceof DataFragment) {
                 Globals.startPidUpdateWorker();
+            }
+
+            // if the user navigated to the pid fragment then start a new thread to update known support,
+            // only do this on non-data fragments to prevent it from hogging bandwidth with the data fragment
+            if (!(fragment instanceof DataFragment))
+            {
+                Globals.startPidValidationWorker();
             }
 
             fragmentManager.beginTransaction()

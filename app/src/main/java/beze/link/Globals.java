@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -32,6 +33,8 @@ import beze.link.obd2.cables.IConnectionCallback;
 import beze.link.ui.DataRecyclerViewAdapter;
 import beze.link.ui.PidsRecyclerViewAdapter;
 import beze.link.util.UpdatePidsWorker;
+import beze.link.util.ValidatePidsWorker;
+
 import com.android.beze.link.*;
 
 public class Globals
@@ -51,6 +54,7 @@ public class Globals
     public static RecyclerView.Adapter<DataRecyclerViewAdapter.ViewHolder> dataFragmentAdapter = null;
     public static RecyclerView.Adapter<PidsRecyclerViewAdapter.ViewHolder> pidsFragmentAdapter = null;
     public static UpdatePidsWorker updateWorker = new UpdatePidsWorker(Globals.cable, Globals.shownPids, null);
+    public static ValidatePidsWorker validateWorker = new ValidatePidsWorker();
     public static MainActivity mainActivity;
     //    public static boolean restartWorker = false;
     public static BluetoothAdapter btAdapter;
@@ -288,15 +292,35 @@ public class Globals
         Globals.updateWorker = null;
     }
 
+    public static void stopPidValidationWorker()
+    {
+        if (Globals.validateWorker != null && Globals.validateWorker.isAlive())
+        {
+            Globals.validateWorker.stop();
+            Globals.validateWorker.join();
+        }
+
+        Globals.validateWorker = null;
+    }
+
     /**
      * Starts the PID update worker if the cable allows for it
      */
     public static void startPidUpdateWorker()
     {
-        if (Globals.cable != null && Globals.cable.IsOpen())
+        if (Globals.cable != null && Globals.cable.IsInitialized())
         {
             Globals.updateWorker = new UpdatePidsWorker(Globals.cable, Globals.shownPids, null);
             Globals.updateWorker.start();
+        }
+    }
+
+    public static void startPidValidationWorker()
+    {
+        if (Globals.cable != null && Globals.cable.IsInitialized())
+        {
+            validateWorker = new ValidatePidsWorker();
+            validateWorker.start();
         }
     }
 
@@ -314,7 +338,10 @@ public class Globals
         Globals.cable = new Elm327CableSimulator();
         if (Globals.cable.IsInitialized())
         {
-            Globals.updateWorker.SetCable(Globals.cable);
+            if (Globals.updateWorker != null)
+            {
+                Globals.updateWorker.SetCable(Globals.cable);
+            }
         }
     }
 

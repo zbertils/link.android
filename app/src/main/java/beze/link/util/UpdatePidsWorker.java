@@ -30,6 +30,12 @@ public class UpdatePidsWorker extends WorkerThread
     {
         try
         {
+            // default to the global cable if not given one
+            if (cable == null)
+            {
+                cable = Globals.cable;
+            }
+
             if (cable != null && cable.IsOpen() && pids.size() > 0)
             {
                 while (!stopWork)

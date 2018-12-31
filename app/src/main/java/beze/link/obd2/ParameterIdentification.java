@@ -54,7 +54,7 @@ public class ParameterIdentification {
     public int DataByteCount;
     public String Header;
     public String CANHeader;
-    public boolean Supported = false;
+    public Boolean Supported = null;
 
     public String lastError = "";
 
@@ -114,7 +114,7 @@ public class ParameterIdentification {
             this.mLastDecodedValue = 0;
         }
 
-        this.Supported = false; // default to false, this is something determined at run time
+        this.Supported = null; // default to null, this is something determined at run time
     }
 
     public ParameterIdentification(
@@ -139,7 +139,7 @@ public class ParameterIdentification {
         this.PidType = pidType;
         this.Description = description != null ? description : "";
         this.Header = header != null ? header : "";
-        this.Supported = false; // default to false, this is something determined at run time
+        this.Supported = null; // default to false, this is something determined at run time
     }
 
     public byte PacketSize()

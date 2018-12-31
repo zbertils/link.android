@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -24,6 +25,9 @@ public class PidsRecyclerViewAdapter extends RecyclerView.Adapter<PidsRecyclerVi
         public TextView pidName;
         public TextView pidDescription;
         public CheckBox pidEnabledCheckbox;
+        public ImageView supportedImage;
+        public ImageView unsupportedImage;
+        public ImageView unknownImage;
 
         public ViewHolder(View v) {
             super(v);
@@ -31,6 +35,9 @@ public class PidsRecyclerViewAdapter extends RecyclerView.Adapter<PidsRecyclerVi
             pidName = (TextView) v.findViewById(R.id.textViewPidName);
             pidDescription = (TextView) v.findViewById(R.id.textViewPidDescription);
             pidEnabledCheckbox = (CheckBox) v.findViewById(R.id.checkBoxEnablePid);
+            supportedImage = (ImageView) v.findViewById(R.id.supportedImageView);
+            unsupportedImage = (ImageView) v.findViewById(R.id.unsupportedImageView);
+            unknownImage = (ImageView) v.findViewById(R.id.unknownImageView);
         }
 
 
@@ -79,6 +86,30 @@ public class PidsRecyclerViewAdapter extends RecyclerView.Adapter<PidsRecyclerVi
         holder.pidEnabledCheckbox.setOnClickListener(this);
         holder.pidEnabledCheckbox.setChecked(pid.LogThisPID);
         holder.pidEnabledCheckbox.setTag(pid);
+
+        // only set the supported/unsupported images if the cable has actually been connected
+        if (pid.Supported != null)
+        {
+            if (pid.Supported)
+            {
+                holder.supportedImage.setVisibility(View.VISIBLE);
+                holder.unsupportedImage.setVisibility(View.GONE);
+            }
+            else
+            {
+                holder.supportedImage.setVisibility(View.GONE);
+                holder.unsupportedImage.setVisibility(View.VISIBLE);
+            }
+
+            holder.unknownImage.setVisibility(View.GONE);
+        }
+        else
+        {
+            // if the support is null then it is unknown if supported or unsupported
+            holder.supportedImage.setVisibility(View.GONE);
+            holder.unsupportedImage.setVisibility(View.GONE);
+            holder.unknownImage.setVisibility(View.VISIBLE);
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
