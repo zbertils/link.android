@@ -37,7 +37,7 @@
             android:layout_gravity="center"
             android:clickable="false"
             android:visibility="visible"
-            app:srcCompat="@mipmap/ic_question_round" />
+            app:srcCompat="@android:drawable/ic_menu_help" />
 
         <LinearLayout
             android:layout_width="wrap_content"
