@@ -712,6 +712,18 @@
       "PID": "4444",
       "PidType": "GM Enhanced",
       "Units": "PSI"
+    },
+    {
+      "DataByteCount": "3",
+      "Description": "Odometer",
+      "FormulaString": "%3$s*65535+%2$s*256+%1$s",
+      "Group": "Engine",
+      "LogThisPID": "false",
+      "Mode": "34",
+      "Name": "Odometer",
+      "PID": "25AE",
+      "PidType": "GM Enhanced",
+      "Units": "Miles"
     }
   ]
 }
