@@ -51,7 +51,8 @@ public class DtcParameterIdentification extends ParameterIdentification
     /// Converts the special mode into a String suitable for sending to ELM327 cables.
     /// </summary>
     /// <returns> The String representing the mode only in ELM327 format. </returns>
-    public String Pack()
+    @Override
+    public String Pack(Protocols.Protocol protocol)
     {
         return String.format("%02X", this.Mode);
     }
