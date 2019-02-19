@@ -50,7 +50,7 @@ public class ValidatePidsWorker extends WorkerThread
                     {
                         // determine if this pid is supported by communicating it
                         String ret = Globals.cable.Communicate(pid);
-                        pid.Supported = ret != null && !ret.isEmpty();
+                        pid.Supported = ret != null && !ret.isEmpty() && !ret.toLowerCase().contains("infinity");
 
                         // update the pids view adapter if it is available
                         if (Globals.pidsFragmentAdapter != null)
