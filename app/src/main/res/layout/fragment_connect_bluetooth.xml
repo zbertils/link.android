@@ -10,22 +10,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:text="Select available bluetooth device"
-            android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small" />
-
-        <Spinner
-            android:id="@+id/spinnerBtDevices"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:layout_weight="1"
-            android:entries="@android:string/httpErrorUnsupportedScheme" />
-
         <Button
             android:id="@+id/btnConnect"
             android:layout_width="match_parent"

@@ -19,11 +19,9 @@ public class AppState {
     private static final String appStateFileName = "appstate.json";
 
     public String Version = "1.0";
-    public String LastConnectedDeviceName;
     public List<Short> LastSelectedPids;
 
     private AppState() {
-        LastConnectedDeviceName = "";
         LastSelectedPids = new ArrayList<>();
     }
 

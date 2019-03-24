@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="General">
 
@@ -13,6 +14,13 @@
             android:key="pref_show_metric"
             android:summary="If selected Metric units are displayed, otherwise Imperial units are used"
             android:title="Display Metric units" />
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/bluetoothDevices"
+            android:entryValues="@array/bluetoothDevices"
+            android:key="connection_device"
+            android:summary="Test"
+            android:title="Bluetooth Device" />
     </PreferenceCategory>
     <PreferenceCategory android:title="View">
 

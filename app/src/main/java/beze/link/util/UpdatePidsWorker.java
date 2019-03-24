@@ -1,7 +1,9 @@
 package beze.link.util;
 
+import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
@@ -78,6 +80,8 @@ public class UpdatePidsWorker extends WorkerThread
                     // check if the cable connection is still good
                     if (Globals.cable.NeedsReconnect())
                     {
+                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(Globals.mainActivity.getApplicationContext());
+                        final String connection_device = sharedPref.getString(Globals.Preferences.KEY_PREF_BLUETOOTH_DEVICE, null);
                         Toast.makeText(Globals.appContext, "", Toast.LENGTH_LONG).show();
                         Snackbar.make(Globals.mainActivity.findViewById(R.id.nav_view),
                                 "ELM327 device not responding\nAttempting reconnect",
@@ -85,11 +89,11 @@ public class UpdatePidsWorker extends WorkerThread
                                 .show();
 
                         Globals.disconnectCable();
-                        Globals.connectCable(Globals.appState.LastConnectedDeviceName, null);
+                        Globals.connectCable(connection_device, null);
 
                         if (!Globals.cable.IsInitialized() || !Globals.cable.IsOpen())
                         {
-                            Log.e(TAG, "Could not reconnect to device " + Globals.appState.LastConnectedDeviceName);
+                            Log.e(TAG, "Could not reconnect to device " + connection_device);
                             stop();
                             Snackbar.make(Globals.mainActivity.findViewById(R.id.nav_view),
                                     "Could not auto reconnect device\nTry unplugging the device",

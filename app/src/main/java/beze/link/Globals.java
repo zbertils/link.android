@@ -75,6 +75,7 @@ public class Globals
         public static final String KEY_PREF_SHOW_PID_STREAM_VALUES = "pref_show_pid_stream_values";
         public static final String KEY_PREF_PREVENT_SCREEN_SLEEP = "pref_prevent_screen_sleep";
         public static final String KEY_PREF_SHOW_METRIC_UNITS = "pref_show_metric";
+        public static final String KEY_PREF_BLUETOOTH_DEVICE = "connection_device";
 
     }
 
@@ -369,11 +370,30 @@ public class Globals
         Globals.cable = null;
     }
 
+    public static boolean deviceStillExists(String deviceName)
+    {
+        Set<BluetoothDevice> pairedDevices = Globals.btAdapter.getBondedDevices();
+        if (pairedDevices.size() > 0)
+        {
+            List<String> btBondedDevices = new ArrayList<String>();
+            for (BluetoothDevice device : pairedDevices)
+            {
+                if (deviceName.equals(device.getName()))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public static void connectCable(String deviceName, IConnectionCallback callback)
     {
         Log.d(TAG, "connectCable(" + deviceName + ", " + callback.toString() + ")");
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mainActivity.getApplicationContext());
         boolean simulateData = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SIMULATE_DATA, true);
+
         if (!simulateData)
         {
             // find the BluetoothDevice object associated with the last connect
@@ -408,7 +428,6 @@ public class Globals
                         Globals.cable = new Elm327BluetoothCable(selectedDevice, callback);
                         if (Globals.cable.IsInitialized())
                         {
-                            Globals.appState.LastConnectedDeviceName = selectedDevice.getName();
                             break;
                         }
                     }
@@ -431,7 +450,6 @@ public class Globals
         // simulated data, create and "connect" the device
         else
         {
-            Globals.appState.LastConnectedDeviceName = SimulatedCableName;
             Globals.connectSimulatedCable();
         }
 

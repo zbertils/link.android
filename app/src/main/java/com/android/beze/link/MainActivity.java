@@ -1,6 +1,7 @@
 package com.android.beze.link;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.support.v4.app.Fragment;
+import android.widget.Toast;
 
 import beze.link.fragments.AdvancedFragment;
 import beze.link.fragments.ConnectFragment;
@@ -74,6 +76,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Globals.loadMakes(this);
         Globals.loadDtcDescriptions(this);
 
+        Globals.btAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (Globals.btAdapter == null) {
+            Snackbar.make(navigationView, "This device does not support bluetooth!", 1500);
+        }
+        else {
+            Log.i(TAG, "onCreateView: default bluetooth adapter obtained");
+        }
+
         // get the activity_settings that apply at start up
         boolean simulateData = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SIMULATE_DATA, false);
         boolean connectOnStart = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_RECONNECT_AT_START, false);
@@ -84,14 +94,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             else {
                 // TODO: get the last connected bluetooth device
             }
-        }
-
-        Globals.btAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (Globals.btAdapter == null) {
-            Snackbar.make(navigationView, "This device does not support bluetooth!", 1500);
-        }
-        else {
-            Log.i(TAG, "onCreateView: default bluetooth adapter obtained");
         }
 
         // determine which page to start from when the application starts
@@ -134,15 +136,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onStart() {
         super.onStart();
 
-        if (!Globals.btAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        if (Globals.btAdapter != null)
+        {
+            if (!Globals.btAdapter.isEnabled())
+            {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            }
+            else
+            {
+                Log.i(TAG, "onStart: bluetooth is already enabled");
+            }
         }
-        else {
-            Log.i(TAG, "onStart: bluetooth is already enabled");
+        else
+        {
+            Log.e(TAG, "Bluetooth adapter not found");
         }
 
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String connectionDevice = sharedPref.getString(Globals.Preferences.KEY_PREF_BLUETOOTH_DEVICE, null);
 
+        if (connectionDevice == null || connectionDevice.equalsIgnoreCase(""))
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("No bluetooth device is selected, please go to settings in the upper right to select a bluetooth device").show();
+        }
+        else if (!Globals.deviceStillExists(connectionDevice))
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Previously selected bluetooth device is not available, please go to settings in the upper right to select a bluetooth device").show();
+        }
+        else
+        {
+//            Toast.makeText(this, "Connecting to " + connectionDevice, Toast.LENGTH_LONG).show();
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -204,7 +231,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.

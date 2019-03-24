@@ -32,11 +32,10 @@ import beze.link.obd2.Protocols;
 import beze.link.obd2.cables.IConnectionCallback;
 
 
-public class ConnectBluetoothFragment extends Fragment implements AdapterView.OnItemSelectedListener, AdapterView.OnClickListener, IConnectionCallback, Runnable
+public class ConnectBluetoothFragment extends Fragment implements AdapterView.OnClickListener, IConnectionCallback, Runnable
 {
 
     private static final String TAG = Globals.TAG_BASE + "ConnectBluetoothFragment";
-    private String selectedItemName = "";
 
     public ConnectBluetoothFragment()
     {
@@ -108,6 +107,7 @@ public class ConnectBluetoothFragment extends Fragment implements AdapterView.On
     {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         boolean simulateData = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SIMULATE_DATA, true);
+        final String connection_device = sharedPref.getString(Globals.Preferences.KEY_PREF_BLUETOOTH_DEVICE, null);
 
         final TextView status = (TextView) getActivity().findViewById(R.id.textViewConnectStatus);
         final TextView version = (TextView) getActivity().findViewById(R.id.textViewConnectDeviceVersion);
@@ -117,7 +117,7 @@ public class ConnectBluetoothFragment extends Fragment implements AdapterView.On
         String buttonState = btnConnect.getText().toString().toUpperCase();
         if (buttonState.equals("CONNECT"))
         {
-            Globals.connectCable(selectedItemName, this);
+            Globals.connectCable(connection_device, this);
 
             if (Globals.cable != null)
             {
@@ -128,7 +128,7 @@ public class ConnectBluetoothFragment extends Fragment implements AdapterView.On
                         @Override
                         public void run()
                         {
-                            Toast.makeText(Globals.appContext, "Connected to \"" + Globals.appState.LastConnectedDeviceName + "\" successfully!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Globals.appContext, "Connected to \"" + connection_device + "\" successfully!", Toast.LENGTH_LONG).show();
 
                             if (Globals.cable.info != null)
                             {
@@ -189,14 +189,12 @@ public class ConnectBluetoothFragment extends Fragment implements AdapterView.On
         // the debug text should be displayed if in debug build, and invisible otherwise
         TextView debugText = (TextView) getActivity().findViewById(R.id.textViewConnectDebug);
         Button connectButton = getActivity().findViewById(R.id.btnConnect);
-        Spinner connectSpinner = (Spinner) getActivity().findViewById(R.id.spinnerBtDevices);
 
-        if (debugText == null || connectButton == null || connectSpinner == null)
+        if (debugText == null || connectButton == null)
         {
             Log.w(TAG, "Cannot start connect fragment, one of the GUI objects is null");
             return;
         }
-
 
         if (BuildConfig.DEBUG)
         {
@@ -210,36 +208,6 @@ public class ConnectBluetoothFragment extends Fragment implements AdapterView.On
         // set the onClick listener programmatically, if it is in the xml it needs to be in the activity source,
         // it is easier and better maintained to stay in the fragment the button belongs to
         connectButton.setOnClickListener(this);
-
-        boolean lastConnectedDeviceStillExists = false;
-
-        Set<BluetoothDevice> pairedDevices = Globals.btAdapter.getBondedDevices();
-        if (pairedDevices.size() > 0)
-        {
-            List<String> btBondedDevices = new ArrayList<String>();
-            for (BluetoothDevice device : pairedDevices)
-            {
-                btBondedDevices.add(device.getName());
-            }
-
-            ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_item, btBondedDevices);
-            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            connectSpinner.setAdapter(spinnerAdapter);
-            connectSpinner.setOnItemSelectedListener(this);
-
-            // set the last connected device if it's still available
-            int lastSelectedIndex = btBondedDevices.indexOf(Globals.appState.LastConnectedDeviceName);
-            if (lastSelectedIndex >= 0)
-            {
-                selectedItemName = Globals.appState.LastConnectedDeviceName; // set the selected item name since it still exists
-                connectSpinner.setSelection(lastSelectedIndex);
-                lastConnectedDeviceStillExists = true;
-            }
-        }
-        else
-        {
-            Log.w(TAG, "onStart: no paired devices found");
-        }
 
         // setup the view based on the current state
         TextView status = (TextView) getActivity().findViewById(R.id.textViewConnectStatus);
@@ -267,37 +235,18 @@ public class ConnectBluetoothFragment extends Fragment implements AdapterView.On
 
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
             boolean reconnect = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_RECONNECT_AT_START, true);
+            boolean simulation = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SIMULATE_DATA, true);
+            final String connection_device = sharedPref.getString(Globals.Preferences.KEY_PREF_BLUETOOTH_DEVICE, null);
             if (reconnect)
             {
                 // reconnect if the device still exists (still paired), or the last device was a simulated cable
-                if (lastConnectedDeviceStillExists || Globals.appState.LastConnectedDeviceName.equals(Globals.SimulatedCableName))
+                if (simulation)
                 {
-
-                    Toast.makeText(Globals.appContext, "Reconnecting to " + Globals.appState.LastConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Globals.appContext, "Reconnecting to " + connection_device, Toast.LENGTH_SHORT).show();
                     connectButton.performClick();
                 }
             }
-            else if (!Globals.appState.LastConnectedDeviceName.isEmpty())
-            {
-                Toast.makeText(Globals.appContext, "Device '" + Globals.appState.LastConnectedDeviceName + "' no longer exists", Toast.LENGTH_LONG).show();
-            }
         }
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapter, View view, int position, long id)
-    {
-        String item = adapter.getItemAtPosition(position).toString();
-        selectedItemName = item;
-
-        Log.i(TAG, "onItemSelected: selected position: " + position);
-        Log.i(TAG, "onItemSelected: selected item name: " + item);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> var1)
-    {
-        Log.i(TAG, "onNothingSelected: no bluetooth device was selected, doing nothing");
     }
 
     @Override
