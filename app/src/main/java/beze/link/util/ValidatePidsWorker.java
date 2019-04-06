@@ -48,9 +48,23 @@ public class ValidatePidsWorker extends WorkerThread
                     // only update ones that have not already been validated
                     if (pid.Supported == null)
                     {
+                        // default to unsupported, if a valid number is returned it will be updated
+                        pid.Supported = false;
+
                         // determine if this pid is supported by communicating it
                         String ret = Globals.cable.Communicate(pid);
-                        pid.Supported = ret != null && !ret.isEmpty() && !ret.toLowerCase().contains("infinity");
+                        if (ret != null && !ret.isEmpty())
+                        {
+                            // check the unpacked number against possible error numbers
+                            double value = pid.Unpack(ret);
+                            if (!Double.isInfinite(value) &&    // not negative/positive infinity
+                                !Double.isNaN(value) &&         // not NaN
+                                value < Double.MAX_VALUE &&     // less than the max
+                                value > Double.MIN_VALUE)       // more than the min
+                            {
+                                pid.Supported = true;
+                            }
+                        }
 
                         // update the pids view adapter if it is available
                         if (Globals.pidsFragmentAdapter != null)
