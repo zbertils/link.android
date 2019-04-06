@@ -64,12 +64,12 @@ public class DataRecyclerViewAdapter extends RecyclerView.Adapter<DataRecyclerVi
         holder.pidUnits.setText(pid.Units);
 
         // hide the text if the user does not want to see them
-        if (!showPidValue) {
+        if (!showPidValue || Globals.cable == null) {
             holder.pidValue.setVisibility(View.INVISIBLE);
         }
         else {
             holder.pidValue.setVisibility(View.VISIBLE);
-            holder.pidValue.setText( ((pid.Header != null && !Protocols.IsCan(Globals.cable.Protocol)) ? pid.Header : "") + pid.Pack(Globals.cable.Protocol));
+            holder.pidValue.setText(((pid.Header != null && !Protocols.IsCan(Globals.cable.Protocol)) ? pid.Header : "") + pid.Pack(Globals.cable.Protocol));
         }
     }
 

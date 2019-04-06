@@ -12,7 +12,6 @@ import beze.link.obd2.DiagnosticTroubleCode;
 import beze.link.obd2.ParameterIdentification;
 import beze.link.obd2.Protocols;
 import beze.link.obd2.cables.Cable;
-import beze.link.util.LinkMapEntry;
 
 public class Mode19 extends ParameterIdentification
 {

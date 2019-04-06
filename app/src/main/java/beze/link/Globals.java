@@ -32,6 +32,7 @@ import beze.link.obd2.cables.Elm327CableSimulator;
 import beze.link.obd2.cables.IConnectionCallback;
 import beze.link.ui.DataRecyclerViewAdapter;
 import beze.link.ui.PidsRecyclerViewAdapter;
+import beze.link.util.ConnectDeviceWorker;
 import beze.link.util.UpdatePidsWorker;
 import beze.link.util.ValidatePidsWorker;
 
@@ -53,8 +54,9 @@ public class Globals
     public static Map<String, String> dtcDescriptions;
     public static RecyclerView.Adapter<DataRecyclerViewAdapter.ViewHolder> dataFragmentAdapter = null;
     public static RecyclerView.Adapter<PidsRecyclerViewAdapter.ViewHolder> pidsFragmentAdapter = null;
-    public static UpdatePidsWorker updateWorker = new UpdatePidsWorker(Globals.cable, Globals.shownPids, null);
+    public static UpdatePidsWorker updateWorker = new UpdatePidsWorker(Globals.shownPids, null);
     public static ValidatePidsWorker validateWorker = new ValidatePidsWorker();
+    public static ConnectDeviceWorker connectionWorker = null;
     public static MainActivity mainActivity;
     //    public static boolean restartWorker = false;
     public static BluetoothAdapter btAdapter;
@@ -309,9 +311,9 @@ public class Globals
      */
     public static void startPidUpdateWorker()
     {
-        if (Globals.cable != null && Globals.cable.IsInitialized())
+//        if (Globals.cable != null && Globals.cable.IsInitialized())
         {
-            Globals.updateWorker = new UpdatePidsWorker(Globals.cable, Globals.shownPids, null);
+            Globals.updateWorker = new UpdatePidsWorker(Globals.shownPids, null);
             Globals.updateWorker.start();
         }
     }
@@ -337,13 +339,6 @@ public class Globals
     public static void connectSimulatedCable()
     {
         Globals.cable = new Elm327CableSimulator();
-        if (Globals.cable.IsInitialized())
-        {
-            if (Globals.updateWorker != null)
-            {
-                Globals.updateWorker.SetCable(Globals.cable);
-            }
-        }
     }
 
     public static void showToast(final String string, final int length)
@@ -388,69 +383,12 @@ public class Globals
         return false;
     }
 
-    public static void connectCable(String deviceName, IConnectionCallback callback)
+    public static void connectCable(String deviceName)
     {
-        Log.d(TAG, "connectCable(" + deviceName + ", " + callback.toString() + ")");
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mainActivity.getApplicationContext());
-        boolean simulateData = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SIMULATE_DATA, true);
-
-        if (!simulateData)
+        if (connectionWorker == null)
         {
-            // find the BluetoothDevice object associated with the last connect
-            BluetoothDevice selectedDevice = null;
-            Set<BluetoothDevice> pairedDevices = Globals.btAdapter.getBondedDevices();
-            for (BluetoothDevice device : pairedDevices)
-            {
-                String name = device.getName();
-                if (name.equals(deviceName))
-                {
-                    selectedDevice = device;
-                    Log.d(TAG, "connectCable: selected device was " + device.getName());
-                    break;
-                }
-            }
-
-            if (selectedDevice != null)
-            {
-                int attemptCount = 0;
-
-                do
-                {
-                    try
-                    {
-                        // close any previously existing connection
-                        if (Globals.cable != null)
-                        {
-                            Globals.cable.Close();
-                            Globals.cable = null;
-                        }
-
-                        Globals.cable = new Elm327BluetoothCable(selectedDevice, callback);
-                        if (Globals.cable.IsInitialized())
-                        {
-                            break;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.e(TAG, "connectCable: could not connect to remote device (attempt " + (attemptCount + 1), ex);
-                        ex.printStackTrace();
-
-                        if (Globals.cable != null)
-                        {
-                            Globals.cable.Close();
-                            Globals.cable = null;
-                        }
-                    }
-                    attemptCount++;
-                } while (!Globals.cable.IsInitialized() && attemptCount < 3);
-            }
-        }
-
-        // simulated data, create and "connect" the device
-        else
-        {
-            Globals.connectSimulatedCable();
+            connectionWorker = new ConnectDeviceWorker();
+            connectionWorker.start(deviceName);
         }
 
     }

@@ -61,7 +61,7 @@ public class Elm327Cable extends Cable
         info = new CableInfo();
 
         Log.i(TAG, "Elm327Cable: discovering ELM version");
-        callback.ConnectionCallbackAction("Discovering ELM version");
+        //callback.ConnectionCallbackAction("Discovering ELM version");
 
         // detect what type of cable is connected
         String response = SendCommand(Protocols.Elm327.Reset, 10000, Protocols.Elm327.Header);
@@ -77,12 +77,12 @@ public class Elm327Cable extends Cable
                 version = response.substring(indexOfVersion);
                 Log.i(TAG, "Elm327Cable: discovered ELM version: " + version);
                 info.Version = version;
-                callback.ConnectionCallbackAction("Discovered ELM version " + version);
+//                callback.ConnectionCallbackAction("Discovered ELM version " + version);
             }
 
             // turn echo off
             Log.i(TAG, "Elm327Cable: turning echo off");
-            callback.ConnectionCallbackAction("Turning echo off");
+//            callback.ConnectionCallbackAction("Turning echo off");
 
             response = SendCommand(Protocols.Elm327.EchoOff, 10000);
             if (!response.contains(Protocols.Elm327.Responses.OK))
@@ -104,7 +104,7 @@ public class Elm327Cable extends Cable
 //                //return false;
 //            }
 
-            callback.ConnectionCallbackAction("Setting headers to off");
+//            callback.ConnectionCallbackAction("Setting headers to off");
             Log.i(TAG, "Elm327Cable: setting headers to off");
             response = SendCommand(Protocols.Elm327.SetHeadersOff, 10000);
             if (!response.contains(Protocols.Elm327.Responses.OK))
@@ -114,7 +114,7 @@ public class Elm327Cable extends Cable
                 //return false;
             }
 
-            callback.ConnectionCallbackAction("Turning auto protocol on");
+//            callback.ConnectionCallbackAction("Turning auto protocol on");
             Log.i(TAG, "Elm327Cable: turning auto protocol on");
             response = SendCommand(Protocols.Elm327.SetAutoProtocol, 10000);
             if (!response.contains(Protocols.Elm327.Responses.OK))
@@ -124,7 +124,7 @@ public class Elm327Cable extends Cable
                 return false;
             }
 
-            callback.ConnectionCallbackAction("Forcing search for existing protocols");
+//            callback.ConnectionCallbackAction("Forcing search for existing protocols");
             Log.i(TAG, "Elm327Cable: forcing a search for existing protocols");
 
             // send a single pid, wait for a long time since some cars take a while
@@ -140,7 +140,7 @@ public class Elm327Cable extends Cable
                     .replace(Protocols.Elm327.Responses.Auto, "")
                     .replace(",", "").trim();
 
-            callback.ConnectionCallbackAction("Chosen protocol: " + chosenProtocol);
+//            callback.ConnectionCallbackAction("Chosen protocol: " + chosenProtocol);
             Log.i(TAG, "Elm327Cable: protocol chosen: " + chosenProtocol);
             if (!response.contains(Protocols.Elm327.Responses.Auto))
             {
@@ -162,7 +162,7 @@ public class Elm327Cable extends Cable
             Log.i(TAG, "Elm327Cable: connected!");
         }
         else {
-            callback.ConnectionCallbackAction("Could not reset ELM device, received:\r\n" + response.replace(Protocols.Elm327.EndOfLine, "\r\n"));
+//            callback.ConnectionCallbackAction("Could not reset ELM device, received:\r\n" + response.replace(Protocols.Elm327.EndOfLine, "\r\n"));
         }
 
         return true;

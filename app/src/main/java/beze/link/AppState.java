@@ -20,9 +20,13 @@ public class AppState {
 
     public String Version = "1.0";
     public List<Short> LastSelectedPids;
+    public List<VehicleProfile> profiles;
+    public VehicleProfile activeProfile;
 
     private AppState() {
         LastSelectedPids = new ArrayList<>();
+        profiles = new ArrayList<>();
+        activeProfile = new VehicleProfile();
     }
 
     public static AppState getAppState(Activity main) {

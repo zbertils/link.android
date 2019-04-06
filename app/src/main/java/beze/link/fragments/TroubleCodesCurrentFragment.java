@@ -59,7 +59,7 @@ public class TroubleCodesCurrentFragment extends Fragment implements View.OnClic
                     break;
 
                 case DialogInterface.BUTTON_NEGATIVE:
-                    // do nothing, use declined
+                    // do nothing, user declined
                     break;
             }
         }
@@ -75,6 +75,15 @@ public class TroubleCodesCurrentFragment extends Fragment implements View.OnClic
         // show the progress bar and then get all trouble codes and statuses
         final ProgressBar progressBar = (ProgressBar) Globals.mainActivity.findViewById(R.id.dtcCurrentProgressBar);
         final TextView noCodesTextView = (TextView) Globals.mainActivity.findViewById(R.id.noCodesTextView);
+
+        try
+        {
+            Thread.sleep(1000);
+        }
+        catch (Exception ex)
+        {
+            Log.e(TAG, "Exception sleeping", ex);
+        }
 
         if (Globals.cable != null && Globals.cable.IsInitialized())
         {
@@ -101,12 +110,18 @@ public class TroubleCodesCurrentFragment extends Fragment implements View.OnClic
                     if (currentCodes.size() == 0)
                     {
                         Toast.makeText(Globals.appContext, "No trouble codes present!", Toast.LENGTH_LONG).show();
-                        noCodesTextView.setVisibility(View.VISIBLE);
+                        if (noCodesTextView != null)
+                        {
+                            noCodesTextView.setVisibility(View.VISIBLE);
+                        }
                     }
                     else
                     {
                         mCurrentDtcAdapter.notifyDataSetChanged();
-                        noCodesTextView.setVisibility(View.GONE);
+                        if (noCodesTextView != null)
+                        {
+                            noCodesTextView.setVisibility(View.GONE);
+                        }
                     }
 
                     if (progressBar != null)

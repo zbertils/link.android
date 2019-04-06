@@ -23,7 +23,6 @@ import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 import beze.link.fragments.AdvancedFragment;
-import beze.link.fragments.ConnectFragment;
 import beze.link.fragments.DataFragment;
 import beze.link.fragments.HomeFragment;
 import beze.link.fragments.PidsFragment;
@@ -100,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment, new ConnectFragment())
+                    .replace(R.id.fragment, new HomeFragment())
                     .commit();
         }
 
@@ -153,22 +152,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.e(TAG, "Bluetooth adapter not found");
         }
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String connectionDevice = sharedPref.getString(Globals.Preferences.KEY_PREF_BLUETOOTH_DEVICE, null);
+        // only try to connect the cable if it has not already been connected, such as a previous
+        // connection, the app was paused, then the user came back to the app and made it active
+        if (Globals.cable == null)
+        {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            String connectionDevice = sharedPref.getString(Globals.Preferences.KEY_PREF_BLUETOOTH_DEVICE, null);
 
-        if (connectionDevice == null || connectionDevice.equalsIgnoreCase(""))
-        {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("No bluetooth device is selected, please go to settings in the upper right to select a bluetooth device").show();
-        }
-        else if (!Globals.deviceStillExists(connectionDevice))
-        {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Previously selected bluetooth device is not available, please go to settings in the upper right to select a bluetooth device").show();
-        }
-        else
-        {
-//            Toast.makeText(this, "Connecting to " + connectionDevice, Toast.LENGTH_LONG).show();
+            if (connectionDevice == null || connectionDevice.equalsIgnoreCase(""))
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("No bluetooth device is selected, please go to settings in the upper right to select a bluetooth device").show();
+            }
+            else if (!Globals.deviceStillExists(connectionDevice))
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Previously selected bluetooth device is not available, please go to settings in the upper right to select a bluetooth device").show();
+            }
+            else
+            {
+                Toast.makeText(this, "Connecting to " + connectionDevice, Toast.LENGTH_LONG).show();
+                Globals.connectCable(connectionDevice);
+            }
         }
     }
 
@@ -264,10 +269,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 setTitle("Trouble Codes");
                 fragment = new TroubleCodesFragment();
                 break;
-            case R.id.nav_connect:
-                setTitle("Connect");
-                fragment = new ConnectFragment();
-                break;
+//            case R.id.nav_connect:
+//                setTitle("Connect");
+//                fragment = new ConnectFragment();
+//                break;
             case R.id.nav_advanced:
                 setTitle("Advanced");
                 fragment = new AdvancedFragment();
@@ -297,7 +302,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // only do this on non-data fragments to prevent it from hogging bandwidth with the data fragment
             if (!(fragment instanceof DataFragment))
             {
-                Globals.startPidValidationWorker();
+                // FIXME: for now, do not validate pids here, it will be done after connecting
+//                Globals.startPidValidationWorker();
             }
 
             fragmentManager.beginTransaction()

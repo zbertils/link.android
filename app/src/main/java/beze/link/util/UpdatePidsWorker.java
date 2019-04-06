@@ -19,9 +19,8 @@ public class UpdatePidsWorker extends WorkerThread
 {
     private final static String TAG = Globals.TAG_BASE + "UpdatePidsWorker";
 
-    public UpdatePidsWorker(Cable obdCable, List<ParameterIdentification> pids, List<Pair<Double, ParameterIdentification>> decodedValues)
+    public UpdatePidsWorker(List<ParameterIdentification> pids, List<Pair<Double, ParameterIdentification>> decodedValues)
     {
-        this.cable = obdCable;
         this.pids = pids;
         this.decodedValues = decodedValues;
     }
@@ -32,74 +31,84 @@ public class UpdatePidsWorker extends WorkerThread
     {
         try
         {
-            // default to the global cable if not given one
-            if (cable == null)
-            {
-                cable = Globals.cable;
-            }
-
-            if (cable != null && cable.IsOpen() && pids.size() > 0)
+            if (pids.size() > 0)
             {
                 while (!stopWork)
                 {
-                    // only iterate over the pids that are being logged
-                    for (ParameterIdentification pid : pids)
+                    if (Globals.cable != null)
                     {
-                        String data = cable.Communicate(pid);
-                        if (data != null && !data.isEmpty())
+                        // only iterate over the pids that are being logged
+                        for (ParameterIdentification pid : pids)
                         {
-                            double value = pid.Unpack(data);
-                            pid.setLastDecodedValue(value);
-                        }
-                        else
-                        {
-                            Log.w(TAG, "Could not update PID " + pid.getShortName());
-                            pid.setLastDecodedValue(Double.NaN);
-                        }
-
-                        // if this is not null then tell the screen to update,
-                        // this should be set around the time the thread starts
-                        if (Globals.dataFragmentAdapter != null)
-                        {
-                            Globals.mainActivity.runOnUiThread(new Runnable()
+                            if (pid != null)
                             {
-                                @Override
-                                public void run()
+//                                Log.v(TAG, "Fetching pid data for " + pid.Name);
+
+                                // only attempt to communicate the pid if it is supported
+                                if (pid.Supported != null && pid.Supported)
                                 {
-                                    Globals.dataFragmentAdapter.notifyDataSetChanged();
+                                    String data = Globals.cable.Communicate(pid);
+                                    if (data != null && !data.isEmpty())
+                                    {
+                                        double value = pid.Unpack(data);
+                                        pid.setLastDecodedValue(value);
+                                    }
+                                    else
+                                    {
+                                        Log.w(TAG, "Could not update PID " + pid.getShortName());
+                                        pid.setLastDecodedValue(Double.NaN);
+                                    }
+
+                                    // if this is not null then tell the screen to update,
+                                    // this should be set around the time the thread starts
+                                    if (Globals.dataFragmentAdapter != null)
+                                    {
+                                        Globals.mainActivity.runOnUiThread(new Runnable()
+                                        {
+                                            @Override
+                                            public void run()
+                                            {
+                                                Globals.dataFragmentAdapter.notifyDataSetChanged();
+                                            }
+                                        });
+                                    }
                                 }
-                            });
+                            }
+                            else
+                            {
+                                Log.w(TAG, "Trying to fetch null pid object");
+                            }
+
+                            if (stopWork)
+                            {
+                                break;
+                            }
                         }
 
-                        if (stopWork)
-                        {
-                            break;
-                        }
-                    }
-
-                    // check if the cable connection is still good
-                    if (Globals.cable.NeedsReconnect())
-                    {
-                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(Globals.mainActivity.getApplicationContext());
-                        final String connection_device = sharedPref.getString(Globals.Preferences.KEY_PREF_BLUETOOTH_DEVICE, null);
-                        Toast.makeText(Globals.appContext, "", Toast.LENGTH_LONG).show();
-                        Snackbar.make(Globals.mainActivity.findViewById(R.id.nav_view),
-                                "ELM327 device not responding\nAttempting reconnect",
-                                Snackbar.LENGTH_LONG).setAction("Action", null)
-                                .show();
-
-                        Globals.disconnectCable();
-                        Globals.connectCable(connection_device, null);
-
-                        if (!Globals.cable.IsInitialized() || !Globals.cable.IsOpen())
-                        {
-                            Log.e(TAG, "Could not reconnect to device " + connection_device);
-                            stop();
-                            Snackbar.make(Globals.mainActivity.findViewById(R.id.nav_view),
-                                    "Could not auto reconnect device\nTry unplugging the device",
-                                    Snackbar.LENGTH_LONG).setAction("Action", null)
-                                    .show();
-                        }
+//                        // check if the cable connection is still good
+//                        if (Globals.cable.NeedsReconnect())
+//                        {
+//                            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(Globals.mainActivity.getApplicationContext());
+//                            final String connection_device = sharedPref.getString(Globals.Preferences.KEY_PREF_BLUETOOTH_DEVICE, null);
+//                            Toast.makeText(Globals.appContext, "", Toast.LENGTH_LONG).show();
+//                            Snackbar.make(Globals.mainActivity.findViewById(R.id.nav_view),
+//                                    "ELM327 device not responding\nAttempting reconnect",
+//                                    Snackbar.LENGTH_LONG).setAction("Action", null)
+//                                    .show();
+//
+//                            Globals.disconnectCable();
+//                            Globals.connectCable(connection_device);
+//
+//                            if (!Globals.cable.IsInitialized() || !Globals.cable.IsOpen())
+//                            {
+//                                Log.e(TAG, "Could not reconnect to device " + connection_device);
+//                                stop();
+//                                Snackbar.make(Globals.mainActivity.findViewById(R.id.nav_view),
+//                                        "Could not auto reconnect device\nTry unplugging the device",
+//                                        Snackbar.LENGTH_LONG).setAction("Action", null)
+//                                        .show();
+//                            }
+//                        }
                     }
                 }
             }
@@ -111,33 +120,19 @@ public class UpdatePidsWorker extends WorkerThread
         }
         catch (Exception e)
         {
-            Log.e(TAG, "doWork: encountered an error");
+            Log.e(TAG, "doWork: encountered an error", e);
             Snackbar.make(Globals.mainActivity.findViewById(R.id.nav_view), "doWork: encountered an error", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             e.printStackTrace();
         }
     }
 
     /// <summary>
-/// Sets the cable used by the worker thread.
-/// </summary>
-/// <param name="cable"> The cable to use. </param>
-/// <remarks>
-/// This function stops the worker thread if it is running and does not restart it.
-/// </remarks>
-    public void SetCable(Cable cable)
-    {
-        stop();
-        join();
-        this.cable = cable;
-    }
-
-    /// <summary>
-/// Sets the PID list used by the worker thread.
-/// </summary>
-/// <param name="pids"> The PID list to use. </param>
-/// <remarks>
-/// This function stops the worker thread if it is running and does not restart it.
-/// </remarks>
+    /// Sets the PID list used by the worker thread.
+    /// </summary>
+    /// <param name="pids"> The PID list to use. </param>
+    /// <remarks>
+    /// This function stops the worker thread if it is running and does not restart it.
+    /// </remarks>
     public void SetPids(List<ParameterIdentification> pids)
     {
         stop();
@@ -145,7 +140,6 @@ public class UpdatePidsWorker extends WorkerThread
         this.pids = pids;
     }
 
-    private Cable cable = null;
     private List<ParameterIdentification> pids = null;
     private List<Pair<Double, ParameterIdentification>> decodedValues = null;
 

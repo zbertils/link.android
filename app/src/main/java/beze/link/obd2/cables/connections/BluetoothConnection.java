@@ -55,7 +55,18 @@ public class BluetoothConnection extends CableConnection
         }
         catch (Exception e)
         {
-            Log.e(TAG, "Failed to connect bluetooth socket", e);
+            if (socket != null)
+            {
+                try
+                {
+                    socket.close();
+                }catch (Exception inner) {} // do nothing, just try to close the socket
+            }
+
+            // assign the socket object to null no matter what, something bad happened
+            socket = null;
+
+            Log.v(TAG, "Failed to connect bluetooth socket", e);
             return false;
         }
     }
