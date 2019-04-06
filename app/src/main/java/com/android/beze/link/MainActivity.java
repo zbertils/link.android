@@ -302,8 +302,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // only do this on non-data fragments to prevent it from hogging bandwidth with the data fragment
             if (!(fragment instanceof DataFragment))
             {
-                // FIXME: for now, do not validate pids here, it will be done after connecting
-//                Globals.startPidValidationWorker();
+                Globals.startPidValidationWorker();
             }
 
             fragmentManager.beginTransaction()
