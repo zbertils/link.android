@@ -109,6 +109,7 @@ public class ConnectDeviceWorker extends WorkerThread
                                     });
 
                                     Globals.cable = newCable;
+                                    Globals.startPidValidationWorker(); // start validating pids right away
                                     Log.i(TAG, "Connection to " + deviceName + " successful");
                                     break;
                                 }
