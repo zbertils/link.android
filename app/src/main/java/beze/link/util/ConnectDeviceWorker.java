@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import beze.link.Globals;
+import beze.link.fragments.CableInteractionFragment;
 import beze.link.obd2.cables.Cable;
 import beze.link.obd2.cables.Elm327BluetoothCable;
 
@@ -33,31 +34,6 @@ public class ConnectDeviceWorker extends WorkerThread
         boolean work = true;
         do
         {
-//            if (Globals.cable == null || !Globals.cable.IsOpen())
-//            {
-//                Globals.cable = null;
-//                Set<BluetoothDevice> pairedDevices = Globals.btAdapter.getBondedDevices();
-//                if (pairedDevices.size() > 0)
-//                {
-//                    List<String> btBondedDevices = new ArrayList<String>();
-//                    for (BluetoothDevice device : pairedDevices)
-//                    {
-//                        btBondedDevices.add(device.getName());
-//                    }
-//                }
-//            }
-//
-//            try
-//            {
-//                Thread.sleep(500);
-//            }
-//            catch (Exception ex)
-//            {
-//                work = false;
-//                Log.e(TAG, "Exception sleeping, exiting connection thread", ex);
-//            }
-
-
             if (Globals.cable == null || !Globals.cable.IsOpen())
             {
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(Globals.mainActivity.getApplicationContext());
@@ -109,6 +85,13 @@ public class ConnectDeviceWorker extends WorkerThread
                                     });
 
                                     Globals.cable = newCable;
+
+                                    CableInteractionFragment cableFragment = Globals.currentCableStateCallback.get();
+                                    if (cableFragment != null)
+                                    {
+                                        cableFragment.onCableStateChanged();
+                                    }
+
                                     Globals.startPidValidationWorker(); // start validating pids right away
                                     Log.i(TAG, "Connection to " + deviceName + " successful");
                                     break;

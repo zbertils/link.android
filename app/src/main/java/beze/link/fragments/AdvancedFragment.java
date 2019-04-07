@@ -22,13 +22,18 @@ import beze.link.obd2.Protocols;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AdvancedFragment extends Fragment implements View.OnClickListener {
+public class AdvancedFragment extends CableInteractionFragment implements View.OnClickListener {
 
 
     public AdvancedFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCableStateChanged()
+    {
+        // do nothing for now
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

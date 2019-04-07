@@ -84,31 +84,6 @@ public class UpdatePidsWorker extends WorkerThread
                                 break;
                             }
                         }
-
-//                        // check if the cable connection is still good
-//                        if (Globals.cable.NeedsReconnect())
-//                        {
-//                            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(Globals.mainActivity.getApplicationContext());
-//                            final String connection_device = sharedPref.getString(Globals.Preferences.KEY_PREF_BLUETOOTH_DEVICE, null);
-//                            Toast.makeText(Globals.appContext, "", Toast.LENGTH_LONG).show();
-//                            Snackbar.make(Globals.mainActivity.findViewById(R.id.nav_view),
-//                                    "ELM327 device not responding\nAttempting reconnect",
-//                                    Snackbar.LENGTH_LONG).setAction("Action", null)
-//                                    .show();
-//
-//                            Globals.disconnectCable();
-//                            Globals.connectCable(connection_device);
-//
-//                            if (!Globals.cable.IsInitialized() || !Globals.cable.IsOpen())
-//                            {
-//                                Log.e(TAG, "Could not reconnect to device " + connection_device);
-//                                stop();
-//                                Snackbar.make(Globals.mainActivity.findViewById(R.id.nav_view),
-//                                        "Could not auto reconnect device\nTry unplugging the device",
-//                                        Snackbar.LENGTH_LONG).setAction("Action", null)
-//                                        .show();
-//                            }
-//                        }
                     }
                 }
             }

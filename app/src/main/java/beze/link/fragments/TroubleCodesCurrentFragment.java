@@ -29,7 +29,7 @@ import beze.link.ui.DtcRecyclerViewAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TroubleCodesCurrentFragment extends Fragment implements View.OnClickListener, Runnable{
+public class TroubleCodesCurrentFragment extends CableInteractionFragment implements View.OnClickListener, Runnable{
 
     private static final String TAG = Globals.TAG_BASE + "CodesCurrentFragment";
 
@@ -67,6 +67,12 @@ public class TroubleCodesCurrentFragment extends Fragment implements View.OnClic
 
     public TroubleCodesCurrentFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCableStateChanged()
+    {
+        // do nothing for now
     }
 
     @Override

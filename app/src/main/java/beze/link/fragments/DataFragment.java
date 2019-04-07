@@ -22,7 +22,7 @@ import beze.link.ui.DataRecyclerViewAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DataFragment extends Fragment {
+public class DataFragment extends CableInteractionFragment {
 
     private static final String TAG = Globals.TAG_BASE + "DataFragment";
 
@@ -32,6 +32,12 @@ public class DataFragment extends Fragment {
 
     public DataFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCableStateChanged()
+    {
+        // do nothing for now
     }
 
     @Override

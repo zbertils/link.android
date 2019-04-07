@@ -4,10 +4,7 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
-import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,13 +20,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
+import beze.link.fragments.CableInteractionFragment;
+import beze.link.interfaces.ICableStateChange;
 import beze.link.obd2.ParameterIdentification;
 import beze.link.obd2.cables.Cable;
-import beze.link.obd2.cables.Elm327BluetoothCable;
 import beze.link.obd2.cables.Elm327Cable;
 import beze.link.obd2.cables.Elm327CableSimulator;
-import beze.link.obd2.cables.IConnectionCallback;
 import beze.link.ui.DataRecyclerViewAdapter;
 import beze.link.ui.PidsRecyclerViewAdapter;
 import beze.link.util.ConnectDeviceWorker;
@@ -47,7 +45,7 @@ public class Globals
     public static final String SimulatedCableName = "SIMULATED CABLE";
 
     public static Context appContext;
-    public static Cable cable;
+    public static Cable cable = null;
     public static List<ParameterIdentification> allPids;
     public static List<ParameterIdentification> shownPids = new ArrayList();
     public static Map<String, String> makes;
@@ -61,6 +59,7 @@ public class Globals
     //    public static boolean restartWorker = false;
     public static BluetoothAdapter btAdapter;
     public static AppState appState;
+    public static AtomicReference<CableInteractionFragment> currentCableStateCallback = new AtomicReference<>();
 
     public enum Units
     {

@@ -8,24 +8,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import beze.link.Globals;
 import com.android.beze.link.R;
+
+import beze.link.interfaces.ICableStateChange;
 import beze.link.obd2.Vehicle;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment implements Runnable
+public class HomeFragment extends CableInteractionFragment implements Runnable
 {
     static final String TAG = Globals.TAG_BASE + "HomeFragment";
 
     public HomeFragment()
     {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCableStateChanged()
+    {
+        if (Globals.cable != null)
+        {
+            Thread thread = new Thread(this);
+            thread.start();
+        }
     }
 
     @Override

@@ -28,7 +28,7 @@ import beze.link.ui.DtcStatusRecyclerViewAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TroubleCodesStatusFragment extends Fragment implements Runnable{
+public class TroubleCodesStatusFragment extends CableInteractionFragment implements Runnable{
 
     private static final String TAG = Globals.TAG_BASE + "CodesStatusFragment";
 
@@ -39,6 +39,12 @@ public class TroubleCodesStatusFragment extends Fragment implements Runnable{
 
     public TroubleCodesStatusFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCableStateChanged()
+    {
+        // do nothing for now
     }
 
     @Override

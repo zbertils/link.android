@@ -18,7 +18,7 @@ import beze.link.obd2.ParameterIdentification;
 import beze.link.ui.PidsRecyclerViewAdapter;
 
 
-public class PidsFragment extends Fragment {
+public class PidsFragment extends CableInteractionFragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -26,6 +26,12 @@ public class PidsFragment extends Fragment {
 
     public PidsFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCableStateChanged()
+    {
+        // do nothing for now
     }
 
     @Override

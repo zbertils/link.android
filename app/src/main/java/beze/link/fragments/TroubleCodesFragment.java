@@ -31,7 +31,7 @@ import beze.link.ui.DtcRecyclerViewAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TroubleCodesFragment extends Fragment implements TabLayout.OnTabSelectedListener
+public class TroubleCodesFragment extends CableInteractionFragment implements TabLayout.OnTabSelectedListener
 {
 
     private static final String TAG = Globals.TAG_BASE + "TroubleCodesFragment";
@@ -61,6 +61,11 @@ public class TroubleCodesFragment extends Fragment implements TabLayout.OnTabSel
         // Required empty public constructor
     }
 
+    @Override
+    public void onCableStateChanged()
+    {
+        // do nothing for now
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

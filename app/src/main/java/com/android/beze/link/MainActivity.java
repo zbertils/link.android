@@ -23,14 +23,17 @@ import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 import beze.link.fragments.AdvancedFragment;
+import beze.link.fragments.CableInteractionFragment;
 import beze.link.fragments.DataFragment;
 import beze.link.fragments.HomeFragment;
+import beze.link.interfaces.ICableStateChange;
 import beze.link.fragments.PidsFragment;
 import beze.link.fragments.TroubleCodesFragment;
 import beze.link.obd2.ParameterIdentification;
 import beze.link.Globals;
 import beze.link.AppState;
 import beze.link.SettingsActivity;
+import beze.link.obd2.cables.connections.CableConnection;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -240,12 +243,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Fragment fragment = null;
+        CableInteractionFragment fragment = null;
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 
         // reset so screen can fall asleep again if not the data fragment
         WindowManager windowManager = getWindowManager();
         this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        // reset to null, if a valid state change callback fragment is selected this will be updated
+        Globals.currentCableStateCallback.set(null);
 
         switch (id) {
             case R.id.nav_home:
@@ -269,10 +275,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 setTitle("Trouble Codes");
                 fragment = new TroubleCodesFragment();
                 break;
-//            case R.id.nav_connect:
-//                setTitle("Connect");
-//                fragment = new ConnectFragment();
-//                break;
             case R.id.nav_advanced:
                 setTitle("Advanced");
                 fragment = new AdvancedFragment();
@@ -288,6 +290,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // can only show a fragment if a valid menu item was selected
         if (fragment != null) {
+
+            Globals.currentCableStateCallback.set(fragment);
 
             // stop the pids worker no matter what, if navigating back to the data fragment it will start again
             Globals.stopPidUpdateWorker();
