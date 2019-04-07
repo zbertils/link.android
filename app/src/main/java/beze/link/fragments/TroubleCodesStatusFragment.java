@@ -74,12 +74,18 @@ public class TroubleCodesStatusFragment extends Fragment implements Runnable{
                     if (currentCodes.size() == 0)
                     {
                         Toast.makeText(Globals.appContext, "No code statuses present!", Toast.LENGTH_LONG).show();
-                        noStatusesTextView.setVisibility(View.VISIBLE);
+                        if (noStatusesTextView != null)
+                        {
+                            noStatusesTextView.setVisibility(View.VISIBLE);
+                        }
                     }
                     else
                     {
                         mCurrentDtcAdapter.notifyDataSetChanged();
-                        noStatusesTextView.setVisibility(View.GONE);
+                        if (noStatusesTextView != null)
+                        {
+                            noStatusesTextView.setVisibility(View.GONE);
+                        }
                     }
 
                     if (progressBar != null)
