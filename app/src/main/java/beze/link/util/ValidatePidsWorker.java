@@ -57,10 +57,8 @@ public class ValidatePidsWorker extends WorkerThread
                         {
                             // check the unpacked number against possible error numbers
                             double value = pid.Unpack(ret);
-                            if (!Double.isInfinite(value) &&    // not negative/positive infinity
-                                !Double.isNaN(value) &&         // not NaN
-                                value < Double.MAX_VALUE &&     // less than the max
-                                value > Double.MIN_VALUE)       // more than the min
+                            if (!Double.isInfinite(value) &&
+                                !Double.isNaN(value))
                             {
                                 pid.Supported = true;
                             }

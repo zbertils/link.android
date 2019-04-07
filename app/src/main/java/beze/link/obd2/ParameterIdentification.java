@@ -232,7 +232,7 @@ public class ParameterIdentification {
             // if there are not enough bytes to decode the message than return an empty String
             if (data == null || data.isEmpty())
             {
-                return Double.MAX_VALUE;
+                return Double.NaN;
             }
 
             // convert back to a String so the ascii values can be parsed into their integer representations,
@@ -256,11 +256,11 @@ public class ParameterIdentification {
                 // the correct expected mode, and the correct expected pid
                 if (values[ResponseByteOffsets.Mode] - 0x40 != this.Mode)
                 {
-                    return Double.POSITIVE_INFINITY;
+                    return Double.NaN;
                 }
 
                 if (responsePid != this.PID) {
-                    return Double.NEGATIVE_INFINITY;
+                    return Double.NaN;
                 }
 
                 int startIndex = ResponseByteOffsets.DataByte0;
@@ -282,7 +282,7 @@ public class ParameterIdentification {
         {
             Log.e(TAG, "Unpack: could not unpack\r\n" + this.toString());
             lastError = ex.toString();
-            return Double.MIN_VALUE;
+            return Double.NaN;
         }
 
         return Double.NaN;
