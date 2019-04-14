@@ -134,7 +134,7 @@ public class ConnectDeviceWorker extends WorkerThread
                 }
             }
 
-        } while (true);
+        } while (work);
 
     }
 

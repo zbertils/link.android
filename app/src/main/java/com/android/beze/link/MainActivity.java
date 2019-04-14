@@ -86,18 +86,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i(TAG, "onCreateView: default bluetooth adapter obtained");
         }
 
-        // get the activity_settings that apply at start up
-        boolean simulateData = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SIMULATE_DATA, false);
-        boolean connectOnStart = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_RECONNECT_AT_START, false);
-        if (connectOnStart) {
-            if (simulateData) {
-                Globals.connectSimulatedCable();
-            }
-            else {
-                // TODO: get the last connected bluetooth device
-            }
-        }
-
         // determine which page to start from when the application starts
         if (savedInstanceState == null) {
 
