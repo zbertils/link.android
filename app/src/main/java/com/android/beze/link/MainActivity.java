@@ -100,9 +100,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // determine which page to start from when the application starts
         if (savedInstanceState == null) {
+
+            // set the default fragment to be home, and set the callback state object to this fragment
+            HomeFragment homeFragment = new HomeFragment();
+            Globals.currentCableStateCallback.set(homeFragment);
+
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment, new HomeFragment())
+                    .replace(R.id.fragment, homeFragment)
                     .commit();
         }
 
