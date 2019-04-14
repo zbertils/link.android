@@ -15,7 +15,7 @@ public class ValidatePidsWorker extends WorkerThread
     protected void doWork()
     {
         // wait for the
-        while (Globals.cable == null || !Globals.cable.IsInitialized())
+        while (Globals.cable == null)
         {
             try
             {
@@ -36,7 +36,7 @@ public class ValidatePidsWorker extends WorkerThread
         try
         {
             // make sure the cable is ready to use
-            if (Globals.cable != null && Globals.cable.IsInitialized())
+            if (Globals.cable != null)
             {
                 for (ParameterIdentification pid : Globals.allPids)
                 {
