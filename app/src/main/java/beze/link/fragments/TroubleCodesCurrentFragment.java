@@ -78,33 +78,21 @@ public class TroubleCodesCurrentFragment extends CableInteractionFragment implem
     @Override
     public void run()
     {
-        // show the progress bar and then get all trouble codes and statuses
-        final ProgressBar progressBar = (ProgressBar) Globals.mainActivity.findViewById(R.id.dtcCurrentProgressBar);
-        final TextView noCodesTextView = (TextView) Globals.mainActivity.findViewById(R.id.noCodesTextView);
-
         try
         {
-            Thread.sleep(1000);
+            // sleep to give the form time to load, this prevents some error cases
+            // where the cable returns no codes faster than the form can load
+            Thread.sleep(200);
         }
         catch (Exception ex)
         {
             Log.e(TAG, "Exception sleeping", ex);
         }
 
+        final TextView noCodesTextView = (TextView) Globals.mainActivity.findViewById(R.id.noCodesTextView);
+
         if (Globals.cable != null && Globals.cable.IsInitialized())
         {
-            Globals.mainActivity.runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    if (progressBar != null)
-                    {
-                        progressBar.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-
             // actually get the trouble codes
             currentCodes.addAll(Globals.cable.RequestTroubleCodes());
 
@@ -129,30 +117,10 @@ public class TroubleCodesCurrentFragment extends CableInteractionFragment implem
                             noCodesTextView.setVisibility(View.GONE);
                         }
                     }
-
-                    if (progressBar != null)
-                    {
-                        progressBar.setVisibility(View.GONE);
-                    }
                 }
             });
 
         }
-        else
-        {
-            Globals.mainActivity.runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    if (progressBar != null)
-                    {
-                        progressBar.setVisibility(View.GONE);
-                    }
-                }
-            });
-        }
-
     }
 
 

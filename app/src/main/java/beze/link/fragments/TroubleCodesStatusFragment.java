@@ -50,25 +50,11 @@ public class TroubleCodesStatusFragment extends CableInteractionFragment impleme
     @Override
     public void run()
     {
-        final ProgressBar progressBar = (ProgressBar) Globals.mainActivity.findViewById(R.id.dtcStatusProgressBar);
         final TextView noStatusesTextView = (TextView) Globals.mainActivity.findViewById(R.id.noStatusesTextView);
 
         if (Globals.cable != null &&
-            Globals.cable.IsInitialized() &&
             Globals.cable.Protocol == Protocols.Protocol.J1850)
         {
-            Globals.mainActivity.runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    if (progressBar != null)
-                    {
-                        progressBar.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-
             // actually get the trouble code statuses
             currentCodes.addAll(Globals.cable.RequestAllDtcStatuses().values());
 
@@ -93,28 +79,9 @@ public class TroubleCodesStatusFragment extends CableInteractionFragment impleme
                             noStatusesTextView.setVisibility(View.GONE);
                         }
                     }
-
-                    if (progressBar != null)
-                    {
-                        progressBar.setVisibility(View.GONE);
-                    }
                 }
             });
 
-        }
-        else
-        {
-            Globals.mainActivity.runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    if (progressBar != null)
-                    {
-                        progressBar.setVisibility(View.GONE);
-                    }
-                }
-            });
         }
     }
 
