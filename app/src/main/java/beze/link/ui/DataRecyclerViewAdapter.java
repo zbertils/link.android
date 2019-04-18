@@ -46,6 +46,7 @@ public class DataRecyclerViewAdapter extends RecyclerView.Adapter<DataRecyclerVi
             pidGraph = (GraphView) v.findViewById(R.id.data_graph);
 
             pidGraph.addSeries(dataGraphValues);
+            pidGraph.getGridLabelRenderer().setHorizontalLabelsVisible(false);
         }
     }
 
