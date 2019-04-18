@@ -1,7 +1,9 @@
 package beze.link.fragments;
 
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,18 +57,21 @@ public class HomeFragment extends CableInteractionFragment implements Runnable
                     @Override
                     public void run()
                     {
-
-                        TextView textViewVIN = (TextView) getActivity().findViewById(R.id.textViewVIN);
-                        TextView textViewYear = (TextView) getActivity().findViewById(R.id.textViewYear);
-                        TextView textViewManufacturer = (TextView) getActivity().findViewById(R.id.textViewManufacturer);
-                        TextView textViewModel = (TextView) getActivity().findViewById(R.id.textViewModel);
-
                         try
                         {
-                            textViewVIN.setText(vehicle.VIN);
-                            textViewYear.setText(Integer.toString(vehicle.Year));
-                            textViewManufacturer.setText(vehicle.Manufacturer);
-                            textViewModel.setText(vehicle.Model);
+                            Activity activity = getActivity();
+                            if (activity != null)
+                            {
+                                TextView textViewVIN = (TextView) activity.findViewById(R.id.textViewVIN);
+                                TextView textViewYear = (TextView) activity.findViewById(R.id.textViewYear);
+                                TextView textViewManufacturer = (TextView) activity.findViewById(R.id.textViewManufacturer);
+                                TextView textViewModel = (TextView) activity.findViewById(R.id.textViewModel);
+
+                                textViewVIN.setText(vehicle.VIN);
+                                textViewYear.setText(Integer.toString(vehicle.Year));
+                                textViewManufacturer.setText(vehicle.Manufacturer);
+                                textViewModel.setText(vehicle.Model);
+                            }
                         }
                         catch (Exception e)
                         {

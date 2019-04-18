@@ -29,6 +29,7 @@ import beze.link.obd2.cables.Cable;
 import beze.link.obd2.cables.Elm327Cable;
 import beze.link.obd2.cables.Elm327CableSimulator;
 import beze.link.ui.DataRecyclerViewAdapter;
+import beze.link.ui.DataViewHolder;
 import beze.link.ui.PidsRecyclerViewAdapter;
 import beze.link.util.ConnectDeviceWorker;
 import beze.link.util.UpdatePidsWorker;
@@ -50,7 +51,7 @@ public class Globals
     public static List<ParameterIdentification> shownPids = new ArrayList();
     public static Map<String, String> makes;
     public static Map<String, String> dtcDescriptions;
-    public static RecyclerView.Adapter<DataRecyclerViewAdapter.ViewHolder> dataFragmentAdapter = null;
+    public static RecyclerView.Adapter<DataViewHolder> dataFragmentAdapter = null;
     public static RecyclerView.Adapter<PidsRecyclerViewAdapter.ViewHolder> pidsFragmentAdapter = null;
     public static UpdatePidsWorker updateWorker = new UpdatePidsWorker(Globals.shownPids, null);
     public static ValidatePidsWorker validateWorker = new ValidatePidsWorker();
