@@ -96,7 +96,6 @@ public class UpdatePidsWorker extends WorkerThread
         catch (Exception e)
         {
             Log.e(TAG, "doWork: encountered an error", e);
-            Snackbar.make(Globals.mainActivity.findViewById(R.id.nav_view), "doWork: encountered an error", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             e.printStackTrace();
         }
     }
