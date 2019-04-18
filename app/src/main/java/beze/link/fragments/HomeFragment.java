@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import beze.link.Globals;
 import com.android.beze.link.R;
@@ -42,16 +43,6 @@ public class HomeFragment extends CableInteractionFragment implements Runnable
     @Override
     public void run()
     {
-        final ProgressBar progressBar = (ProgressBar) Globals.mainActivity.findViewById(R.id.homeProgressBar);
-        Globals.mainActivity.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                progressBar.setVisibility(View.VISIBLE);
-            }
-        });
-
         if (Globals.cable != null && Globals.cable.IsInitialized())
         {
             try
@@ -64,34 +55,31 @@ public class HomeFragment extends CableInteractionFragment implements Runnable
                     @Override
                     public void run()
                     {
-                        progressBar.setVisibility(View.GONE);
 
                         TextView textViewVIN = (TextView) getActivity().findViewById(R.id.textViewVIN);
                         TextView textViewYear = (TextView) getActivity().findViewById(R.id.textViewYear);
                         TextView textViewManufacturer = (TextView) getActivity().findViewById(R.id.textViewManufacturer);
                         TextView textViewModel = (TextView) getActivity().findViewById(R.id.textViewModel);
 
-                        textViewVIN.setText(vehicle.VIN);
-                        textViewYear.setText(Integer.toString(vehicle.Year));
-                        textViewManufacturer.setText(vehicle.Manufacturer);
-                        textViewModel.setText(vehicle.Model);
+                        try
+                        {
+                            textViewVIN.setText(vehicle.VIN);
+                            textViewYear.setText(Integer.toString(vehicle.Year));
+                            textViewManufacturer.setText(vehicle.Manufacturer);
+                            textViewModel.setText(vehicle.Model);
+                        }
+                        catch (Exception e)
+                        {
+                            Toast.makeText(Globals.mainActivity, "Oops! Could not get vehicle info. Refresh this page from the side bar", Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
             }
             catch (Exception ex)
             {
-                Log.e(TAG, "Could not get vehicle VIN info", ex);
+                Log.e(TAG, "Could not get vehicle info", ex);
             }
         }
-
-        Globals.mainActivity.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
     }
 
 
