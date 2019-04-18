@@ -86,13 +86,6 @@ public class ConnectDeviceWorker extends WorkerThread
 
                                     Globals.cable = newCable;
 
-                                    CableInteractionFragment cableFragment = Globals.currentCableStateCallback.get();
-                                    if (cableFragment != null)
-                                    {
-                                        cableFragment.onCableStateChanged();
-                                    }
-
-                                    Globals.startPidValidationWorker(); // start validating pids right away
                                     Log.i(TAG, "Connection to " + deviceName + " successful");
                                     break;
                                 }
@@ -118,6 +111,18 @@ public class ConnectDeviceWorker extends WorkerThread
                 {
                     Globals.connectSimulatedCable();
                 }
+            }
+
+            // if the cable was connected then call the active fragment's callback
+            if (Globals.cable != null)
+            {
+                CableInteractionFragment cableFragment = Globals.currentCableStateCallback.get();
+                if (cableFragment != null)
+                {
+                    cableFragment.onCableStateChanged();
+                }
+
+                Globals.startPidValidationWorker(); // start validating pids right away
             }
 
             // already connected, just sleep for a little bit in case reconnection becomes necessary
