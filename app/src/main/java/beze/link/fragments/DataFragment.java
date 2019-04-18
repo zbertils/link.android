@@ -46,13 +46,14 @@ public class DataFragment extends CableInteractionFragment {
         View view = inflater.inflate(R.layout.fragment_data, container, false); // Inflate the layout for this fragment
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
         boolean showPidStreamValue = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SHOW_PID_STREAM_VALUES, true);
+        boolean showGraphs = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SHOW_GRAPHS, true);
 
         mRecyclerView = view.findViewById(R.id.recyclerViewData);
         mRecyclerView.setHasFixedSize(true);
 
         // create the recycler view managers
         mLayoutManager = new LinearLayoutManager(getContext());
-        mAdapter = new DataRecyclerViewAdapter(Globals.shownPids, showPidStreamValue);
+        mAdapter = new DataRecyclerViewAdapter(Globals.shownPids, showPidStreamValue, showGraphs);
 
         // set managers for recycler view
         mRecyclerView.setLayoutManager(mLayoutManager);

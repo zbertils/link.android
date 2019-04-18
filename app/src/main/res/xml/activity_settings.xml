@@ -35,6 +35,14 @@
             android:key="pref_prevent_screen_sleep"
             android:summary="Prevent the screen from sleeping when viewing live data, does not apply to other views"
             android:title="Keep screen awake" />
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:id="@+id/switchPreferenceCompat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="true"
+            android:key="pref_show_graphs"
+            android:summary="Show data over time on a graph, may be slow on older phones"
+            android:title="Show data graphs" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Advanced">
 

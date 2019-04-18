@@ -77,6 +77,7 @@ public class Globals
         public static final String KEY_PREF_PREVENT_SCREEN_SLEEP = "pref_prevent_screen_sleep";
         public static final String KEY_PREF_SHOW_METRIC_UNITS = "pref_show_metric";
         public static final String KEY_PREF_BLUETOOTH_DEVICE = "connection_device";
+        public static final String KEY_PREF_SHOW_GRAPHS = "pref_show_graphs";
 
     }
 
