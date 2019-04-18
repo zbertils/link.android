@@ -39,7 +39,7 @@
             android:id="@+id/switchPreferenceCompat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="pref_show_graphs"
             android:summary="Show data over time on a graph, may be slow on older phones"
             android:title="Show data graphs" />
