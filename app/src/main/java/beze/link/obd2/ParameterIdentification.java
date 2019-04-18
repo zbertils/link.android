@@ -440,7 +440,7 @@ public class ParameterIdentification {
 
         // purposely sleep to simulate the minimum cable transmission delay
         try {
-            Thread.sleep(25);
+            Thread.sleep(100);
         }
         catch (Exception ex) {
             Log.i(TAG, "SimulatedResponse: could not sleep");
