@@ -1,96 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/data_recycler_row"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="5dp">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        card_view:cardCornerRadius="4dp">
 
-        <LinearLayout
+        <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/data_recycler_row"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
+            android:layout_height="wrap_content">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.75"
-                android:orientation="vertical"
-                android:textAlignment="gravity">
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/textViewPidName_Data"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="50dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="PID Name"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small" />
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/textViewPidNumber_Data"
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.75"
+                        android:orientation="vertical"
+                        android:textAlignment="gravity">
+
+                        <TextView
+                            android:id="@+id/textViewPidName_Data"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="50dp"
+                            android:layout_marginBottom="5dp"
+                            android:text="PID Name"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small" />
+
+                        <TextView
+                            android:id="@+id/textViewPidNumber_Data"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginRight="50dp"
+                            android:layout_marginBottom="5dp"
+                            android:text="PID Number" />
+
+                    </LinearLayout>
+
+                    <View
+                        style="@style/VerticalDivider"
+                        android:visibility="invisible" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.25"
+                        android:orientation="vertical"
+                        android:textAlignment="textEnd">
+
+                        <TextView
+                            android:id="@+id/textViewDecodedPidValue_Data"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:layout_weight="1"
+                            android:text="Value"
+                            android:textAlignment="textEnd"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small" />
+
+                        <TextView
+                            android:id="@+id/textViewPidUnits_Data"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_weight="1"
+                            android:text="Units"
+                            android:textAlignment="textEnd" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <com.jjoe64.graphview.GraphView
+                    android:id="@+id/data_graph"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginRight="50dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="PID Number" />
-
+                    android:minHeight="250dp" />
             </LinearLayout>
-
-            <View
-                style="@style/VerticalDivider"
-                android:visibility="invisible" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.25"
-                android:orientation="vertical"
-                android:textAlignment="textEnd">
-
-                <TextView
-                    android:id="@+id/textViewDecodedPidValue_Data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:text="Value"
-                    android:textAlignment="textEnd"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small" />
-
-                <TextView
-                    android:id="@+id/textViewPidUnits_Data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
-                    android:text="Units"
-                    android:textAlignment="textEnd" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <com.jjoe64.graphview.GraphView
-            android:id="@+id/data_graph"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:minHeight="250dp" />
-
-    </LinearLayout>
-
-    <View
-        style="@style/HorizontalDivider"
-        android:padding="2dp" />
-
-</RelativeLayout>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

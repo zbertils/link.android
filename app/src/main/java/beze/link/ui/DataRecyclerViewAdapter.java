@@ -111,4 +111,10 @@ public class DataRecyclerViewAdapter extends RecyclerView.Adapter<DataRecyclerVi
 
         return 0;
     }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView view)
+    {
+        super.onAttachedToRecyclerView(view);
+    }
 }
