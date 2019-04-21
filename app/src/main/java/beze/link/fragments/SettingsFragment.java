@@ -31,6 +31,42 @@ import beze.link.Globals;
 public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener
 {
 
+    public static class GraphSize
+    {
+        public static final String Small = "250";
+        public static final String Medium = "500";
+        public static final String Large = "750";
+
+        public static String valueToString(String value)
+        {
+            switch (value)
+            {
+                case Small : return "Small";
+                case Medium : return "Medium";
+                case Large : return "Large";
+                default : return "Small";
+            }
+        }
+    }
+
+    public static class GraphLength
+    {
+        public static final String Small = "100";
+        public static final String Medium = "250";
+        public static final String Large = "500";
+
+        public static String valueToString(String value)
+        {
+            switch (value)
+            {
+                case Small : return "Small";
+                case Medium : return "Medium";
+                case Large : return "Large";
+                default : return "Small";
+            }
+        }
+    }
+
     private static final String TAG = Globals.TAG_BASE + ".Settings";
 
     DialogInterface.OnClickListener restartAlertClickListener = new DialogInterface.OnClickListener() {
@@ -61,11 +97,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         setPreferencesFromResource(R.xml.activity_settings, rootKey);
         ListPreference connectionDevice = (ListPreference) findPreference("connection_device");
         SwitchPreferenceCompat simulatePref = (SwitchPreferenceCompat) findPreference("pref_simulate_data");
+        ListPreference graphSizesPref = (ListPreference) findPreference("pref_graph_sizes");
+        ListPreference graphLengthsPref = (ListPreference) findPreference("pref_graph_lengths");
 
         // set the on click listener for the connection device setting,
         // this will be used to dynamically show the connected device below the setting title
         connectionDevice.setOnPreferenceChangeListener(this);
         simulatePref.setOnPreferenceChangeListener(this);
+        graphSizesPref.setOnPreferenceChangeListener(this);
+        graphLengthsPref.setOnPreferenceChangeListener(this);
 
         // dynamically build the connectable devices, this list could change between uses
         if (connectionDevice != null)
@@ -107,6 +147,70 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         {
             Log.e(TAG, "Could not get connection device preference object");
         }
+
+        // build the possible graph sizes list
+        if (graphSizesPref != null)
+        {
+            CharSequence[] entries =
+                {
+                        GraphSize.valueToString(GraphSize.Small),
+                        GraphSize.valueToString(GraphSize.Medium),
+                        GraphSize.valueToString(GraphSize.Large)
+                };
+
+            CharSequence[] entryValues =
+                {
+                        GraphSize.Small,
+                        GraphSize.Medium,
+                        GraphSize.Large
+                };
+            
+            graphSizesPref.setEntries(entries);
+            graphSizesPref.setEntryValues(entryValues);
+
+            CharSequence selectedValue = graphSizesPref.getEntry();
+            if (selectedValue != null)
+            {
+                graphSizesPref.setSummary(selectedValue);
+            }
+            else
+            {
+                graphSizesPref.setValue(GraphSize.Large);
+                graphSizesPref.setSummary("Large");
+            }
+        }
+
+        // build the possible graph lengths list
+        if (graphLengthsPref != null)
+        {
+            CharSequence[] entries =
+                {
+                    GraphLength.valueToString(GraphLength.Small),
+                    GraphLength.valueToString(GraphLength.Medium),
+                    GraphLength.valueToString(GraphLength.Large)
+                };
+
+            CharSequence[] entryValues =
+                {
+                        GraphLength.Small,
+                        GraphLength.Medium,
+                        GraphLength.Large
+                };
+
+            graphLengthsPref.setEntries(entries);
+            graphLengthsPref.setEntryValues(entryValues);
+
+            CharSequence selectedValue = graphLengthsPref.getEntry();
+            if (selectedValue != null)
+            {
+                graphLengthsPref.setSummary(selectedValue);
+            }
+            else
+            {
+                graphLengthsPref.setValue(GraphLength.Medium);
+                graphLengthsPref.setSummary("Medium");
+            }
+        }
     }
 
     public boolean onPreferenceChange(Preference pref, Object obj)
@@ -123,6 +227,34 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
             else
             {
                 Log.w(TAG,"Could not get connection device object");
+            }
+        }
+        else if (pref.equals(findPreference("pref_graph_sizes")))
+        {
+            // set the summary if a value is selected
+            ListPreference graphSize = (ListPreference) findPreference("pref_graph_sizes");
+            if (graphSize != null)
+            {
+                Log.i(TAG, "Setting summary to " + obj.toString());
+                graphSize.setSummary(GraphSize.valueToString(obj.toString()));
+            }
+            else
+            {
+                Log.w(TAG,"Could not get graph sizes preference object");
+            }
+        }
+        else if (pref.equals(findPreference("pref_graph_lengths")))
+        {
+            // set the summary if a value is selected
+            ListPreference graphLengths = (ListPreference) findPreference("pref_graph_lengths");
+            if (graphLengths != null)
+            {
+                Log.i(TAG, "Setting summary to " + obj.toString());
+                graphLengths.setSummary(GraphLength.valueToString(obj.toString()));
+            }
+            else
+            {
+                Log.w(TAG,"Could not get graph length preference object");
             }
         }
         else if (pref.equals(findPreference("pref_simulate_data")))

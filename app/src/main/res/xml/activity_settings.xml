@@ -38,6 +38,20 @@
             android:key="pref_show_graphs"
             android:summary="Show data over time on a graph, may be slow on older phones"
             android:title="Show data graphs" />
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/graphSizes"
+            android:entryValues="@array/graphSizes"
+            android:key="pref_graph_sizes"
+            android:summary="Large"
+            android:title="Graph Size" />
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/graphLengths"
+            android:entryValues="@array/graphLengths"
+            android:key="pref_graph_lengths"
+            android:summary="Medium"
+            android:title="Graph Time Window" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Advanced">
 

@@ -78,6 +78,8 @@ public class Globals
         public static final String KEY_PREF_SHOW_METRIC_UNITS = "pref_show_metric";
         public static final String KEY_PREF_BLUETOOTH_DEVICE = "connection_device";
         public static final String KEY_PREF_SHOW_GRAPHS = "pref_show_graphs";
+        public static final String KEY_PREF_GRAPH_SIZES = "pref_graph_sizes";
+        public static final String KEY_PREF_GRAPH_LENGTHS = "pref_graph_lengths";
 
     }
 
