@@ -37,27 +37,35 @@ After selecting your PIDs, go to the navigation menu and tap Data. The values wi
 
 In the Settings (3-dot menu, top right), there are a few options users can use beyond selecting their bluetooth device.
 
-### Display Metric units ###
+#### Display Metric units ####
 
 Default off. If selected Metric units are displayed, otherwise Imperial units are used.
 
-### Bluetooth Device ###
+#### Bluetooth Device ####
 
 Default is not set. Needs to be set when the app is first installed. The device must have been previously paired.
 
-### Show PID stream values ###
+#### Show PID stream values ####
 
 Default off. Shows the hexidecimal byte values sent to the ELM327 device for each PID in the Data window.
 
-### Keep screen awake ###
+#### Keep screen awake ####
 
 Default on. Prevents the screen from sleeping when viewing live data. Only applies to Data window. Useful for viewing longer durations of data.
 
-### Show data graphs ###
+#### Show data graphs ####
 
 Default off. Shows data over time on a graph in the Data window. This may be slow and use noticeable battery life on older phones when used with many PIDs.
 
-### Simulate ELM327 data ###
+#### Graph Size ####
+
+Default Large. Determines the size of the graph on the Data display.
+
+#### Graph Time Window ####
+
+Default Medium. How long the data should be kept and displayed in the graphs.
+
+#### Simulate ELM327 data ####
 
 Default off. Uses simulated values (read as random values) instead of connecting to an actual ELM327 device. This is useful for debugging when not in a vehicle and also just testing the application.
 
