@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             String connectionDevice = sharedPref.getString(Globals.Preferences.KEY_PREF_BLUETOOTH_DEVICE, null);
+            boolean simulated = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SIMULATE_DATA, false);
 
             if (connectionDevice == null || connectionDevice.equalsIgnoreCase(""))
             {
@@ -167,6 +168,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             else
             {
+                // if simulated then change the device name shown
+                if (simulated)
+                {
+                    connectionDevice = "Simulation";
+                }
+
                 Toast.makeText(this, "Connecting to " + connectionDevice, Toast.LENGTH_LONG).show();
                 Globals.connectCable(connectionDevice);
             }

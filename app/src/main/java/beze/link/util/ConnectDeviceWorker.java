@@ -31,7 +31,6 @@ public class ConnectDeviceWorker extends WorkerThread
     @Override
     protected void doWork()
     {
-        boolean work = true;
         do
         {
             if (Globals.cable == null || !Globals.cable.IsOpen())
@@ -134,12 +133,12 @@ public class ConnectDeviceWorker extends WorkerThread
                 }
                 catch (Exception ex)
                 {
-                    work = false;
+                    stopWork = true;
                     Log.e(TAG, "Exception sleeping, exiting connection thread", ex);
                 }
             }
 
-        } while (work);
+        } while (!stopWork);
 
     }
 

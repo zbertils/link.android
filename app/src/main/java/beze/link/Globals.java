@@ -71,7 +71,6 @@ public class Globals
 
     public static class Preferences
     {
-        public static final String KEY_PREF_RECONNECT_AT_START = "pref_reconnect";
         public static final String KEY_PREF_SIMULATE_DATA = "pref_simulate_data";
         public static final String KEY_PREF_LOG_PIDS = "pref_log_pids";
         public static final String KEY_PREF_SHOW_PID_STREAM_VALUES = "pref_show_pid_stream_values";
@@ -388,9 +387,9 @@ public class Globals
     {
         if (connectionWorker == null)
         {
+            Log.v(TAG, "Starting new connection thread");
             connectionWorker = new ConnectDeviceWorker();
             connectionWorker.start(deviceName);
         }
-
     }
 }

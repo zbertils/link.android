@@ -344,7 +344,7 @@ public class ParameterIdentification {
             }
             catch (Exception ex)
             {
-                Log.e(TAG, "ParseStringValues: invalid conversion from String to Integer");
+                Log.e(TAG, "ParseStringValues: invalid conversion from String to Integer for value " + dataStrValues[i] + " at position " + i);
                 return null;
             }
         }
