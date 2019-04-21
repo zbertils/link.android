@@ -164,7 +164,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
                         GraphSize.Medium,
                         GraphSize.Large
                 };
-            
+
             graphSizesPref.setEntries(entries);
             graphSizesPref.setEntryValues(entryValues);
 
