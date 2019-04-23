@@ -1,81 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/pids_recycler_row"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="5dp">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/supportedImageView"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center"
-            android:clickable="false"
-            android:visibility="gone"
-            app:srcCompat="@mipmap/ic_greencheck_round" />
-
-        <ImageView
-            android:id="@+id/unsupportedImageView"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center"
-            android:clickable="false"
-            android:visibility="gone"
-            app:srcCompat="@mipmap/ic_redx_round" />
-
-        <ImageView
-            android:id="@+id/unknownImageView"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center"
-            android:clickable="false"
-            android:visibility="visible"
-            app:srcCompat="@android:drawable/ic_menu_help" />
+        android:layout_gravity="center"
+        card_view:cardCornerRadius="4dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textViewPidName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="50dp"
-                android:layout_marginTop="5dp"
-                android:layout_weight="1"
-                android:text="PID Name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small" />
+            <ImageView
+                android:id="@+id/supportedImageView"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:visibility="gone"
+                app:srcCompat="@mipmap/ic_greencheck_round" />
 
-            <TextView
-                android:id="@+id/textViewPidDescription"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/unsupportedImageView"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:visibility="gone"
+                app:srcCompat="@mipmap/ic_redx_round" />
+
+            <ImageView
+                android:id="@+id/unknownImageView"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:visibility="visible"
+                app:srcCompat="@android:drawable/ic_menu_help" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/textViewPidName"
-                android:layout_marginBottom="5dp"
-                android:layout_marginRight="50dp"
-                android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:text="PID description" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textViewPidName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="50dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:text="PID Name"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small" />
+
+                <TextView
+                    android:id="@+id/textViewPidDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textViewPidName"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginRight="50dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:text="PID description" />
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/checkBoxEnablePid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="center_vertical"
+                android:checked="false" />
         </LinearLayout>
 
-        <CheckBox
-            android:id="@+id/checkBoxEnablePid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_gravity="center_vertical"
-            android:checked="false" />
-    </LinearLayout>
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>
