@@ -153,29 +153,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (Globals.cable == null)
         {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            String connectionDevice = sharedPref.getString(Globals.Preferences.KEY_PREF_BLUETOOTH_DEVICE, null);
+            String connectionDevice = sharedPref.getString(Globals.Preferences.KEY_PREF_BLUETOOTH_DEVICE, "");
             boolean simulated = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SIMULATE_DATA, false);
 
-            if (connectionDevice == null || connectionDevice.equalsIgnoreCase(""))
+            if (simulated)
             {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("No bluetooth device is selected, please go to settings in the upper right to select a bluetooth device").show();
-            }
-            else if (!Globals.deviceStillExists(connectionDevice))
-            {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Previously selected bluetooth device is not available, please go to settings in the upper right to select a bluetooth device").show();
+                // connecting to a simulated device is the same as a normal device, just a different toast
+                // message as well as skipping the checks for the previous device existing
+                Toast.makeText(this, "Connecting to Simulation", Toast.LENGTH_LONG).show();
+                Globals.connectCable(connectionDevice);
             }
             else
             {
-                // if simulated then change the device name shown
-                if (simulated)
+                if (connectionDevice == null || connectionDevice.equalsIgnoreCase("") || connectionDevice.equalsIgnoreCase("1"))
                 {
-                    connectionDevice = "Simulation";
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("No bluetooth device is selected, please go to settings in the upper right to select a bluetooth device").show();
                 }
-
-                Toast.makeText(this, "Connecting to " + connectionDevice, Toast.LENGTH_LONG).show();
-                Globals.connectCable(connectionDevice);
+                else if (!Globals.deviceStillExists(connectionDevice))
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("Previously selected bluetooth device is not available, please go to settings in the upper right to select a bluetooth device").show();
+                }
+                else
+                {
+                    Toast.makeText(this, "Connecting to " + connectionDevice, Toast.LENGTH_LONG).show();
+                    Globals.connectCable(connectionDevice);
+                }
             }
         }
     }
