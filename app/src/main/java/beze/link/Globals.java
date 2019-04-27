@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
@@ -80,6 +82,42 @@ public class Globals
         public static final String KEY_PREF_SHOW_GRAPHS = "pref_show_graphs";
         public static final String KEY_PREF_GRAPH_SIZES = "pref_graph_sizes";
         public static final String KEY_PREF_GRAPH_LENGTHS = "pref_graph_lengths";
+
+        public static int getGraphSize()
+        {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(Globals.appContext);
+            String graphSizeStr = sharedPref.getString(Globals.Preferences.KEY_PREF_GRAPH_SIZES, null);
+            int graphSize = 250;
+            try
+            {
+                graphSize = Integer.parseInt(graphSizeStr);
+            }
+            catch (Exception e)
+            {
+                Log.w("DataViewHolder", "Could not parse graphSizeStr value " + graphSizeStr);
+                graphSize = 250; // this is large
+            }
+
+            return graphSize;
+        }
+
+        public static int getGraphLength()
+        {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(Globals.appContext);
+            String graphLengthStr = sharedPref.getString(Globals.Preferences.KEY_PREF_GRAPH_LENGTHS, null);
+            int graphLength = 250;
+            try
+            {
+                graphLength = Integer.parseInt(graphLengthStr);
+            }
+            catch (Exception e)
+            {
+                Log.w("DataViewHolder", "Could not parse graphLengthStr value " + graphLength);
+                graphLength = 250; // this is medium
+            }
+
+            return graphLength;
+        }
 
     }
 

@@ -13,6 +13,7 @@ import com.android.beze.link.R;
 import beze.link.Globals;
 import beze.link.obd2.ParameterIdentification;
 import beze.link.obd2.Protocols;
+import beze.link.util.PidLineGraphSeries;
 
 public class DataRecyclerViewAdapter extends RecyclerView.Adapter<DataViewHolder> {
 
@@ -60,13 +61,13 @@ public class DataRecyclerViewAdapter extends RecyclerView.Adapter<DataViewHolder
             holder.pidValue.setText(((pid.Header != null && !Protocols.IsCan(Globals.cable.Protocol)) ? pid.Header : "") + pid.Pack(Globals.cable.Protocol));
         }
 
-        if (showGraphs)
+        if (showGraphs && pid.Supported != null && pid.Supported)
         {
             // show the graph, remove previous series, and add the newly updated series
             holder.pidGraph.setVisibility(View.VISIBLE);
 
             // update the graph value series
-            holder.graphSeries.appendData(pid);
+            holder.graphSeries.updateData(pid);
         }
         else
         {

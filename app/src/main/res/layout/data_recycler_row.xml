@@ -98,6 +98,7 @@
                     android:id="@+id/data_graph"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
                     android:minHeight="250dp" />
             </LinearLayout>
         </RelativeLayout>

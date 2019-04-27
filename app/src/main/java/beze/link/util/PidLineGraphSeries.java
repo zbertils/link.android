@@ -4,6 +4,9 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import beze.link.obd2.ParameterIdentification;
 
 public class PidLineGraphSeries
@@ -29,22 +32,35 @@ public class PidLineGraphSeries
         graph.getGridLabelRenderer().setHorizontalLabelsVisible(false);
     }
 
-    public void appendData(ParameterIdentification pid)
+    public void updateData(ParameterIdentification pid)
     {
-        if (pid.Timestamp < minXValue)
+        // only update if supported, slight optimization
+        if (pid.Supported != null && pid.Supported)
         {
-            minXValue = pid.Timestamp;
-        }
-        if (pid.Timestamp > maxXValue)
-        {
-            // update the max x value and append the data,
-            // appending data requires a new x value be greater than the last
-            maxXValue = pid.Timestamp;
-            series.appendData(new DataPoint(count, pid.LastDecodedValue()), false, maxDataCount);
-            graph.getViewport().setMinX(Math.max(0, count - maxDataCount));
-            graph.getViewport().setMaxX(count);
-            graph.refreshDrawableState();
-            count++;
+            if (pid.Timestamp < minXValue)
+            {
+                minXValue = pid.Timestamp;
+            }
+            if (pid.Timestamp > maxXValue)
+            {
+                count = 0;
+
+                // update the max x value and append the data,
+                // appending data requires a new x value be greater than the last
+                maxXValue = pid.Timestamp;
+
+                int count = pid.getHistory().size();
+                DataPoint[] data = new DataPoint[pid.getHistory().size()];
+                for (int i = 0; i < data.length; i++)
+                {
+                    data[i] = new DataPoint(i, pid.getHistory().get(i));
+                }
+
+                series.resetData(data);
+                graph.getViewport().setMinX(Math.max(0, count - maxDataCount));
+                graph.getViewport().setMaxX(count);
+                graph.refreshDrawableState();
+            }
         }
     }
 

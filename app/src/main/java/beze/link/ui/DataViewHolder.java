@@ -31,30 +31,8 @@ public class DataViewHolder extends RecyclerView.ViewHolder {
     public DataViewHolder(View v) {
         super(v);
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(Globals.appContext);
-        String graphSizeStr = sharedPref.getString(Globals.Preferences.KEY_PREF_GRAPH_SIZES, null);
-        int graphSize = 250;
-        try
-        {
-            graphSize = Integer.parseInt(graphSizeStr);
-        }
-        catch (Exception e)
-        {
-            Log.w("DataViewHolder", "Could not parse graphSizeStr value " + graphSizeStr);
-            graphSize = 250; // this is large
-        }
-
-        String graphLengthStr = sharedPref.getString(Globals.Preferences.KEY_PREF_GRAPH_LENGTHS, null);
-        int graphLength = 250;
-        try
-        {
-            graphLength = Integer.parseInt(graphLengthStr);
-        }
-        catch (Exception e)
-        {
-            Log.w("DataViewHolder", "Could not parse graphLengthStr value " + graphSizeStr);
-            graphLength = 250; // this is medium
-        }
+        int graphSize = Globals.Preferences.getGraphSize();
+        int graphLength = Globals.Preferences.getGraphLength();
 
         pidName = (TextView) v.findViewById(R.id.textViewPidName_Data);
         pidValue = (TextView) v.findViewById(R.id.textViewPidNumber_Data);

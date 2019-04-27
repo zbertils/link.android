@@ -33,6 +33,8 @@ public class UpdatePidsWorker extends WorkerThread
         {
             if (pids.size() > 0)
             {
+                int graphLength = Globals.Preferences.getGraphLength();
+
                 while (!stopWork)
                 {
                     if (Globals.cable != null)
@@ -42,8 +44,6 @@ public class UpdatePidsWorker extends WorkerThread
                         {
                             if (pid != null)
                             {
-//                                Log.v(TAG, "Fetching pid data for " + pid.Name);
-
                                 // only attempt to communicate the pid if it is supported
                                 if (pid.Supported != null && pid.Supported)
                                 {
@@ -52,6 +52,7 @@ public class UpdatePidsWorker extends WorkerThread
                                     {
                                         double value = pid.Unpack(data);
                                         pid.setLastDecodedValue(value);
+                                        pid.addToHistory(value, graphLength);
                                     }
                                     else
                                     {

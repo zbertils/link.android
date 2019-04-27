@@ -165,6 +165,20 @@ public class ParameterIdentification {
         Timestamp = Calendar.getInstance().getTimeInMillis();
     }
 
+    public void addToHistory(double value, int maxCount)
+    {
+        history.add(value);
+
+        // reduce the size if necessary
+        while (history.size() > maxCount)
+        {
+            history.remove(0);
+        }
+    }
+
+    public List<Double> getHistory() { return history; }
+    protected List<Double> history = new ArrayList<Double>();
+
     @Override
     public String toString()
     {
