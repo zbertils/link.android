@@ -22,30 +22,30 @@
 
             <ImageView
                 android:id="@+id/supportedImageView"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:clickable="false"
                 android:visibility="gone"
-                app:srcCompat="@mipmap/ic_greencheck_round" />
+                app:srcCompat="@mipmap/ic_greendot_round" />
 
             <ImageView
                 android:id="@+id/unsupportedImageView"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:clickable="false"
                 android:visibility="gone"
-                app:srcCompat="@mipmap/ic_redx_round" />
+                app:srcCompat="@mipmap/ic_reddot_round" />
 
             <ImageView
                 android:id="@+id/unknownImageView"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:clickable="false"
                 android:visibility="visible"
-                app:srcCompat="@android:drawable/ic_menu_help" />
+                app:srcCompat="@mipmap/ic_blackdot_round" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
