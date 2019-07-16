@@ -2,6 +2,8 @@ package beze.link.obd2.cables;
 
 import android.util.Log;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,14 +62,14 @@ public class Elm327Cable extends Cable
         // default cable info
         info = new CableInfo();
 
-        Log.i(TAG, "Elm327Cable: discovering ELM version");
+        HyperLog.i(TAG, "Elm327Cable: discovering ELM version");
         //callback.ConnectionCallbackAction("Discovering ELM version");
 
         // detect what type of cable is connected
         String response = SendCommand(Protocols.Elm327.Reset, 10000, Protocols.Elm327.Header);
         if (response != null && response.contains(Protocols.Elm327.Header))
         {
-            Log.i(TAG, "Elm327Cable: cable is ELM327 type");
+            HyperLog.i(TAG, "Elm327Cable: cable is ELM327 type");
             String version = "NA";
 
             // get the version number for posterity
@@ -75,63 +77,63 @@ public class Elm327Cable extends Cable
             {
                 int indexOfVersion = response.indexOf("v");
                 version = response.substring(indexOfVersion);
-                Log.i(TAG, "Elm327Cable: discovered ELM version: " + version);
+                HyperLog.i(TAG, "Elm327Cable: discovered ELM version: " + version);
                 info.Version = version;
 //                callback.ConnectionCallbackAction("Discovered ELM version " + version);
             }
 
             // turn echo off
-            Log.i(TAG, "Elm327Cable: turning echo off");
+            HyperLog.i(TAG, "Elm327Cable: turning echo off");
 //            callback.ConnectionCallbackAction("Turning echo off");
 
             response = SendCommand(Protocols.Elm327.EchoOff, 10000);
             if (!response.contains(Protocols.Elm327.Responses.OK))
             {
                 info.Description += "Could not turn echo off...\r\n";
-                Log.e(TAG, "Elm327Cable: could not turn echo off");
+                HyperLog.e(TAG, "Elm327Cable: could not turn echo off");
                 return false;
             }
 
             info.EchoOff = true;
 
 //            callback.ConnectionCallbackAction("Setting timeout to maximum (1 second)");
-//            Log.i(TAG, "Elm327Cable: setting timeout to maximum (1 second)");
+//            HyperLog.i(TAG, "Elm327Cable: setting timeout to maximum (1 second)");
 //            response = SendCommand(Protocols.Elm327.SetTimeoutMaximum, 10000);
 //            if (!response.contains(Protocols.Elm327.Responses.OK))
 //            {
 //                info.Description += "Could not set maximum timeout\r\n";
-//                Log.w(TAG, "Elm327Cable: could not set maximum timeout");
+//                HyperLog.w(TAG, "Elm327Cable: could not set maximum timeout");
 //                //return false;
 //            }
 
 //            callback.ConnectionCallbackAction("Setting headers to off");
-            Log.i(TAG, "Elm327Cable: setting headers to off");
+            HyperLog.i(TAG, "Elm327Cable: setting headers to off");
             response = SendCommand(Protocols.Elm327.SetHeadersOff, 10000);
             if (!response.contains(Protocols.Elm327.Responses.OK))
             {
                 info.Description += "Could not turn headers off\r\n";
-                Log.w(TAG, "Elm327Cable: could not turn headers off");
+                HyperLog.w(TAG, "Elm327Cable: could not turn headers off");
                 //return false;
             }
 
 //            callback.ConnectionCallbackAction("Turning auto protocol on");
-            Log.i(TAG, "Elm327Cable: turning auto protocol on");
+            HyperLog.i(TAG, "Elm327Cable: turning auto protocol on");
             response = SendCommand(Protocols.Elm327.SetAutoProtocol, 10000);
             if (!response.contains(Protocols.Elm327.Responses.OK))
             {
                 info.Description += "Could not set auto protocol\r\n";
-                Log.e(TAG, "Elm327Cable: could not set protocol to Auto");
+                HyperLog.e(TAG, "Elm327Cable: could not set protocol to Auto");
                 return false;
             }
 
 //            callback.ConnectionCallbackAction("Forcing search for existing protocols");
-            Log.i(TAG, "Elm327Cable: forcing a search for existing protocols");
+            HyperLog.i(TAG, "Elm327Cable: forcing a search for existing protocols");
 
             // send a single pid, wait for a long time since some cars take a while
             response = SendCommand(Protocols.Elm327.ForceProtocolSearch, 10000);
             if (response == null || response.isEmpty())
             {
-                Log.e(TAG, "Elm327Cable: could not force an auto protocol search");
+                HyperLog.e(TAG, "Elm327Cable: could not force an auto protocol search");
                 return false;
             }
 
@@ -141,11 +143,11 @@ public class Elm327Cable extends Cable
                     .replace(",", "").trim();
 
 //            callback.ConnectionCallbackAction("Chosen protocol: " + chosenProtocol);
-            Log.i(TAG, "Elm327Cable: protocol chosen: " + chosenProtocol);
+            HyperLog.i(TAG, "Elm327Cable: protocol chosen: " + chosenProtocol);
             if (!response.contains(Protocols.Elm327.Responses.Auto))
             {
                 info.Description += "Displayed protocol did not mention auto\r\n";
-                Log.w(TAG, "Elm327Cable: displayed protocol did not mention auto");
+                HyperLog.w(TAG, "Elm327Cable: displayed protocol did not mention auto");
                 //return false;
             }
 
@@ -159,7 +161,7 @@ public class Elm327Cable extends Cable
 
             // fully initialized, the fourth step is the final step
             info.Description += "Connected\r\n";
-            Log.i(TAG, "Elm327Cable: connected!");
+            HyperLog.i(TAG, "Elm327Cable: connected!");
         }
         else {
 //            callback.ConnectionCallbackAction("Could not reset ELM device, received:\r\n" + response.replace(Protocols.Elm327.EndOfLine, "\r\n"));
@@ -218,7 +220,7 @@ public class Elm327Cable extends Cable
                 // if the end was reached then break before incrementing the count,
                 // this keeps the logic in place to determine if a timeout was reached or not
                 if (endReached) {
-                    Log.v(TAG, "readUntil reached expected end \"" + end + "\"");
+                    HyperLog.v(TAG, "readUntil reached expected end \"" + end + "\"");
                     break;
                 }
 
@@ -229,7 +231,7 @@ public class Elm327Cable extends Cable
             } while (checkCount < totalChecks);
         }
         catch (Exception ex) {
-            Log.w(TAG, "Exception occurred during readUntil for \"" + end + "\"", ex);
+            HyperLog.w(TAG, "Exception occurred during readUntil for \"" + end + "\"", ex);
             return null;
         }
 
@@ -250,13 +252,13 @@ public class Elm327Cable extends Cable
             String response = readUntil(waitFor, sleepMilliseconds);
 
             response = response.replace(Protocols.Elm327.Prompt, ""); // remove the prompt character before returning the response
-            Log.i(TAG, "SendElmInitString: response: " + response);
+            HyperLog.i(TAG, "SendElmInitString: response: " + response);
 
             return response;
         }
         catch (Exception ex)
         {
-            Log.w(TAG, "SendElmInitString: could not send Elm init string: " + data, ex);
+            HyperLog.w(TAG, "SendElmInitString: could not send Elm init string: " + data, ex);
             return "";
         }
     }
@@ -290,7 +292,7 @@ public class Elm327Cable extends Cable
         }
 
         // sending did not work, return false
-        Log.w(TAG, "Communicate() did not send properly, returning null");
+        HyperLog.w(TAG, "Communicate() did not send properly, returning null");
         return null;
     }
 
@@ -326,7 +328,7 @@ public class Elm327Cable extends Cable
             String response = SendCommand(Protocols.Elm327.SetFrameHeader(header), 1000);
             if (!response.contains(Protocols.Elm327.Responses.OK))
             {
-                Log.w(TAG, "Communicate: could not set frame header '" + header + "' for PID\r\n" + pid.toString());
+                HyperLog.w(TAG, "Communicate: could not set frame header '" + header + "' for PID\r\n" + pid.toString());
                 return false;
             }
         }
@@ -347,7 +349,7 @@ public class Elm327Cable extends Cable
     {
         if (cableConnection != null && cableConnection.isConnected())
         {
-            Log.i(TAG, "Send: sending data " + data);
+            HyperLog.i(TAG, "Send: sending data " + data);
             try {
                 data += Protocols.Elm327.EndOfLine;
                 cableConnection.write(data.getBytes());
@@ -356,7 +358,7 @@ public class Elm327Cable extends Cable
             }
             catch (Exception ex)
             {
-                Log.e(TAG, "Send: error sending data \"" + data + "\"", ex);
+                HyperLog.e(TAG, "Send: error sending data \"" + data + "\"", ex);
                 needsReconnect = true;
             }
         }
@@ -372,13 +374,13 @@ public class Elm327Cable extends Cable
         {
             String response = readUntil(Protocols.Elm327.Prompt, timeoutMilliseconds);
             response = response.replace(Protocols.Elm327.Prompt, ""); // remove the prompt character
-            Log.i(TAG, "Receive: " + response);
+            HyperLog.i(TAG, "Receive: " + response);
 
             if (response.contains(Protocols.Elm327.Responses.NoData) ||
                 response.contains(Protocols.Elm327.Responses.Searching) ||
                 response.contains(Protocols.Elm327.Responses.Stopped))
             {
-                Log.w(TAG, "Receive: received invalid response for a PID: \"" + response + "\"");
+                HyperLog.w(TAG, "Receive: received invalid response for a PID: \"" + response + "\"");
                 return null;
             }
 
@@ -389,7 +391,7 @@ public class Elm327Cable extends Cable
         catch (Exception ex)
         {
             // do nothing, timeout occurred and null should be returned
-            Log.w(TAG, "Receive: exception attempting read of PID", ex);
+            HyperLog.w(TAG, "Receive: exception attempting read of PID", ex);
         }
 
         return null;

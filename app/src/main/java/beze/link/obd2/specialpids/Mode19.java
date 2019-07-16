@@ -2,6 +2,8 @@ package beze.link.obd2.specialpids;
 
 import android.util.Log;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -116,26 +118,26 @@ public class Mode19 extends ParameterIdentification
                         else
                         {
 //                            link.DiagnosticLogger.Write("Invalid mode for mode 19 response line \"" + individualResponse + "\"");
-                            Log.e(TAG, "RequestAllDtcStatuses: invalid mode received for mode 19 response, line \"" + individualResponse + "\"");
+                            HyperLog.e(TAG, "RequestAllDtcStatuses: invalid mode received for mode 19 response, line \"" + individualResponse + "\"");
                         }
                     }
                     else
                     {
 //                        link.DiagnosticLogger.Write("Received a mode 19 response line that did not have 4 bytes. Received \"" + individualResponse + "\"");
-                        Log.e(TAG, "RequestAllDtcStatuses: received a mode 19 response that did not have 4 bytes, received \"" + individualResponse + "\"");
+                        HyperLog.e(TAG, "RequestAllDtcStatuses: received a mode 19 response that did not have 4 bytes, received \"" + individualResponse + "\"");
                     }
                 }
                 else
                 {
 //                    link.DiagnosticLogger.Write("ParseStringValues() returned null for response \"" + individualResponse ?? String.Empty + "\"");
-                    Log.e(TAG, "RequestAllDtcStatuses: ParseStringValues() returned null for response \"" + (individualResponse != null ? individualResponse : "") + "\"");
+                    HyperLog.e(TAG, "RequestAllDtcStatuses: ParseStringValues() returned null for response \"" + (individualResponse != null ? individualResponse : "") + "\"");
                 }
             }
         }
         else
         {
 //            link.DiagnosticLogger.Write("PrepareResponseString() returned null for \"" + response ?? String.Empty + "\"");
-            Log.e(TAG, "RequestAllDtcStatuses: PrepareResponseString() returned null for \"" + (response != null ? response : "") + "\"");
+            HyperLog.e(TAG, "RequestAllDtcStatuses: PrepareResponseString() returned null for \"" + (response != null ? response : "") + "\"");
         }
 
         return statuses;

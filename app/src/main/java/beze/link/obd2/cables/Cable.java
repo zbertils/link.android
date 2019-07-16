@@ -5,6 +5,8 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 import android.util.Pair;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -121,7 +123,7 @@ public abstract class Cable
                 cableConnection.close();
             }
             catch (Exception ex) {
-                Log.w(TAG, "Close: could not properly close cable connection socket");
+                HyperLog.w(TAG, "Close: could not properly close cable connection socket");
                 ex.printStackTrace();
             }
             finally {

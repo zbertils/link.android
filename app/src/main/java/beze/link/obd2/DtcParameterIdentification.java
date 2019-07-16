@@ -2,6 +2,8 @@ package beze.link.obd2;
 
 import android.util.Log;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -85,7 +87,7 @@ public class DtcParameterIdentification extends ParameterIdentification
         try
         {
             String dtcString = cable.Communicate(specialMode);
-            Log.d(TAG, "GetDtc: mode " + this.Mode + " received \"" + dtcString + "\"");
+            HyperLog.d(TAG, "GetDtc: mode " + this.Mode + " received \"" + dtcString + "\"");
 
             // possible there is no data so check
             if (dtcString != null && !dtcString.isEmpty() && !dtcString.contains(Protocols.Elm327.Responses.NoData))
@@ -155,50 +157,50 @@ public class DtcParameterIdentification extends ParameterIdentification
                                                 }
 
                                                 // finally add the code to the list after the description was checked
-                                                Log.d(TAG, "GetDtc: finished decoding dtc " + code.Code);
+                                                HyperLog.d(TAG, "GetDtc: finished decoding dtc " + code.Code);
                                                 codes.add(code);
                                             }
                                             else
                                             {
-                                                Log.w(TAG, "GetDtc: skipping zero values DTC");
+                                                HyperLog.w(TAG, "GetDtc: skipping zero values DTC");
                                             }
                                         }
                                     }
                                     if (dtcNumbers.length % 2 != 0)
                                     {
-                                        Log.w(TAG, "GetDtc: number of bytes to work with for dtc check is not an expected even number, got" + dtcNumbers.length + " total bytes, ignoring last byte");
+                                        HyperLog.w(TAG, "GetDtc: number of bytes to work with for dtc check is not an expected even number, got" + dtcNumbers.length + " total bytes, ignoring last byte");
                                     }
                                 }
                                 else
                                 {
-                                    Log.i(TAG, "GetDtc: Received correct mode and valid DTC data, but it is all zeros, no DTC to report");
+                                    HyperLog.i(TAG, "GetDtc: Received correct mode and valid DTC data, but it is all zeros, no DTC to report");
                                 }
                             }
                             else
                             {
-                                Log.e(TAG, "GetDtc: mode returned for DTC check is invalid, received " + (dtcBytes[ParameterIdentification.ResponseByteOffsets.Mode] - 0x40) + ", and expected " + specialMode.Mode);
+                                HyperLog.e(TAG, "GetDtc: mode returned for DTC check is invalid, received " + (dtcBytes[ParameterIdentification.ResponseByteOffsets.Mode] - 0x40) + ", and expected " + specialMode.Mode);
                             }
                         }
                         else
                         {
-                            Log.i(TAG, "GetDtc: dtcBytes is null or zero sized");
+                            HyperLog.i(TAG, "GetDtc: dtcBytes is null or zero sized");
                         }
                     } // end for (String line : dataLines)
                 }
                 else
                 {
-                    Log.i(TAG, "dataLines was null, nothing returned for mode " + this.Mode);
+                    HyperLog.i(TAG, "dataLines was null, nothing returned for mode " + this.Mode);
                 }
             }
             else
             {
                 // maybe do something, most likely there are no codes and "NO DATA" was returned
-                Log.i(TAG, "GetDtc: it doesn't look like there are any trouble codes to be had");
+                HyperLog.i(TAG, "GetDtc: it doesn't look like there are any trouble codes to be had");
             }
         }
         catch (Exception ex)
         {
-            Log.e(TAG, "GetDtc: could not get trouble codes due to exception:\n" + Globals.getStackTraceAndMessage(ex));
+            HyperLog.e(TAG, "GetDtc: could not get trouble codes due to exception:\n" + Globals.getStackTraceAndMessage(ex));
             ex.printStackTrace();
         }
 

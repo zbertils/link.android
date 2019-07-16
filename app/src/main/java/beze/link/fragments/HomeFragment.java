@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import beze.link.Globals;
 import com.android.beze.link.R;
+import com.hypertrack.hyperlog.HyperLog;
 
 import beze.link.interfaces.ICableStateChange;
 import beze.link.obd2.Vehicle;
@@ -82,7 +83,7 @@ public class HomeFragment extends CableInteractionFragment implements Runnable
             }
             catch (Exception ex)
             {
-                Log.e(TAG, "Could not get vehicle info", ex);
+                HyperLog.e(TAG, "Could not get vehicle info", ex);
             }
         }
     }

@@ -2,6 +2,8 @@ package beze.link.util;
 
 import android.util.Log;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import java.util.logging.Logger;
 
 import beze.link.Globals;
@@ -28,7 +30,7 @@ public class ValidatePidsWorker extends WorkerThread
             }
             catch (Exception e)
             {
-                Log.e(TAG, "Failed to sleep", e);
+                HyperLog.e(TAG, "Failed to sleep", e);
                 return;
             }
         }
@@ -82,7 +84,7 @@ public class ValidatePidsWorker extends WorkerThread
         }
         catch (Exception e)
         {
-            Log.e(TAG, "Failed to update supported state for pids", e);
+            HyperLog.e(TAG, "Failed to update supported state for pids", e);
         }
     }
 }

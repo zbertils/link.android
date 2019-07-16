@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.hypertrack.hyperlog.HyperLog;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -51,7 +52,7 @@ public class AppState {
             }
         }
         catch (Exception e) {
-            Log.e(TAG, "AppState read failed: " + e.toString());
+            HyperLog.e(TAG, "AppState read failed: " + e.toString());
         }
 
         return new AppState();
@@ -67,7 +68,7 @@ public class AppState {
             osw.close();
         }
         catch (Exception e) {
-            Log.e(TAG, "AppState write failed: " + e.toString());
+            HyperLog.e(TAG, "AppState write failed: " + e.toString());
         }
     }
 }

@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.preference.PreferenceManager;
@@ -21,6 +22,10 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
+
+import com.android.volley.VolleyError;
+import com.hypertrack.hyperlog.HLCallback;
+import com.hypertrack.hyperlog.HyperLog;
 
 import beze.link.fragments.AdvancedFragment;
 import beze.link.fragments.CableInteractionFragment;
@@ -44,6 +49,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        HyperLog.initialize(this);
+        HyperLog.setLogLevel(Log.VERBOSE);
+        HyperLog.setURL("https://enki6wv21homd.x.pipedream.net");
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean sendLogcat = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SEND_LOGCAT, false);
+        if (sendLogcat)
+        {
+            HyperLog.v(TAG, "Pushing logs");
+            HyperLog.pushLogs(this, false, null);
+        }
+
         Globals.appContext = getApplicationContext();
         Globals.mainActivity = this;
 
@@ -63,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         PreferenceManager.setDefaultValues(this, R.xml.activity_settings, false);
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         // determine if metric or SAE units should be used for the pids
         Globals.Units units = Globals.Units.SAE;
@@ -83,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Snackbar.make(navigationView, "This device does not support bluetooth!", 1500);
         }
         else {
-            Log.i(TAG, "onCreateView: default bluetooth adapter obtained");
+            HyperLog.i(TAG, "onCreateView: default bluetooth adapter obtained");
         }
 
         // determine which page to start from when the application starts
@@ -119,12 +135,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onStop() {
         super.onStop();
 
-        if (Globals.appState != null) {
+        if (Globals.appState != null)
+        {
             Globals.appState.SaveState(this);
         }
-        else {
-            Log.e(TAG, "onDestroy: Globals.appState is null, state not saved!");
+        else
+        {
+            HyperLog.e(TAG, "onDestroy: Globals.appState is null, state not saved!");
         }
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean sendLogcat = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SEND_LOGCAT, false);
+        if (sendLogcat)
+        {
+            HyperLog.v(TAG, "Pushing logs");
+            HyperLog.pushLogs(this, false, null);
+        }
+        else
+        {
+            HyperLog.v(TAG, "Exiting normally, not pushing logs");
+        }
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
     }
 
     @Override
@@ -140,12 +176,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             else
             {
-                Log.i(TAG, "onStart: bluetooth is already enabled");
+                HyperLog.i(TAG, "onStart: bluetooth is already enabled");
             }
         }
         else
         {
-            Log.e(TAG, "Bluetooth adapter not found");
+            HyperLog.e(TAG, "Bluetooth adapter not found");
         }
 
         // only try to connect the cable if it has not already been connected, such as a previous
@@ -189,10 +225,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case REQUEST_ENABLE_BT:
                 // when the request to enable Bluetooth returns
                 if (resultCode == Activity.RESULT_OK) {
-                    Log.i(TAG, "onActivityResult: bluetooth was successfully enabled");
+                    HyperLog.i(TAG, "onActivityResult: bluetooth was successfully enabled");
                 } else {
                     // user did not enable Bluetooth or an error occurred
-                    Log.d(TAG, "onActivityResult: bluetooth not enabled");
+                    HyperLog.d(TAG, "onActivityResult: bluetooth not enabled");
                     this.finish();
                 }
         }

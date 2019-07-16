@@ -100,6 +100,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         ListPreference graphSizesPref = (ListPreference) findPreference("pref_graph_sizes");
         ListPreference graphLengthsPref = (ListPreference) findPreference("pref_graph_lengths");
 
+
         // set the on click listener for the connection device setting,
         // this will be used to dynamically show the connected device below the setting title
         connectionDevice.setOnPreferenceChangeListener(this);

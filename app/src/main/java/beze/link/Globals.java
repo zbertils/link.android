@@ -1,5 +1,8 @@
 package beze.link;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -16,6 +19,8 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.lang.Exception;
 
 import beze.link.fragments.CableInteractionFragment;
 import beze.link.interfaces.ICableStateChange;
@@ -38,6 +44,7 @@ import beze.link.util.UpdatePidsWorker;
 import beze.link.util.ValidatePidsWorker;
 
 import com.android.beze.link.*;
+import com.hypertrack.hyperlog.HyperLog;
 
 public class Globals
 {
@@ -59,7 +66,6 @@ public class Globals
     public static ValidatePidsWorker validateWorker = new ValidatePidsWorker();
     public static ConnectDeviceWorker connectionWorker = null;
     public static MainActivity mainActivity;
-    //    public static boolean restartWorker = false;
     public static BluetoothAdapter btAdapter;
     public static AppState appState;
     public static AtomicReference<CableInteractionFragment> currentCableStateCallback = new AtomicReference<>();
@@ -82,6 +88,7 @@ public class Globals
         public static final String KEY_PREF_SHOW_GRAPHS = "pref_show_graphs";
         public static final String KEY_PREF_GRAPH_SIZES = "pref_graph_sizes";
         public static final String KEY_PREF_GRAPH_LENGTHS = "pref_graph_lengths";
+        public static final String KEY_PREF_SEND_LOGCAT = "pref_send_logcat";
 
         public static int getGraphSize()
         {
@@ -94,7 +101,7 @@ public class Globals
             }
             catch (Exception e)
             {
-                Log.w("DataViewHolder", "Could not parse graphSizeStr value " + graphSizeStr);
+                HyperLog.w("DataViewHolder", "Could not parse graphSizeStr value " + graphSizeStr);
                 graphSize = 250; // this is large
             }
 
@@ -112,7 +119,7 @@ public class Globals
             }
             catch (Exception e)
             {
-                Log.w("DataViewHolder", "Could not parse graphLengthStr value " + graphLength);
+                HyperLog.w("DataViewHolder", "Could not parse graphLengthStr value " + graphLength);
                 graphLength = 250; // this is medium
             }
 
@@ -168,7 +175,7 @@ public class Globals
         }
         catch (Exception ex)
         {
-            Log.e(TAG, "loadPids: could not read " + fileName);
+            HyperLog.e(TAG, "loadPids: could not read " + fileName);
             ex.printStackTrace();
             return false;
         }
@@ -180,9 +187,9 @@ public class Globals
             Double version = json.getDouble("version");
 
             // TODO: check the version against the current and do something about it...
-            if (version != pidsJsonFileVersion)
+            if (Math.abs(version - pidsJsonFileVersion) > 0.001)
             {
-                Log.w(TAG, String.format("loadPids: version does not match expected version, found %f expected %f", version, pidsJsonFileVersion));
+                HyperLog.w(TAG, String.format("loadPids: version does not match expected version, found %f expected %f", version, pidsJsonFileVersion));
             }
 
             // get the array of pids and parse them into ParameterIdentification objects
@@ -197,7 +204,7 @@ public class Globals
         }
         catch (Exception ex)
         {
-            Log.e(TAG, "loadPids: could not parse pids.json");
+            HyperLog.e(TAG, "loadPids: could not parse pids.json");
             ex.printStackTrace();
             return false;
         }
@@ -219,7 +226,7 @@ public class Globals
         }
         catch (Exception ex)
         {
-            Log.e(TAG, "loadDtcDescriptions: could not read dtcs.json");
+            HyperLog.e(TAG, "loadDtcDescriptions: could not read dtcs.json");
             ex.printStackTrace();
             return false;
         }
@@ -269,7 +276,7 @@ public class Globals
         }
         catch (Exception ex)
         {
-            Log.e(TAG, "loadDtcDescriptions: could not parse dtcs.json");
+            HyperLog.e(TAG, "loadDtcDescriptions: could not parse dtcs.json");
             ex.printStackTrace();
             return false;
         }
@@ -291,7 +298,7 @@ public class Globals
         }
         catch (Exception ex)
         {
-            Log.e(TAG, "loadMakes: could not read makes.json");
+            HyperLog.e(TAG, "loadMakes: could not read makes.json");
             ex.printStackTrace();
             return false;
         }
@@ -313,7 +320,7 @@ public class Globals
         }
         catch (Exception ex)
         {
-            Log.e(TAG, "loadMakes: could not parse makes.json");
+            HyperLog.e(TAG, "loadMakes: could not parse makes.json");
             ex.printStackTrace();
             return false;
         }
@@ -395,7 +402,7 @@ public class Globals
 
     public static void disconnectCable()
     {
-        Log.d(TAG, "disconnectCable()");
+        HyperLog.d(TAG, "disconnectCable()");
 
         if (Globals.cable != null)
         {
@@ -427,7 +434,7 @@ public class Globals
     {
         if (connectionWorker == null)
         {
-            Log.v(TAG, "Starting new connection thread");
+            HyperLog.v(TAG, "Starting new connection thread");
             connectionWorker = new ConnectDeviceWorker();
             connectionWorker.start(deviceName);
         }

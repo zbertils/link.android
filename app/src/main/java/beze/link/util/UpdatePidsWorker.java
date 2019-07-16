@@ -12,6 +12,8 @@ import java.util.List;
 
 import beze.link.Globals;
 import com.android.beze.link.R;
+import com.hypertrack.hyperlog.HyperLog;
+
 import beze.link.obd2.ParameterIdentification;
 import beze.link.obd2.cables.Cable;
 
@@ -56,7 +58,7 @@ public class UpdatePidsWorker extends WorkerThread
                                     }
                                     else
                                     {
-                                        Log.w(TAG, "Could not update PID " + pid.getShortName());
+                                        HyperLog.w(TAG, "Could not update PID " + pid.getShortName());
                                         pid.setLastDecodedValue(Double.NaN);
                                     }
 
@@ -77,7 +79,7 @@ public class UpdatePidsWorker extends WorkerThread
                             }
                             else
                             {
-                                Log.w(TAG, "Trying to fetch null pid object");
+                                HyperLog.w(TAG, "Trying to fetch null pid object");
                             }
 
                             if (stopWork)
@@ -96,7 +98,7 @@ public class UpdatePidsWorker extends WorkerThread
         }
         catch (Exception e)
         {
-            Log.e(TAG, "doWork: encountered an error", e);
+            HyperLog.e(TAG, "doWork: encountered an error", e);
             e.printStackTrace();
         }
     }

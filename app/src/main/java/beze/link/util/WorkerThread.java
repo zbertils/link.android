@@ -2,6 +2,8 @@ package beze.link.util;
 
 import android.util.Log;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import beze.link.Globals;
 
 public abstract class WorkerThread implements Runnable
@@ -27,7 +29,7 @@ public abstract class WorkerThread implements Runnable
     public void finalize() {
         if (isAlive()) {
             stop();
-            Log.e(TAG, "finalize: thread was still alive, stopping now");
+            HyperLog.e(TAG, "finalize: thread was still alive, stopping now");
         }
     }
 
@@ -67,7 +69,7 @@ public abstract class WorkerThread implements Runnable
             workerThread.join();
         }
         catch (Exception ex) {
-            Log.e(TAG, "Join: workerThread join exception");
+            HyperLog.e(TAG, "Join: workerThread join exception");
             ex.printStackTrace();
         }
     }

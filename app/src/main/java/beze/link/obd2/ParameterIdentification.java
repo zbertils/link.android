@@ -2,6 +2,8 @@ package beze.link.obd2;
 
 import android.util.Log;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -96,7 +98,7 @@ public class ParameterIdentification {
             this.mLastDecodedValue = 0;
         }
         catch (Exception ex) {
-            Log.e("ParameterIdentification", "ParameterIdentification: could not parse jsonObj " + jsonObj.toString() );
+            HyperLog.e("ParameterIdentification", "ParameterIdentification: could not parse jsonObj " + jsonObj.toString() );
 
             // set everything to default values, this pid is not valid anymore
             this.Name = "";
@@ -294,7 +296,7 @@ public class ParameterIdentification {
         }
         catch (Exception ex)
         {
-            Log.e(TAG, "Unpack: could not unpack\r\n" + this.toString());
+            HyperLog.e(TAG, "Unpack: could not unpack\r\n" + this.toString());
             lastError = ex.toString();
             return Double.NaN;
         }
@@ -358,7 +360,7 @@ public class ParameterIdentification {
             }
             catch (Exception ex)
             {
-                Log.e(TAG, "ParseStringValues: invalid conversion from String to Integer for value " + dataStrValues[i] + " at position " + i);
+                HyperLog.e(TAG, "ParseStringValues: invalid conversion from String to Integer for value " + dataStrValues[i] + " at position " + i);
                 return null;
             }
         }
@@ -457,7 +459,7 @@ public class ParameterIdentification {
             Thread.sleep(100);
         }
         catch (Exception ex) {
-            Log.i(TAG, "SimulatedResponse: could not sleep");
+            HyperLog.i(TAG, "SimulatedResponse: could not sleep");
         }
 
         return dataStr;

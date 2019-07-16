@@ -54,11 +54,15 @@
             android:title="Graph Time Window" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Advanced">
-
         <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_simulate_data"
             android:summary="Use simulated data instead of connecting to an actual device. Use this for debugging purposes only"
             android:title="Simulate ELM327 data" />
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_send_logcat"
+            android:summary="When exiting the app, send log information to the developer"
+            android:title="Send logs on exit" />
     </PreferenceCategory>
 </PreferenceScreen>

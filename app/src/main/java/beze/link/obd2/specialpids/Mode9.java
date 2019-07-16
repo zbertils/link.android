@@ -2,6 +2,8 @@ package beze.link.obd2.specialpids;
 
 import android.util.Log;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import beze.link.Globals;
 import beze.link.obd2.ParameterIdentification;
 import beze.link.obd2.Protocols;
@@ -71,14 +73,14 @@ public class Mode9 extends ParameterIdentification
                     else
                     {
 //                    link.DiagnosticLogger.Write("Cannot decode VIN, expected mode " + this.Mode + " and received " + receivedMode);
-                        Log.e(TAG, "RequestVIN: cannot decode VIN, expected mode " + this.Mode + " and received " + receivedMode);
+                        HyperLog.e(TAG, "RequestVIN: cannot decode VIN, expected mode " + this.Mode + " and received " + receivedMode);
                         return null;
                     }
                 }
                 else
                 {
 //                link.DiagnosticLogger.Write("Cannot decode VIN, expected at least 7 characters in line \"" + line + "\" and received " + dataBytes.Length);
-                    Log.e(TAG, "RequestVIN: cannot decode VIN, expected at least 7 characters in line \"" + line + "\" and received " + dataBytes.length);
+                    HyperLog.e(TAG, "RequestVIN: cannot decode VIN, expected at least 7 characters in line \"" + line + "\" and received " + dataBytes.length);
                     return null;
                 }
             }

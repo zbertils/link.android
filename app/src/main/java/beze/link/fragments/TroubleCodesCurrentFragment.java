@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.beze.link.R;
+import com.hypertrack.hyperlog.HyperLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +87,7 @@ public class TroubleCodesCurrentFragment extends CableInteractionFragment implem
         }
         catch (Exception ex)
         {
-            Log.e(TAG, "Exception sleeping", ex);
+            HyperLog.e(TAG, "Exception sleeping", ex);
         }
 
         final TextView noCodesTextView = (TextView) Globals.mainActivity.findViewById(R.id.noCodesTextView);
@@ -171,7 +172,7 @@ public class TroubleCodesCurrentFragment extends CableInteractionFragment implem
                         .show();
                 break;
             default:
-                Log.w(TAG, String.format("onClick: received a click for an unknown view, id: %d", view.getId()));
+                HyperLog.w(TAG, String.format("onClick: received a click for an unknown view, id: %d", view.getId()));
                 break;
         }
     }
