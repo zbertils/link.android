@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private final String TAG = Globals.TAG_BASE + "MainActivity";
     private static final int REQUEST_ENABLE_BT = 1;
 
-    private static LogPusher logPushThread = new LogPusher();
+    private static LogPusher logPushThread = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +53,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         HyperLog.setLogLevel(Log.VERBOSE);
         HyperLog.setURL("https://enki6wv21homd.x.pipedream.net");
-
-        // setup the log pusher thread
-        logPushThread.start();
 
         Globals.appContext = getApplicationContext();
         Globals.mainActivity = this;
@@ -140,21 +137,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             HyperLog.e(TAG, "onDestroy: Globals.appState is null, state not saved!");
         }
+
+        if (logPushThread != null)
+        {
+            logPushThread.stop();
+            logPushThread.join();
+        }
     }
 
     @Override
     public void onDestroy()
     {
-        // do a final push of logs when the activity gets destroyed
-        logPushThread.stop();
-        logPushThread.join();
-
         super.onDestroy();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
+        // start/restart the log push thread
+        logPushThread = new LogPusher();
+        logPushThread.start();
 
         if (Globals.btAdapter != null)
         {
