@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.preference.PreferenceManager;
@@ -20,45 +19,43 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
-import com.android.volley.VolleyError;
-import com.hypertrack.hyperlog.HLCallback;
 import com.hypertrack.hyperlog.HyperLog;
 
 import beze.link.fragments.AdvancedFragment;
 import beze.link.fragments.CableInteractionFragment;
 import beze.link.fragments.DataFragment;
 import beze.link.fragments.HomeFragment;
-import beze.link.interfaces.ICableStateChange;
 import beze.link.fragments.PidsFragment;
 import beze.link.fragments.TroubleCodesFragment;
 import beze.link.obd2.ParameterIdentification;
 import beze.link.Globals;
 import beze.link.AppState;
 import beze.link.SettingsActivity;
-import beze.link.obd2.cables.connections.CableConnection;
+import beze.link.util.*;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private final String TAG = Globals.TAG_BASE + "MainActivity";
     private static final int REQUEST_ENABLE_BT = 1;
 
+    private static LogPusher logPushThread = new LogPusher();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        HyperLog.initialize(this);
+        // force a reset of the logs by initializing with an expire time of 1 second to clear
+        // all the old logs from a previous instance, and then set to a timeout of 1 day
+        HyperLog.initialize(this, 1);
+        HyperLog.initialize(this, 60*60*24);
+
         HyperLog.setLogLevel(Log.VERBOSE);
         HyperLog.setURL("https://enki6wv21homd.x.pipedream.net");
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        boolean sendLogcat = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SEND_LOGCAT, false);
-        if (sendLogcat)
-        {
-            HyperLog.v(TAG, "Pushing logs");
-            HyperLog.pushLogs(this, false, null);
-        }
+
+        // setup the log pusher thread
+        logPushThread.start();
 
         Globals.appContext = getApplicationContext();
         Globals.mainActivity = this;
@@ -79,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         PreferenceManager.setDefaultValues(this, R.xml.activity_settings, false);
-//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         // determine if metric or SAE units should be used for the pids
         Globals.Units units = Globals.Units.SAE;
@@ -144,17 +141,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             HyperLog.e(TAG, "onDestroy: Globals.appState is null, state not saved!");
         }
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        boolean sendLogcat = sharedPref.getBoolean(Globals.Preferences.KEY_PREF_SEND_LOGCAT, false);
-        if (sendLogcat)
-        {
-            HyperLog.v(TAG, "Pushing logs");
-            HyperLog.pushLogs(this, false, null);
-        }
-        else
-        {
-            HyperLog.v(TAG, "Exiting normally, not pushing logs");
-        }
+        logPushThread.stop();
+        logPushThread.join();
     }
 
     @Override

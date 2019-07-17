@@ -62,7 +62,7 @@
         <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_send_logcat"
-            android:summary="When exiting the app, send log information to the developer"
-            android:title="Send logs on exit" />
+            android:summary="Send log information to the developer. Only information related to this application is sent."
+            android:title="Send logs to developer" />
     </PreferenceCategory>
 </PreferenceScreen>
