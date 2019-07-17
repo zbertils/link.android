@@ -140,14 +140,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             HyperLog.e(TAG, "onDestroy: Globals.appState is null, state not saved!");
         }
-
-        logPushThread.stop();
-        logPushThread.join();
     }
 
     @Override
     public void onDestroy()
     {
+        // do a final push of logs when the activity gets destroyed
+        logPushThread.stop();
+        logPushThread.join();
+
         super.onDestroy();
     }
 
