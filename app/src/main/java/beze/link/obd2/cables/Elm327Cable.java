@@ -252,7 +252,7 @@ public class Elm327Cable extends Cable
             String response = readUntil(waitFor, sleepMilliseconds);
 
             response = response.replace(Protocols.Elm327.Prompt, ""); // remove the prompt character before returning the response
-            HyperLog.i(TAG, "SendElmInitString: response: " + response);
+            HyperLog.v(TAG, "SendElmInitString: response: " + response);
 
             return response;
         }
@@ -374,7 +374,7 @@ public class Elm327Cable extends Cable
         {
             String response = readUntil(Protocols.Elm327.Prompt, timeoutMilliseconds);
             response = response.replace(Protocols.Elm327.Prompt, ""); // remove the prompt character
-            HyperLog.i(TAG, "Receive: " + response);
+            HyperLog.v(TAG, "Receive: " + response);
 
             if (response.contains(Protocols.Elm327.Responses.NoData) ||
                 response.contains(Protocols.Elm327.Responses.Searching) ||
