@@ -220,7 +220,7 @@ public class Elm327Cable extends Cable
                 // if the end was reached then break before incrementing the count,
                 // this keeps the logic in place to determine if a timeout was reached or not
                 if (endReached) {
-                    HyperLog.v(TAG, "readUntil reached expected end \"" + end + "\"");
+                    //HyperLog.v(TAG, "readUntil reached expected end \"" + end + "\"");
                     break;
                 }
 

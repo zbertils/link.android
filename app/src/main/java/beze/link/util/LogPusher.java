@@ -1,11 +1,6 @@
 package beze.link.util;
 
-import android.support.annotation.NonNull;
-
-import com.hypertrack.hyperlog.HLCallback;
 import com.hypertrack.hyperlog.HyperLog;
-import com.hypertrack.hyperlog.error.HLErrorCode;
-import com.hypertrack.hyperlog.error.HLErrorResponse;
 
 import beze.link.Globals;
 
@@ -18,13 +13,11 @@ public class LogPusher extends WorkerThread
     @Override
     protected void doWork()
     {
-        boolean waitForResponse = true;
         while (!stopWork)
         {
             long count = HyperLog.getDeviceLogsCount();
             if (count > maxLogCount)
             {
-                waitForResponse = true;
                 HyperLog.pushLogs(Globals.mainActivity, false, callback);
 
                 while (!callback.isResponseReceived())
@@ -42,7 +35,6 @@ public class LogPusher extends WorkerThread
             }
         }
 
-        waitForResponse = true;
         HyperLog.pushLogs(Globals.mainActivity, false, callback);
 
         while (!callback.isResponseReceived())

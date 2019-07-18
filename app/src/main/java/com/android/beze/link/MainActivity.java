@@ -46,10 +46,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // force a reset of the logs by initializing with an expire time of 1 second to clear
-        // all the old logs from a previous instance, and then set to a timeout of 1 day
-        HyperLog.initialize(this, 1);
         HyperLog.initialize(this, 60*60*24);
+        HyperLog.getDeviceLogs(true); // remove all old logs
 
         HyperLog.setLogLevel(Log.VERBOSE);
         HyperLog.setURL("https://enki6wv21homd.x.pipedream.net");
@@ -141,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (logPushThread != null)
         {
             logPushThread.stop();
-            logPushThread.join();
+            //logPushThread.join();
         }
     }
 
