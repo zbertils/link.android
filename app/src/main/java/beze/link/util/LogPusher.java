@@ -10,8 +10,28 @@ import beze.link.Globals;
 public class LogPusher extends WorkerThread
 {
     private final String TAG = Globals.TAG_BASE + "LogPusher";
-    long maxLogCount = 500;
-    LogPusherCallback callback = new LogPusherCallback();
+    private long maxLogCount = 500;
+    private LogPusherCallback callback = new LogPusherCallback();
+    private boolean pushNow = false;
+    private final Object lock = new Object();
+
+    public void push()
+    {
+        synchronized (lock)
+        {
+            pushNow = true;
+        }
+    }
+
+    public boolean shouldPush()
+    {
+        synchronized (lock)
+        {
+            boolean shouldPush = pushNow;
+            pushNow = false;
+            return shouldPush;
+        }
+    }
 
     @Override
     protected void doWork()
@@ -23,7 +43,7 @@ public class LogPusher extends WorkerThread
         while (!stopWork)
         {
             long count = HyperLog.getDeviceLogsCount();
-            if (count > maxLogCount)
+            if (count > maxLogCount || shouldPush())
             {
                 if (sendLogs)
                 {
@@ -47,7 +67,13 @@ public class LogPusher extends WorkerThread
             }
             else
             {
-                try { Thread.sleep(100); } catch (Exception e) {}
+                try
+                {
+                    Thread.sleep(100);
+                }
+                catch (Exception e)
+                {
+                }
             }
         }
 

@@ -136,17 +136,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             HyperLog.e(TAG, "onDestroy: Globals.appState is null, state not saved!");
         }
 
+        // if the log pushing thread exists then force a push now regardless of how many there are
         if (logPushThread != null)
         {
-            logPushThread.stop();
-            //logPushThread.join();
+            logPushThread.push();
         }
-    }
-
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
     }
 
     @Override
