@@ -61,21 +61,30 @@ public class DtcStatusRecyclerViewAdapter extends RecyclerView.Adapter<DtcStatus
         holder.dtcType.setText(dtc.Computer.toString());
         holder.dtcStatus.setText(dtc.Status);
 
-        // reset all of the colors
-        holder.dtcNumber.setTextColor(Color.BLACK);
-        holder.dtcDescription.setTextColor(Color.LTGRAY);
-        holder.dtcType.setTextColor(Color.BLACK);
-        holder.dtcStatus.setTextColor(Color.LTGRAY);
-
         // set styles dependent on the status value
-        if (dtc.Status.contains("Warning lamp illuminated"))
+        if (dtc.Status.contains("Warning lamp illuminated") ||
+            dtc.Status.contains("Stored trouble code") ||
+            dtc.Status.contains("Current code present"))
         {
             holder.dtcNumber.setTextColor(Color.RED);
             holder.dtcNumber.setTypeface(holder.dtcNumber.getTypeface(), Typeface.BOLD);
+            holder.dtcDescription.setTextColor(Color.BLACK);
+            holder.dtcType.setTextColor(Color.BLACK);
+            holder.dtcStatus.setTextColor(Color.BLACK);
         }
         else if (dtc.Status.contains("Warning lamp pending"))
         {
+            holder.dtcNumber.setTextColor(Color.rgb(255, 165,0));
+            holder.dtcDescription.setTextColor(Color.BLACK);
+            holder.dtcType.setTextColor(Color.BLACK);
+            holder.dtcStatus.setTextColor(Color.BLACK);
+        }
+        else if (dtc.Status.contains("Warning lamp previously illuminated"))
+        {
             holder.dtcNumber.setTextColor(Color.MAGENTA);
+            holder.dtcDescription.setTextColor(Color.BLACK);
+            holder.dtcType.setTextColor(Color.BLACK);
+            holder.dtcStatus.setTextColor(Color.BLACK);
         }
         else
         {

@@ -28,6 +28,7 @@ import beze.link.fragments.CableInteractionFragment;
 import beze.link.fragments.DataFragment;
 import beze.link.fragments.HomeFragment;
 import beze.link.fragments.PidsFragment;
+import beze.link.fragments.TestsFragment;
 import beze.link.fragments.TroubleCodesFragment;
 import beze.link.obd2.ParameterIdentification;
 import beze.link.Globals;
@@ -307,14 +308,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 setTitle("Select PIDS");
                 fragment = new PidsFragment();
                 break;
+//            case R.id.nav_tests :
+//                setTitle("Tests");
+//                fragment = new TestsFragment();
+//                break;
             default:
                 fragment = null;
                 break;
         }
 
         // can only show a fragment if a valid menu item was selected
-        if (fragment != null) {
-
+        if (fragment != null)
+        {
             Globals.currentCableStateCallback.set(fragment);
 
             // stop the pids worker no matter what, if navigating back to the data fragment it will start again

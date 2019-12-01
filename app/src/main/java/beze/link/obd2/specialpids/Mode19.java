@@ -55,24 +55,25 @@ public class Mode19 extends ParameterIdentification
     public Mode19()
     {
         super(
-                "Diagnostic Trouble Code Status",
-                (byte)0x19,
-                RequestType.All,
-                (byte)0x01,
-                "",
-                "",
-                "DTC",
-                "Diagnostic",
-                "",
-                Protocols.J1850.Headers.PCM);
+            "Diagnostic Trouble Code Status",
+            (byte)0x19,
+            RequestType.All, // this will change depending on the type being requested
+            (byte)0x01,
+            "",
+            "",
+            "DTC",
+            "Diagnostic",
+            "",
+            Protocols.J1850.Headers.PCM); // this will change depending on the type being requested
     }
 
     @Override
     public byte PacketSize() { return 0x01; }
 
-    public HashMap<String, DiagnosticTroubleCode> RequestAllDtcStatuses(Cable cable)
+    public HashMap<String, DiagnosticTroubleCode> RequestActiveDtc(Cable cable)
     {
         HashMap<String, DiagnosticTroubleCode> statuses = new HashMap<>();
+        this.PID = RequestType.ActiveAndPending; // reset to be a request for active and pending only
 
         String response = cable.Communicate(this, 5000);
         String[] responses = ParameterIdentification.PrepareResponseString(response);
@@ -92,6 +93,100 @@ public class Mode19 extends ParameterIdentification
 
                             // the code is still in elm327 encoded format, e.g. "4670" which would be DTC B0670
                             String elm327code = firstByte + secondByte;
+
+                            // determine if this was a pending or active trouble code
+                            DiagnosticTroubleCode.CodeType type;
+                            if ((responseBytes[3] & 0x10) > 0 ||
+                                    (responseBytes[3] & 0x02) > 0||
+                                    (responseBytes[3] & 0x80) > 0)
+                            {
+                                type = DiagnosticTroubleCode.CodeType.Set;
+                            }
+                            else if ((responseBytes[3] & 0x40) > 0)
+                            {
+                                type = DiagnosticTroubleCode.CodeType.Pending;
+                            }
+                            else
+                            {
+                                // default to status check, meaning this code does not belong here but it will be shown anyway
+                                type = DiagnosticTroubleCode.CodeType.StatusCheck;
+                            }
+
+                            DiagnosticTroubleCode code = new DiagnosticTroubleCode(elm327code, type);
+
+                            String codeStatusDescription = GetStatusDescription(responseBytes[3]);
+                            code.Status = codeStatusDescription;
+
+                            // see if the code exists in the list of known codes to get the description
+                            if (Globals.dtcDescriptions != null &&
+                                    Globals.dtcDescriptions.containsKey(code.Code))
+                            {
+                                String description = Globals.dtcDescriptions.get(code.Code);
+                                code.Description = description;
+                            }
+                            else
+                            {
+                                code.Description = "Unknown Code";
+                            }
+
+                            // the P0000 code does not actually exist, remove it from the final list
+                            if (!code.Code.equalsIgnoreCase("P0000"))
+                            {
+                                statuses.put(code.Code, code);
+                            }
+                        }
+                        else
+                        {
+//                            link.DiagnosticLogger.Write("Invalid mode for mode 19 response line \"" + individualResponse + "\"");
+                            HyperLog.e(TAG, "RequestAllDtcStatuses: invalid mode received for mode 19 response, line \"" + individualResponse + "\"");
+                        }
+                    }
+                    else
+                    {
+//                        link.DiagnosticLogger.Write("Received a mode 19 response line that did not have 4 bytes. Received \"" + individualResponse + "\"");
+                        HyperLog.e(TAG, "RequestAllDtcStatuses: received a mode 19 response that did not have 4 bytes, received \"" + individualResponse + "\"");
+                    }
+                }
+                else
+                {
+//                    link.DiagnosticLogger.Write("ParseStringValues() returned null for response \"" + individualResponse ?? String.Empty + "\"");
+                    HyperLog.e(TAG, "RequestAllDtcStatuses: ParseStringValues() returned null for response \"" + (individualResponse != null ? individualResponse : "") + "\"");
+                }
+            }
+        }
+        else
+        {
+//            link.DiagnosticLogger.Write("PrepareResponseString() returned null for \"" + response ?? String.Empty + "\"");
+            HyperLog.e(TAG, "RequestAllDtcStatuses: PrepareResponseString() returned null for \"" + (response != null ? response : "") + "\"");
+        }
+
+        return statuses;
+    }
+
+    public HashMap<String, DiagnosticTroubleCode> RequestAllDtcStatuses(Cable cable)
+    {
+        HashMap<String, DiagnosticTroubleCode> statuses = new HashMap<>();
+        this.PID = RequestType.All; // reset to be a request for all dtc statuses
+
+        String response = cable.Communicate(this, 5000);
+        String[] responses = ParameterIdentification.PrepareResponseString(response);
+        if (responses != null)
+        {
+            for (String individualResponse : responses)
+            {
+                int[] responseBytes = ParameterIdentification.ParseStringValues(individualResponse);
+                if (responseBytes != null)
+                {
+                    if (responseBytes.length == 4)
+                    {
+                        if (responseBytes[0] - 0x40 == this.Mode)
+                        {
+                            String firstByte = String.format("%02X", responseBytes[1]);
+                            String secondByte = String.format("%02X", responseBytes[2]);
+
+                            // the code is still in elm327 encoded format, e.g. "4670" which would be DTC B0670
+                            String elm327code = firstByte + secondByte;
+
                             DiagnosticTroubleCode code = new DiagnosticTroubleCode(elm327code, DiagnosticTroubleCode.CodeType.StatusCheck);
 
                             String codeStatusDescription = GetStatusDescription(responseBytes[3]);
@@ -189,23 +284,29 @@ public class Mode19 extends ParameterIdentification
                     "59 06 70 7F" + Protocols.Elm327.EndOfLine +
                     "59 04 01 3F" + Protocols.Elm327.EndOfLine +
                     "59 27 71 21" + Protocols.Elm327.EndOfLine +
+                    "59 80 16 01" + Protocols.Elm327.EndOfLine +
+                    "59 80 17 01" + Protocols.Elm327.EndOfLine +
+                    "59 80 18 01" + Protocols.Elm327.EndOfLine +
+                    "59 80 22 01" + Protocols.Elm327.EndOfLine +
+                    "59 80 24 01" + Protocols.Elm327.EndOfLine +
+                    "59 80 26 13" + Protocols.Elm327.EndOfLine +
+                    "59 80 51 01" + Protocols.Elm327.EndOfLine +
+                    "59 80 53 01" + Protocols.Elm327.EndOfLine +
+                    "59 81 03 01" + Protocols.Elm327.EndOfLine +
+                    "59 81 04 01" + Protocols.Elm327.EndOfLine +
+                    "59 81 05 01" + Protocols.Elm327.EndOfLine +
+                    "59 90 00 01" + Protocols.Elm327.EndOfLine +
+                    "59 90 01 01" + Protocols.Elm327.EndOfLine +
+                    "59 D0 00 01" + Protocols.Elm327.EndOfLine +
+                    "59 D3 00 13" + Protocols.Elm327.EndOfLine +
+                    "59 D3 01 11" + Protocols.Elm327.EndOfLine +
+                    "59 D0 16 01" + Protocols.Elm327.EndOfLine +
+                    "59 D0 41 01" + Protocols.Elm327.EndOfLine +
+                    "59 D0 96 01" + Protocols.Elm327.EndOfLine +
+                    "59 D0 64 01" + Protocols.Elm327.EndOfLine +
                     "59 00 00 13" + Protocols.Elm327.EndOfLine + Protocols.Elm327.Prompt;
         }
 
         return "";
-//        else
-//        {
-//            return
-//                    "0: 59 A9 57 01" + Protocols.Elm327.EndOfLine +
-//                            "1:A9 58 01" + Protocols.Elm327.EndOfLine +
-//                            "2: B8 02 01" + Protocols.Elm327.EndOfLine +
-//                            "3: D0 16 11" + Protocols.Elm327.EndOfLine +
-//                            "4: A9 57 3F" + Protocols.Elm327.EndOfLine +
-//                            "5: A9 57 25" + Protocols.Elm327.EndOfLine +
-//                            "6: 06 70 7F" + Protocols.Elm327.EndOfLine +
-//                            "7:04 01 3F" + Protocols.Elm327.EndOfLine +
-//                            "8: 27 71 21" + Protocols.Elm327.EndOfLine +
-//                            "9: 00 00 13" + Protocols.Elm327.EndOfLine + Protocols.Elm327.Prompt;
-//        }
     }
 }

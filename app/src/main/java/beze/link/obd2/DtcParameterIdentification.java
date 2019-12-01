@@ -61,32 +61,11 @@ public class DtcParameterIdentification extends ParameterIdentification
 
     public List<DiagnosticTroubleCode> RequestTroubleCodes(Cable cable)
     {
-        // TODO: set frame headers for other protocols
-
-        // set the frame header to the default PCM for the main engine codes
-        if (cable.Protocol == Protocols.Protocol.HighSpeedCAN11 ||
-                cable.Protocol == Protocols.Protocol.LowSpeedCAN11)
-        {
-            Protocols.Elm327.SetFrameHeader(Protocols.CAN.ShortHeaders.Default);
-        }
-        else if (cable.Protocol == Protocols.Protocol.J1850)
-        {
-            Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.Default);
-        }
-
-        return GetDtc(cable, this, CodeType);
-    }
-
-    private List<DiagnosticTroubleCode> GetDtc(
-            Cable cable,
-            DtcParameterIdentification specialMode,
-            DiagnosticTroubleCode.CodeType codeType)
-    {
         List<DiagnosticTroubleCode> codes = new ArrayList<DiagnosticTroubleCode>();
 
         try
         {
-            String dtcString = cable.Communicate(specialMode);
+            String dtcString = cable.Communicate(this);
             HyperLog.d(TAG, "GetDtc: mode " + this.Mode + " received \"" + dtcString + "\"");
 
             // possible there is no data so check
@@ -102,7 +81,7 @@ public class DtcParameterIdentification extends ParameterIdentification
                         if (dtcBytes != null && dtcBytes.length > 0)
                         {
                             // make sure the correct pid was received
-                            if (dtcBytes[ParameterIdentification.ResponseByteOffsets.Mode] - 0x40 == specialMode.Mode)
+                            if (dtcBytes[ParameterIdentification.ResponseByteOffsets.Mode] - 0x40 == this.Mode)
                             {
                                 int[] dtcNumbers = Arrays.copyOfRange(dtcBytes, 1, dtcBytes.length);
 
@@ -142,7 +121,7 @@ public class DtcParameterIdentification extends ParameterIdentification
 
                                                 // the code is still in elm327 encoded format, e.g. "4670" which would be DTC B0670
                                                 String elm327code = firstByte + secondByte;
-                                                DiagnosticTroubleCode code = new DiagnosticTroubleCode(elm327code, codeType);
+                                                DiagnosticTroubleCode code = new DiagnosticTroubleCode(elm327code, CodeType);
 
                                                 // see if the code exists in the list of known codes to get the description
                                                 if (Globals.dtcDescriptions != null &&
@@ -178,7 +157,7 @@ public class DtcParameterIdentification extends ParameterIdentification
                             }
                             else
                             {
-                                HyperLog.e(TAG, "GetDtc: mode returned for DTC check is invalid, received " + (dtcBytes[ParameterIdentification.ResponseByteOffsets.Mode] - 0x40) + ", and expected " + specialMode.Mode);
+                                HyperLog.e(TAG, "GetDtc: mode returned for DTC check is invalid, received " + (dtcBytes[ParameterIdentification.ResponseByteOffsets.Mode] - 0x40) + ", and expected " + this.Mode);
                             }
                         }
                         else

@@ -36,12 +36,17 @@ public class ParameterIdentification {
         public static final byte ExtendedDataByte1 = 4;
         public static final byte ExtendedDataByte2 = 5;
         public static final byte ExtendedDataByte3 = 6;
+
+        public static final byte LongPIDByte0 = 2;
+        public static final byte LongPIDByte1 = 3;
+        public static final byte LongDataByte0 = 4;
     }
 
     public static class PacketSizes
     {
         public static final byte Normal = 2;
         public static final byte Extended = 3;
+        public static final byte Long = 4;
     }
 
     // these should be read only, for now they are mutable
@@ -150,9 +155,13 @@ public class ParameterIdentification {
         {
             return PacketSizes.Normal;
         }
-        else
+        else if (this.PID > Byte.MAX_VALUE && this.Mode < 256)
         {
             return PacketSizes.Extended;
+        }
+        else
+        {
+            return PacketSizes.Long;
         }
     }
 
@@ -259,20 +268,33 @@ public class ParameterIdentification {
             {
                 int[] values = ParseStringValues(dataStr[0]);
 
+                // make sure this response has the correct number of expected data bytes,
+                // the correct expected mode, and the correct expected pid
+                if (this.Mode > 256)
+                {
+                    int mode = (values[ResponseByteOffsets.Mode] << 8) + values[ResponseByteOffsets.Mode + 1];
+                    if (mode - 0x40 != this.Mode)
+                    {
+                        HyperLog.v(TAG, "Mode > 256 and mode-0x40 != this.Mode, " + mode + ", " + this.Mode);
+                        return Double.NaN;
+                    }
+                }
+                else if (values[ResponseByteOffsets.Mode] - 0x40 != this.Mode)
+                {
+                    HyperLog.v(TAG, "Mode > 256 and mode-0x40 != this.Mode, " + values[ResponseByteOffsets.Mode] + ", " + this.Mode);
+                    return Double.NaN;
+                }
+
                 // default the respond pid to be if not using extended pids,
                 // then figure out if it should be adjusted if it is an extended pid
                 int responsePid = values[ResponseByteOffsets.PID];
-                if (this.PacketSize() == 3)
+                if (this.PacketSize() == PacketSizes.Extended)
                 {
-                    responsePid = (values[ResponseByteOffsets.ExtendedPIDByte0] << 8) +
-                            values[ResponseByteOffsets.ExtendedPIDByte0 + 1];
+                    responsePid = (values[ResponseByteOffsets.ExtendedPIDByte0] << 8) + values[ResponseByteOffsets.ExtendedPIDByte1];
                 }
-
-                // make sure this response has the correct number of expected data bytes,
-                // the correct expected mode, and the correct expected pid
-                if (values[ResponseByteOffsets.Mode] - 0x40 != this.Mode)
+                else if (this.PacketSize() == PacketSizes.Long)
                 {
-                    return Double.NaN;
+                    responsePid = (values[ResponseByteOffsets.LongPIDByte0] << 8) + values[ResponseByteOffsets.LongPIDByte1];
                 }
 
                 if (responsePid != this.PID) {
@@ -280,8 +302,12 @@ public class ParameterIdentification {
                 }
 
                 int startIndex = ResponseByteOffsets.DataByte0;
-                if (this.PacketSize() == 3) {
+                if (this.PacketSize() == PacketSizes.Extended) {
                     startIndex = ResponseByteOffsets.ExtendedDataByte0;
+                }
+                else if (this.PacketSize() == PacketSizes.Long)
+                {
+                    startIndex = ResponseByteOffsets.LongDataByte0;
                 }
 
                 // manually convert each byte to a string value since the String.format function doesn't like parsing byte arrays into strings

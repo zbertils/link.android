@@ -17,6 +17,7 @@ import beze.link.Globals;
 import com.android.beze.link.R;
 import com.hypertrack.hyperlog.HyperLog;
 
+import beze.link.VehicleProfile;
 import beze.link.interfaces.ICableStateChange;
 import beze.link.obd2.Vehicle;
 
@@ -80,6 +81,8 @@ public class HomeFragment extends CableInteractionFragment implements Runnable
                         }
                     }
                 });
+
+                Globals.appState.activeProfile = new VehicleProfile();
             }
             catch (Exception ex)
             {

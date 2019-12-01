@@ -693,7 +693,7 @@
       "FormulaString": "%1$s",
       "Group": "Transmission",
       "Header": "6C18F1",
-      "CANHeader": "7E1",
+      "CANHeader": "7E2",
       "LogThisPID": "false",
       "Mode": "34",
       "Name": "Transmission Gear",
@@ -704,12 +704,13 @@
     {
       "DataByteCount": "1",
       "Description": "Oil pressure",
-      "FormulaString": "%1$s*0.065-17.5",
+      "FormulaString": "%1$s*0.90625",
       "Group": "Engine",
+      "Header": "6C10F1",
       "LogThisPID": "false",
       "Mode": "34",
       "Name": "Oil Pressure",
-      "PID": "4444",
+      "PID": "5232",
       "PidType": "GM Enhanced",
       "Units": "PSI"
     }

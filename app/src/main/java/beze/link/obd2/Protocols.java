@@ -164,7 +164,7 @@ public class Protocols
         /// <summary>
         /// The command for setting the frame header. This String needs to be given the 3-byte frame header value, e.g. "6C 10 F1" or a value from Protocols.J1850.ShortHeaders.
         /// </summary>
-        public static String SetFrameHeader(String header)
+        public static String GetFrameHeaderCommand(String header)
         {
             return "ATSH" + header;
         }

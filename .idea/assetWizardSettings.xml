@@ -73,7 +73,6 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="scalingPercent" value="101" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -107,8 +106,8 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="foregroundImage" value="C:\on-backup\projects\git\link.android\images\blackdot.png" />
-                                      <entry key="outputName" value="ic_blackdot" />
+                                      <entry key="foregroundImage" value="C:\on-backup\projects\git\link.android\images\testicon.png" />
+                                      <entry key="outputName" value="ic_testicon" />
                                     </map>
                                   </option>
                                 </PersistentState>

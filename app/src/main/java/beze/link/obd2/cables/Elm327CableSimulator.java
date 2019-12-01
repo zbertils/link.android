@@ -1,13 +1,8 @@
 package beze.link.obd2.cables;
 
-import android.util.Log;
-
 import com.hypertrack.hyperlog.HyperLog;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import beze.link.Globals;
 import beze.link.obd2.DiagnosticTroubleCode;
@@ -111,7 +106,7 @@ public class Elm327CableSimulator extends Elm327Cable
     }
 
     @Override
-    protected String SendCommand(String data, int sleepMilliseconds)
+    public String SendCommand(String data, int sleepMilliseconds)
     {
         return Protocols.Elm327.Responses.OK;
     }
@@ -125,31 +120,16 @@ public class Elm327CableSimulator extends Elm327Cable
     @Override
     public String Communicate(ParameterIdentification pid, int timeout)
     {
-        // check if the header needs to be set
-        if (pid.Header != null && !pid.Header.isEmpty())
+        if (!SetFrameHeader(pid))
         {
-            String response = SendCommand(Protocols.Elm327.SetFrameHeader(pid.Header), 750);
-            if (!response.contains(Protocols.Elm327.Responses.OK))
-            {
-                HyperLog.w(TAG, "Communicate: could not set frame header for PID\r\n" + pid.toString());
-                return null;
-            }
-        }
-        else if (!lastFrameHeader.equals(Protocols.J1850.Headers.Default))
-        {
-            String response = SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.Default), 750);
-            if (!response.contains(Protocols.Elm327.Responses.OK))
-            {
-                HyperLog.w(TAG, "Communicate: could not set default frame header for PID\r\n" + pid.toString());
-                return null;
-            }
+            return null;
         }
 
         return pid.SimulatedResponse(this.Protocol);
     }
 
     @Override
-    public List<DiagnosticTroubleCode> RequestTroubleCodes()
+    public HashMap<String, DiagnosticTroubleCode> RequestTroubleCodes()
     {
         if (SimulateTroubleCodes)
         {
@@ -157,7 +137,7 @@ public class Elm327CableSimulator extends Elm327Cable
         }
         else
         {
-            return new ArrayList<DiagnosticTroubleCode>();
+            return new HashMap<String, DiagnosticTroubleCode>();
         }
     }
 

@@ -32,10 +32,12 @@ import java.lang.Exception;
 
 import beze.link.fragments.CableInteractionFragment;
 import beze.link.interfaces.ICableStateChange;
+import beze.link.obd2.OBDTest;
 import beze.link.obd2.ParameterIdentification;
 import beze.link.obd2.cables.Cable;
 import beze.link.obd2.cables.Elm327Cable;
 import beze.link.obd2.cables.Elm327CableSimulator;
+import beze.link.obd2.tests.BalanceRatesTest;
 import beze.link.ui.DataRecyclerViewAdapter;
 import beze.link.ui.DataViewHolder;
 import beze.link.ui.PidsRecyclerViewAdapter;
@@ -69,11 +71,18 @@ public class Globals
     public static BluetoothAdapter btAdapter;
     public static AppState appState;
     public static AtomicReference<CableInteractionFragment> currentCableStateCallback = new AtomicReference<>();
+    public static List<OBDTest> obdTests = new ArrayList<>();
 
     public enum Units
     {
         Metric,
         SAE
+    }
+
+
+    static
+    {
+        obdTests.add(new BalanceRatesTest());
     }
 
 

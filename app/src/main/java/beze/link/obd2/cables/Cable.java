@@ -1,8 +1,6 @@
 package beze.link.obd2.cables;
 
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.util.Log;
 import android.util.Pair;
 
 import com.hypertrack.hyperlog.HyperLog;
@@ -10,7 +8,6 @@ import com.hypertrack.hyperlog.HyperLog;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import beze.link.Globals;
 import beze.link.obd2.DiagnosticTroubleCode;
@@ -162,11 +159,56 @@ public abstract class Cable
     public abstract boolean Send(String data);
 
     /// <summary>
+    /// Sends the given commands through the cable.
+    /// </summary>
+    public abstract String SendCommand(String data, int sleepMilliseconds);
+
+    /// <summary>
     /// Receives data from the cable.
     /// </summary>
     /// <param name="timeoutMilliseconds"> The timeout to use instead of the one passed through the constructor. </param>
     /// <returns> The response if one is expected, and null otherwise. </returns>
     public abstract String Receive(int timeoutMilliseconds);
+
+    /**
+     * Sets the frame header for the given PID.
+     * @param pid The PID containing the header to set.
+     * @return True if setting the header was successful, and false otherwise.
+     */
+    protected synchronized boolean SetFrameHeader(ParameterIdentification pid)
+    {
+        String header = null;
+        if (this.Protocol == Protocols.Protocol.J1850)
+        {
+            header = pid.Header;
+            if (header == null || header.isEmpty())
+            {
+                header = Protocols.J1850.Headers.Default;
+            }
+        }
+        else if (Protocols.IsCan(this.Protocol))
+        {
+            header = pid.CANHeader;
+            if (header == null || header.isEmpty())
+            {
+                header = Protocols.CAN.ShortHeaders.Default;
+            }
+        }
+
+        // make sure the header was set, it is possible there is no header for this
+        // pid and protocol combination, in that case we just leave it alone
+        if (header != null && !header.isEmpty())
+        {
+            String response = SendCommand(Protocols.Elm327.GetFrameHeaderCommand(header), 1000);
+            if (!response.contains(Protocols.Elm327.Responses.OK))
+            {
+                HyperLog.w(TAG, "Communicate: could not set frame header '" + header + "' for PID\r\n" + pid.toString());
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     synchronized
     public String Receive() { return this.Receive(1500); }
@@ -180,7 +222,7 @@ public abstract class Cable
     /// Requests diagnostic trouble codes from the vehicle.
     /// </summary>
     /// <returns> The list of diagnostic trouble codes as Strings, e.g. "P0176". </returns>
-    public abstract List<DiagnosticTroubleCode> RequestTroubleCodes();
+    public abstract HashMap<String, DiagnosticTroubleCode> RequestTroubleCodes();
 
     /// <summary>
     /// Requests diagnostic trouble code statuses from the vehicle.

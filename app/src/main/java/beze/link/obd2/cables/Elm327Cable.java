@@ -1,7 +1,5 @@
 package beze.link.obd2.cables;
 
-import android.util.Log;
-
 import com.hypertrack.hyperlog.HyperLog;
 
 import java.util.ArrayList;
@@ -263,7 +261,8 @@ public class Elm327Cable extends Cable
         }
     }
 
-    protected String SendCommand(String data, int sleepMilliseconds)
+    @Override
+    public String SendCommand(String data, int sleepMilliseconds)
     {
         return SendCommand(data, sleepMilliseconds, Protocols.Elm327.Prompt);
     }
@@ -291,49 +290,9 @@ public class Elm327Cable extends Cable
             return Receive(timeout);
         }
 
-        // sending did not work, return false
+        // sending did not work, return null
         HyperLog.w(TAG, "Communicate() did not send properly, returning null");
         return null;
-    }
-
-    /**
-     * Sets the frame header for the given PID.
-     * @param pid The PID containing the header to set.
-     * @return True if setting the header was successful, and false otherwise.
-     */
-    protected synchronized boolean SetFrameHeader(ParameterIdentification pid)
-    {
-        String header = null;
-        if (this.Protocol == Protocols.Protocol.J1850)
-        {
-            header = pid.Header;
-            if (header == null || header.isEmpty())
-            {
-                header = Protocols.J1850.Headers.Default;
-            }
-        }
-        else if (Protocols.IsCan(this.Protocol))
-        {
-            header = pid.CANHeader;
-            if (header == null || header.isEmpty())
-            {
-                header = Protocols.CAN.ShortHeaders.Default;
-            }
-        }
-
-        // make sure the header was set, it is possible there is no header for this
-        // pid and protocol combination, in that case we just leave it alone
-        if (header != null && !header.isEmpty())
-        {
-            String response = SendCommand(Protocols.Elm327.SetFrameHeader(header), 1000);
-            if (!response.contains(Protocols.Elm327.Responses.OK))
-            {
-                HyperLog.w(TAG, "Communicate: could not set frame header '" + header + "' for PID\r\n" + pid.toString());
-                return false;
-            }
-        }
-
-        return true;
     }
 
     @Override
@@ -413,21 +372,51 @@ public class Elm327Cable extends Cable
 
     @Override
     synchronized
-    public List<DiagnosticTroubleCode> RequestTroubleCodes()
+    public HashMap<String, DiagnosticTroubleCode> RequestTroubleCodes()
     {
         List<DiagnosticTroubleCode> codes = new ArrayList<DiagnosticTroubleCode>();
-
-        // turn adaptive timing off so we can get all of the codes without missing them on slow responses
-        //SendCommand(Protocols.Elm327.AdaptiveTimingOff, 1000);
 
         codes.addAll(mode3.RequestTroubleCodes(this));
         codes.addAll(mode7.RequestTroubleCodes(this));
         codes.addAll(modeA.RequestTroubleCodes(this));
 
-        // turn adaptive timing back on for pids
-        //SendCommand(Protocols.Elm327.AdaptiveTimingOn,1000);
+        // if the J1850 protocol is used then request the active and pending codes from all controllers
+        if (Globals.cable.Protocol == Protocol.J1850)
+        {
+            HashMap<String, DiagnosticTroubleCode> activePending = new HashMap<String, DiagnosticTroubleCode>();
 
-        return codes;
+            HyperLog.v(TAG, "Requesting active default DTC");
+            mode19.Header = Protocols.J1850.Headers.Default;
+            activePending.putAll(mode19.RequestActiveDtc(this));
+
+            HyperLog.v(TAG, "Requesting active BCM DTC");
+            mode19.Header = Protocols.J1850.Headers.BCM;
+            activePending.putAll(mode19.RequestActiveDtc(this));
+
+            HyperLog.v(TAG, "Requesting active PCM DTC");
+            mode19.Header = Protocols.J1850.Headers.PCM;
+            activePending.putAll(mode19.RequestActiveDtc(this));
+
+            HyperLog.v(TAG, "Requesting active TCM DTC");
+            mode19.Header = Protocols.J1850.Headers.TCM;
+            activePending.putAll(mode19.RequestActiveDtc(this));
+
+            HyperLog.v(TAG, "Requesting active Air Bag DTC");
+            mode19.Header = Protocols.J1850.Headers.AirBag;
+            activePending.putAll(mode19.RequestActiveDtc(this));
+
+            HyperLog.v(TAG, "Requesting active ABS DTC");
+            mode19.Header = Protocols.J1850.Headers.ABS;
+            activePending.putAll(mode19.RequestActiveDtc(this));
+
+            List<DiagnosticTroubleCode> activePendingList = new ArrayList(activePending.values());
+            codes.addAll(activePendingList); // add the active pending list to the existing codes list
+        }
+
+        // put the list of values into a hashmap, this is mainly done as a simple way of removing duplicates
+        HashMap<String, DiagnosticTroubleCode> codeMap = new HashMap<>();
+        for (DiagnosticTroubleCode dtc : codes) codeMap.put(dtc.Code, dtc);
+        return codeMap;
     }
 
     @Override
@@ -438,31 +427,36 @@ public class Elm327Cable extends Cable
 
         if (!Protocols.IsCan(this.Protocol))
         {
-            SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.Default), 1000);
+            HyperLog.v(TAG, "Requesting default DTC statuses");
+            mode19.Header = Protocols.J1850.Headers.Default;
             statuses.putAll(mode19.RequestAllDtcStatuses(this));
 
-            SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.BCM), 1000);
+            HyperLog.v(TAG, "Requesting BCM DTC statuses");
+            mode19.Header = Protocols.J1850.Headers.BCM;
             statuses.putAll(mode19.RequestAllDtcStatuses(this));
 
-            SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.PCM), 1000);
+            HyperLog.v(TAG, "Requesting PCM DTC statuses");
+            mode19.Header = Protocols.J1850.Headers.PCM;
             statuses.putAll(mode19.RequestAllDtcStatuses(this));
 
-            SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.TCM), 1000);
+            HyperLog.v(TAG, "Requesting TCM DTC statuses");
+            mode19.Header = Protocols.J1850.Headers.TCM;
             statuses.putAll(mode19.RequestAllDtcStatuses(this));
 
-            SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.AirBag), 1000);
+            HyperLog.v(TAG, "Requesting Air Bag DTC statuses");
+            mode19.Header = Protocols.J1850.Headers.AirBag;
             statuses.putAll(mode19.RequestAllDtcStatuses(this));
 
-            SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.J1850.Headers.ABS), 1000);
+            HyperLog.v(TAG, "Requesting ABS DTC statuses");
+            mode19.Header = Protocols.J1850.Headers.ABS;
             statuses.putAll(mode19.RequestAllDtcStatuses(this));
         }
         else
         {
-            SendCommand(Protocols.Elm327.SetFrameHeader(Protocols.CAN.ShortHeaders.Default), 1000);
+            HyperLog.v(TAG, "Requesting default CAN DTC statuses");
+            mode19.CANHeader = Protocols.CAN.ShortHeaders.Default;
             statuses.putAll(mode19.RequestAllDtcStatuses(this));
         }
-
-        // remove all duplicate entries
 
         return statuses;
     }

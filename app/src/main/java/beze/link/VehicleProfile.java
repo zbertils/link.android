@@ -1,5 +1,7 @@
 package beze.link;
 
+import java.util.HashMap;
+
 public class VehicleProfile
 {
     private static final String TAG = Globals.TAG_BASE + "VehicleProfile";

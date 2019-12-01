@@ -95,7 +95,7 @@ public class TroubleCodesCurrentFragment extends CableInteractionFragment implem
         if (Globals.cable != null && Globals.cable.IsInitialized())
         {
             // actually get the trouble codes
-            currentCodes.addAll(Globals.cable.RequestTroubleCodes());
+            currentCodes.addAll(Globals.cable.RequestTroubleCodes().values());
 
             Globals.mainActivity.runOnUiThread(new Runnable()
             {

@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.android.beze.link.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +59,14 @@ public class TroubleCodesStatusFragment extends CableInteractionFragment impleme
         {
             // actually get the trouble code statuses
             currentCodes.addAll(Globals.cable.RequestAllDtcStatuses().values());
+
+            // sort values based on the full code, e.g. "P0123" vs "P0124"
+            Collections.sort(currentCodes, new Comparator<DiagnosticTroubleCode>() {
+                @Override
+                public int compare(DiagnosticTroubleCode c1, DiagnosticTroubleCode c2) {
+                    return c1.Code.compareTo(c2.Code);
+                }
+            });
 
             Globals.mainActivity.runOnUiThread(new Runnable()
             {

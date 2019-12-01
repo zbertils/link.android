@@ -1,9 +1,17 @@
 package beze.link.obd2;
 
+import com.hypertrack.hyperlog.HyperLog;
+
+import java.util.HashMap;
 import java.util.Map;
+
+import beze.link.Globals;
+import beze.link.obd2.cables.Cable;
 
 public class Vehicle
 {
+    public static final String TAG = Globals.TAG_BASE + "Vehicle";
+
     /// <summary>
     /// The Vehicle Identification Number for the vehicle.
     /// </summary>
@@ -24,10 +32,14 @@ public class Vehicle
     /// </summary>
     public String Model;
 
+    public HashMap<Integer, String> Controllers;
+
     private Map<String, String> wmis;
 
     public Vehicle(String vin, Map<String, String> wmis)
     {
+        Controllers = new HashMap<>();
+
         // set the private members first
         this.wmis = wmis;
 
@@ -123,6 +135,67 @@ public class Vehicle
         }
 
         return "Unknown (Invalid VIN)";
+    }
+
+    private void DiscoverControllers(Cable cable)
+    {
+        ParameterIdentification discoveryPid = new ParameterIdentification(
+                "Available PIDs 01",
+                (byte)1,
+                (short)0,
+                (byte)4,
+                "",
+                "",
+                "",
+                "",
+                "",
+                "");
+
+        if (cable.Protocol == Protocols.Protocol.J1850)
+        {
+            HyperLog.v(TAG, "Discovering J1850 controllers...");
+
+            discoveryPid.Header = Protocols.J1850.Headers.TCM;
+            if (cable.Communicate(discoveryPid) != null)
+            {
+                // TODO: save this controller
+            }
+
+            discoveryPid.Header = Protocols.J1850.Headers.BCM;
+            if (cable.Communicate(discoveryPid) != null)
+            {
+                // TODO: save this controller
+            }
+
+            discoveryPid.Header = Protocols.J1850.Headers.PCM;
+            if (cable.Communicate(discoveryPid) != null)
+            {
+                // TODO: save this controller
+            }
+
+            discoveryPid.Header = Protocols.J1850.Headers.Default;
+            if (cable.Communicate(discoveryPid) != null)
+            {
+                // TODO: save this controller
+            }
+
+            discoveryPid.Header = Protocols.J1850.Headers.AirBag;
+            if (cable.Communicate(discoveryPid) != null)
+            {
+                // TODO: save this controller
+            }
+
+            discoveryPid.Header = Protocols.J1850.Headers.ABS;
+            if (cable.Communicate(discoveryPid) != null)
+            {
+                // TODO: save this controller
+            }
+        }
+        else if (Protocols.IsCan(cable.Protocol))
+        {
+            HyperLog.v(TAG, "Discovering CANBUS controllers...");
+            // TODO: test each of the 07E0 through 07E7 controllers
+        }
     }
 
 }
