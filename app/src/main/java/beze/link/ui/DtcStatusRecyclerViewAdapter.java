@@ -75,6 +75,7 @@ public class DtcStatusRecyclerViewAdapter extends RecyclerView.Adapter<DtcStatus
         else if (dtc.Status.contains("Warning lamp pending"))
         {
             holder.dtcNumber.setTextColor(Color.rgb(255, 165,0));
+            holder.dtcNumber.setTypeface(holder.dtcNumber.getTypeface(), Typeface.NORMAL);
             holder.dtcDescription.setTextColor(Color.BLACK);
             holder.dtcType.setTextColor(Color.BLACK);
             holder.dtcStatus.setTextColor(Color.BLACK);
@@ -82,6 +83,7 @@ public class DtcStatusRecyclerViewAdapter extends RecyclerView.Adapter<DtcStatus
         else if (dtc.Status.contains("Warning lamp previously illuminated"))
         {
             holder.dtcNumber.setTextColor(Color.MAGENTA);
+            holder.dtcNumber.setTypeface(holder.dtcNumber.getTypeface(), Typeface.NORMAL);
             holder.dtcDescription.setTextColor(Color.BLACK);
             holder.dtcType.setTextColor(Color.BLACK);
             holder.dtcStatus.setTextColor(Color.BLACK);
@@ -90,6 +92,7 @@ public class DtcStatusRecyclerViewAdapter extends RecyclerView.Adapter<DtcStatus
         {
             // no lamp, not pending, either a stored non-critical code, previously lit, or not enough data
             holder.dtcNumber.setTextColor(Color.LTGRAY);
+            holder.dtcNumber.setTypeface(holder.dtcNumber.getTypeface(), Typeface.NORMAL);
             holder.dtcDescription.setTextColor(Color.LTGRAY);
             holder.dtcType.setTextColor(Color.LTGRAY);
             holder.dtcStatus.setTextColor(Color.LTGRAY);
